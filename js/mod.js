@@ -1,7 +1,7 @@
 let modInfo = {
 	name: "Prestige Tree Rewritten",
 	id: "ptr",
-	author: "Jacorb",
+	author: "E",
 	pointsName: "points",
 	discordName: "PT Rewritten Server",
 	discordLink: "https://discord.gg/TFCHJJT",
