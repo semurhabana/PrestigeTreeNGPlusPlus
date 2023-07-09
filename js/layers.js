@@ -287,7 +287,7 @@ addLayer("b", {
         resource: "boosters", // Name of prestige currency
         baseResource: "points", // Name of resource prestige is based on
         baseAmount() {return player.points}, // Get the current amount of baseResource
-        type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+        type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
 		branches: ["p"],
         exponent() { return ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?0.75:1.25 }, // Prestige currency exponent
 		base() { return ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?1.5:5 },
@@ -558,7 +558,7 @@ addLayer("g", {
         resource: "generators", // Name of prestige currency
         baseResource: "points", // Name of resource prestige is based on
         baseAmount() {return player.points}, // Get the current amount of baseResource
-        type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+        type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
 		branches: ["p"],
         exponent() { return ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?1.1:1.25 }, // Prestige currency exponent
 		base() { return ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?2.5:5 },
@@ -913,7 +913,7 @@ addLayer("t", {
         resource: "time capsules", // Name of prestige currency
         baseResource: "points", // Name of resource prestige is based on
         baseAmount() {return player.points}, // Get the current amount of baseResource
-        type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+        type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
         exponent() { return ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?new Decimal(1.4):new Decimal(1.85) }, // Prestige currency exponent
 		base() { return ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?new Decimal(10):new Decimal(1e15) },
         gainMult() { // Calculate the multiplier for main currency from bonuses
@@ -1590,7 +1590,7 @@ addLayer("s", {
         resource: "space energy", // Name of prestige currency
         baseResource: "points", // Name of resource prestige is based on
         baseAmount() {return player.points}, // Get the current amount of baseResource
-        type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+        type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
         exponent() { return new Decimal(((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?1.4:1.85) }, // Prestige currency exponent
         base() { return new Decimal(((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?10:(hasUpgrade("ss", 11)?1e10:1e15)) },
         gainMult() { // Calculate the multiplier for main currency from bonuses
@@ -2458,7 +2458,7 @@ addLayer("sb", {
         baseResource: "boosters", // Name of resource prestige is based on
         baseAmount() {return player.b.points}, // Get the current amount of baseResource
 		roundUpCost: true,
-        type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+        type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
 		branches: ["b"],
         exponent() { return ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?1.075:1.25 }, // Prestige currency exponent
 		base() { return ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?1.025:1.05 },
@@ -2533,7 +2533,7 @@ addLayer("sg", {
         baseResource: "generators", // Name of resource prestige is based on
         baseAmount() {return player.g.points}, // Get the current amount of baseResource
 		roundUpCost: true,
-        type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+        type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
 		branches: ["g"],
         exponent() { return ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?1.225:1.25 }, // Prestige currency exponent
 		base() { return ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?1.04:1.05 },
@@ -3913,7 +3913,7 @@ addLayer("ss", {
         resource: "subspace energy", // Name of prestige currency
         baseResource: "space energy", // Name of resource prestige is based on
         baseAmount() {return player.s.points}, // Get the current amount of baseResource
-        type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+        type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
         exponent() { return new Decimal(((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?1.07:1.1) }, // Prestige currency exponent
 		base() { return new Decimal(((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?1.1:1.15) },
         gainMult() { // Calculate the multiplier for main currency from bonuses
@@ -4840,7 +4840,7 @@ addLayer("ps", {
         resource: "phantom souls", // Name of prestige currency
         baseResource: "quirk energy", // Name of resource prestige is based on
         baseAmount() {return player.q.energy}, // Get the current amount of baseResource
-        type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+        type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
         exponent: new Decimal(1.5), // Prestige currency exponent
 		base() { 
 			let b = new Decimal("1e8000").root(((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?2:1);
@@ -6439,7 +6439,7 @@ addLayer("i", {
         resource: "imperium bricks", // Name of prestige currency
         baseResource: "subspace", // Name of resource prestige is based on
         baseAmount() {return player.ss.subspace}, // Get the current amount of baseResource
-        type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+        type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
         exponent: new Decimal(1.8), // Prestige currency exponent
 		base() { return new Decimal(((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?"1e100":"1e250") },
         gainMult() { // Calculate the multiplier for main currency from bonuses
@@ -6697,7 +6697,7 @@ addLayer("ma", {
         baseResource: "phantom souls", // Name of resource prestige is based on
         baseAmount() {return player.ps.points}, // Get the current amount of baseResource
 		roundUpCost: true,
-        type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+        type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
         exponent: new Decimal(1.1), // Prestige currency exponent
 		base: new Decimal(1.05),
 		effectBase() {
@@ -7775,7 +7775,7 @@ addLayer("ne", {
         resource: "neurons", // Name of prestige currency
         baseResource: "subspace", // Name of resource prestige is based on
         baseAmount() {return player.ss.subspace}, // Get the current amount of baseResource
-        type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+        type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
         exponent: new Decimal(2.5), // Prestige currency exponent
 		base: new Decimal("1e10000"),
         gainMult() { // Calculate the multiplier for main currency from bonuses
@@ -8003,7 +8003,7 @@ addLayer("id", {
         baseResource: "thoughts", // Name of resource prestige is based on
         baseAmount() {return player.ne.thoughts}, // Get the current amount of baseResource
 		roundUpCost: true,
-        type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+        type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
         exponent: new Decimal(1.4), // Prestige currency exponent
 		base: new Decimal(1.2),
 		effect() { return Decimal.sub((hasAchievement("a", 155)?0.005:0)+(hasUpgrade("ai", 32)?0.99:0.95), Decimal.div(0.95, player.id.points.plus(1).log10().times(hasMilestone("id", 4)?1.5:1).times(hasMilestone("id", 5)?1.75:1).plus(1))) },
@@ -8952,7 +8952,7 @@ addLayer("c", {
         baseResource: "imperium bricks", // Name of resource prestige is based on
         baseAmount() {return player.i.points}, // Get the current amount of baseResource
 		roundUpCost: true,
-        type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
+        type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
         exponent: new Decimal(1.2), // Prestige currency exponent
 		base: new Decimal(1.025),
         gainMult() { // Calculate the multiplier for main currency from bonuses
