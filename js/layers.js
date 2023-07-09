@@ -6888,6 +6888,7 @@ addLayer("ma", {
 			n: ["hn"],
 			hs: ["hn"],
 			i: ["n","hs"],
+			i: ["i"],
 		},
 		masteryGoal: {
 			p: new Decimal("1e11488"),
@@ -6909,6 +6910,8 @@ addLayer("ma", {
 			n: new Decimal("1e397"),
 			hs: new Decimal("1e512"),
 			i: new Decimal(43),
+			en: new Decimal(1e10),
+			ne: new Decimal(1000),
 		},
 		rowLimit: 6,
 })
