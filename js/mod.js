@@ -1,29 +1,29 @@
 let modInfo = {
-	name: "Prestige Tree Rewritten",
+	name: "Prestige Tree NG+",
 	id: "ptr",
-	author: "E",
+	author: "Slime Adventure (Original by Jacorb90)",
 	pointsName: "points",
 	discordName: "PT Rewritten Server",
 	discordLink: "https://discord.gg/TFCHJJT",
 	changelogLink: "https://github.com/Jacorb90/Prestige-Tree/blob/master/changelog.md",
     offlineLimit: 1,  // In hours
     initialStartPoints: new Decimal(10), // Used for hard resets and new players
-	endgame: new Decimal("e3.14e16"),
+	endgame: new Decimal("e8.43e19"),
 	// specialEndgameText: "v1.3 Endgame: e3.14e16 Points",
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "1.3",
+	num: "1.4",
 	patch: 1,
-	name: "The Expansion Update",
+	name: "A New Game",
 }
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
 // (The ones here are examples, all official functions are already taken care of)
 var doNotCallTheseFunctionsEveryTick = ["doReset", "buy", "buyMax", "onPurchase", "blowUpEverything", "castAllSpells", "completeInBulk", "startMastery", "completeMastery"]
 
-var alwaysKeepTheseVariables = ["primeMiles", "auto", "autoExt", "autoBld", "autoW", "autoGhost", "autoSE", "autoNN", "keepPosNeg", "distrAll", "spellInput", "pseudoUpgs", "maxToggle"]
+var alwaysKeepTheseVariables = ["primeMiles", "auto", "autoExt", "autoBld", "autoW", "autoGhost", "autoSE", "autoNN", "keepPosNeg", "distrAll", "spellInput", "pseudoUpgs", "maxToggle","autoC","autoGe"]
 
 function getStartPoints(){
     return new Decimal(modInfo.initialStartPoints)
@@ -59,6 +59,7 @@ function getPointGen() {
 	if (inChallenge("h", 31)) gain = gain.root(tmp.h.pointRoot31);
 	if (hasUpgrade("ss", 43)) gain = gain.pow(gain.lt(tmp.ss.upgrades[43].endpoint)?1.1:1.01);
 	if (hasUpgrade("hn", 31)) gain = gain.pow(1.05);
+	if (hasUpgrade("pt", 31)) gain = gain.pow(1.45);
 	return gain
 }
 
