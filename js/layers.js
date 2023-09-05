@@ -23,6 +23,7 @@ addLayer("p", {
 			if (player.s.unlocked) mult = mult.times(buyableEffect("s", 11));
 			if (hasUpgrade("e", 12)) mult = mult.times(upgradeEffect("e", 12));
 			if (hasUpgrade("b", 31)) mult = mult.times(upgradeEffect("b", 31));
+			if (hasUpgrade("ra", 33)) mult = mult.times(3);
             return mult
         },
         gainExp() { // Calculate the exponent on main currency from bonuses
@@ -937,12 +938,14 @@ addLayer("t", {
 			if (player.o.unlocked) mult = mult.times(tmp.o.solEnEff2);
 			if (hasUpgrade("pt", 11)) mult = mult.pow(upgradeEffect("pt", 11));
 			if (hasUpgrade("ra", 23)) mult = mult.pow(20);
+			if (hasUpgrade("pt", 54)) mult = mult.pow(8);
 			return mult;
 		},
 		enGainMult() {
 			let mult = new Decimal(1);
 			if (hasUpgrade("t", 22)) mult = mult.times(upgradeEffect("t", 22));
 			if (player.h.unlocked) mult = mult.times(tmp.h.effect);
+
 			return mult;
 		},
 		effBaseMult() {
@@ -4533,6 +4536,7 @@ addLayer("ba", {
 			pos: new Decimal(0),
 			neg: new Decimal(0),
 			keepPosNeg: false,
+			psuedoUpgs: [],
 			first: 0,
         }},
         color: "#fced9f",
@@ -4866,6 +4870,7 @@ addLayer("ps", {
         gainMult() { // Calculate the multiplier for main currency from bonuses
             mult = new Decimal(1)
 			if (player.i.buyables[11].gte(2)) mult = mult.div(buyableEffect("s", 17));
+			if (hasUpgrade("ra", 33)) mult = mult.div(2);
             return mult
         },
         gainExp() { // Calculate the exponent on main currency from bonuses
@@ -8076,6 +8081,7 @@ addLayer("id", {
 			if (hasMilestone("id", 2)) mult = mult.div(player.ne.points.plus(1).log10().plus(1));
 			if (hasUpgrade("pt",43)) mult = mult.div(3);
 			if (hasUpgrade("ra", 12)) mult = mult.div(upgradeEffect("ra", 12));
+			if (hasUpgrade("ra", 31)) mult = mult.div(upgradeEffect("ra", 31));
             return mult
         },
         gainExp() { // Calculate the exponent on main currency from bonuses
@@ -8761,7 +8767,9 @@ addLayer("ai", {
 				},
 				unlocked() { return player.ai.unlocked && player.ai.upgrades.length>=9 },
 				style: {height: '150px', width: '150px'},
-				effect() { return player.ge.points.max(1).pow(5) },
+				effect() { let eff = player.ge.points.max(1).pow(5)
+					if (hasUpgrade("ra", 32)) eff = eff.times(upgradeEffect("ra", 32));
+				return eff;},
 				effectDisplay() { return format(tmp.ai.upgrades[24].effect)+"x" },
 				formula: "x^5",
 			},
@@ -9293,7 +9301,7 @@ addLayer("pt", {
 4: {
 	requirementDescription: "14 Total Planets",
 	done() { return player.pt.total.gte(14)},
-	effectDescription: "Automatically purchase Mastery.",
+	effectDescription: "Unlock Auto-Mastery",
 	toggles: [["ma", "auto"]],
 },
 5: {
@@ -9495,6 +9503,14 @@ addLayer("pt", {
 			
 			formula: "x+1",
 	unlocked() {return hasUpgrade("pt",52)},
+		
+	},
+	54: {
+		title: "Time Expander",
+		description: "Time Energy Cap is raised to the power of 8",
+	cost: new Decimal(10),
+	
+	unlocked() {return hasUpgrade("pt",53)},
 		
 	},
 },
@@ -9793,7 +9809,7 @@ addLayer("ra", {
 				cost: new Decimal(16),
 			},
 		],
-		effect() { return player.id.points.plus(1).pow(0.3) },
+		effect() { return player.id.points.plus(1).pow(0.5) },
 		effectDisplay() { return format(tmp.ra.upgrades[31].effect)+"x" },
 			
 			formula: "x+1",
@@ -9831,7 +9847,94 @@ addLayer("ra", {
 		unlocked() { return hasUpgrade("ra",22)},
 		style: {height: '150px', width: '150px',background: 'black',color: 'white'},
 	},
+	33: {
+		title: "Devastated Upgrade 3III",
+		description: "Prestige Points gain is multipled by 3 and cheapen Phantom Souls by 2",
+		multiRes: [
+			
+			{
+				currencyDisplayName: "devastated planetirum",
+				currencyInternalName: "points",
+				currencyLayer: "pt",
+				cost: new Decimal(11),
+			},
+	{
+				currencyDisplayName: "devastated humans",
+				currencyInternalName: "points",
+				currencyLayer: "c",
+				cost: new Decimal(14),
+			},
+	{
+				currencyDisplayName: "devastated think-outside-of-the-boxirum",
+				currencyInternalName: "points",
+				currencyLayer: "id",
+				cost: new Decimal(16),
+			},
+		],
+		
+		unlocked() { return hasUpgrade("ra",23)},
+		style: {height: '150px', width: '150px',background: 'white'},
+	},
 },
+
+})
+addLayer("tp", {
+    startData() { return {                  // startData is a function that returns default data for a layer. 
+        unlocked: false,                     // You can add more variables here to add them to your layer.
+        points: new Decimal(0),
+		total: new Decimal(0),
+	            // "points" is the internal name for the main resource of the layer.
+    }},
+  name: "tachyon", // This is optional, only used in a few places, If absent it just uses the layer id.
+        symbol: "TP", // This appears on the layer's node. Default is the id with the first letter capitalized
+        position: 2,
+    color: "#4CFF00",                       // The color for this layer, which affects many elements.
+    resource: "tachyon particless",            // The name of this layer's main prestige resource.
+    row: 7,                                 // The row this layer is on (0 is the first row).
+	nodeStyle() { return {
+		background: (player.tp.unlocked||canReset("tp"))?((player.grad&&!player.oldStyle)?"radial-gradient(circle, #430082 0%, #4CFF00 100%)":"#430082"):"#bf8f8f",
+	}},
+	componentStyles: {
+		background() { return (player.tp.unlocked||canReset("tp"))?((player.grad&&!player.oldStyle)?"radial-gradient(circle, #430082 0%, #4CFF00 100%)":"#430082"):"#bf8f8f" },
+	},
+    baseResource: "hindrance spirits",                 // The name of the resource your prestige gain is based on.
+    baseAmount() { return player.h.points },  // A function to return the current amount of baseResource.
+
+    requires: new Decimal("e1.5e14"),              // The amount of the base needed to  gain 1 of the prestige currency.
+                    // Also the amount required to unlock the layer.
+
+    type: "normal",                         // Determines the formula used for calculating prestige currency.
+    exponent: 0.0001,                          // "normal" prestige gain is (currency^exponent).
+	base: new Decimal(1.05),
+
+	tabFormat: ["main-display",
+			"prestige-button",
+			"blank",
+			["display-text",
+				function() {return 'You have ' + format(player.h.points) + ' Hindrance Spirits'},
+					{}],
+			"blank",
+			"blank",
+			"blank",
+"blank",
+			"blank", "blank", "blank", "challenges"],
+    gainMult() {                            // Returns your multiplier to your gain of the prestige resource.
+       let mult = new Decimal(1)
+	  
+	   return mult;               // Factor in any bonuses multiplying gain here.
+    },
+    gainExp() {                             // Returns the exponent to your gain of the prestige resource.
+        return new Decimal(1)
+    },
+	
+ branches: ["mc",["hs",2]],
+ layerShown(){return player.pt.unlocked},         // Returns a bool for if this layer's node should be visible in the tree.
+
+ challenges: {
+
+
+},
+
 
 })
 addLayer("a", {
@@ -10492,7 +10595,7 @@ addLayer("ab", {
 	layerShown() { return player.t.unlocked || player.s.unlocked },
 	tooltip: "Autobuyers",
 	clickables: {
-		rows: 6,
+		rows: 7,
 		cols: 4,
 		11: {
 			title: "Boosters",
@@ -10718,6 +10821,23 @@ addLayer("ab", {
 			onClick() { player.id.auto = !player.id.auto },
 			style: {"background-color"() { return player.id.auto?"#fad682":"#666666" }},
 		},
-		
+		64: {
+			title: "Mastery",
+			display() { return hasMilestone("pt", 4)?(player.ma.auto?"On":"Off"):"Locked" },
+			unlocked() { return player.pt.unlocked},
+			canClick() { return hasMilestone("pt", 4) },
+			onClick() { player.ma.auto = !player.ma.auto },
+			style: {"background-color"() { return player.ma.auto?"#ff9f7f":"#666666" }},
+		},
+		71: {
+			title: "Civilli-zations",
+			display() { return hasMilestone("pt", 5)?(player.c.auto?"On":"Off"):"Locked" },
+			unlocked() { return player.c.unlocked && player.pt.unlocked},
+			canClick() { return hasMilestone("pt", 5) },
+			onClick() { player.c.auto = !player.c.auto },
+			style: {"background-color"() { return player.c.auto?"#edb3ff":"#666666" }},
+		},
 	},
+	
+	
 })
