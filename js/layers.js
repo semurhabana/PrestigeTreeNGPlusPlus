@@ -6756,7 +6756,7 @@ addLayer("ma", {
         hotkeys: [
             {key: "A", description: "Press Shift+A to Mastery Reset", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
         ],
-		resetsNothing() { return hasMilestone("pt", 1) },
+	
         doReset(resettingLayer){ 
 			let keep = [];
 			if (hasAchievement("a", 170)) keep.push("milestones")
