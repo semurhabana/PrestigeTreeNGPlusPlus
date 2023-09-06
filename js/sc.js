@@ -318,14 +318,7 @@ const SOFTCAPS = {
 		display() { return tmp.ge.rotEff.gte(this.start) },
 		info() { return "Starts at "+format(this.start)+"x, exponent brought to the 1.7th root" },
 	},
-	rotGain: {
-		title: "Rotation Gain",
-		type: "expRoot",
-		start: new Decimal("1e5500"),
-		mag: new Decimal(2),
-		display() { return tmp.ge.rotgaEff.gte(this.start) },
-		info() { return "Starts at "+format(this.start)+"x, exponent brought to the 2nd root" },
-	},
+	
 }
 
 const STATIC_SCALE_DATA = [
