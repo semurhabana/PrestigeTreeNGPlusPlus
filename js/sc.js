@@ -344,11 +344,15 @@ const STATIC_SCALE_DATA = [
 				let start = new Decimal(1225);
 				if (hasUpgrade("t", 34) && player.i.buyables[12].gte(4)) start = new Decimal(1400);
 				if (inChallenge("h", 42)) start = new Decimal(1);
+				if (hasAchievement("a", 202)) start = new Decimal(2000);
+				if (hasUpgrade("qe", 22)) start = start.plus(upgradeEffect("qe", 22));
+				if (hasUpgrade("qe", 33)) start = new Decimal(2225);
 				return start;
 			},
 			"3": function() {
 				let start = new Decimal(1225);
 				if (inChallenge("h", 42)) start = new Decimal(1);
+				if (hasUpgrade("pt", 44)) start = new Decimal(1275);
 				return start;
 			},
 			"4": function() {

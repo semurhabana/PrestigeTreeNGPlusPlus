@@ -336,7 +336,20 @@ function gameLoop(diff) {
 
 	addTime(diff)
 	player.points = player.points.add(tmp.pointGen.times(diff)).max(0)
-
+	if (player.hideNews && document.getElementById("newsTicker")) {
+		document.getElementById("newsTicker").style.display = "none";
+	}
+	if (document.getElementById("newsbtn")) {
+	document.getElementById("newsbtn").onclick = function() {
+		if (!player.hideNews && document.getElementById("newsbtn") && document.getElementById("newsTicker")) {
+		  document.getElementById("newsTicker").style.display = "none";
+		  player.hideNews = true
+		} else {
+		  document.getElementById("newsTicker").style.display = "block";
+		  player.hideNews = false
+		}
+	  }
+	}
 	for (x = 0; x <= maxRow; x++){
 		for (item in TREE_LAYERS[x]) {
 			let layer = TREE_LAYERS[x][item]

@@ -107,6 +107,7 @@ function startPlayerBase() {
 		navTab: (layoutInfo.showTree ? "tree-tab" : "none"),
 		time: Date.now(),
 		autosave: true,
+		hideNews: false,
 		notify: {},
 		msDisplay: "always",
 		offlineProd: true,
@@ -378,6 +379,7 @@ function load() {
 		player.offTime.remain += (Date.now() - player.time) / 1000
 	}
 	player.time = Date.now();
+	if (player.newsArray === undefined) player.newsArray = [];
 	versionCheck();
 	changeTheme();
 	changeTreeQuality();

@@ -24,11 +24,13 @@ addLayer("p", {
 			if (hasUpgrade("e", 12)) mult = mult.times(upgradeEffect("e", 12));
 			if (hasUpgrade("b", 31)) mult = mult.times(upgradeEffect("b", 31));
 			if (hasUpgrade("ra", 33)) mult = mult.times(3);
+			if (hasUpgrade("qe", 31)) mult = mult.times(upgradeEffect("qe",31));
             return mult
         },
         gainExp() { // Calculate the exponent on main currency from bonuses
             let exp = new Decimal(1)
 			if (hasUpgrade("p", 31)) exp = exp.times(1.05);
+			if (hasUpgrade("p", 54)) exp = exp.times(1.08);
 			return exp;
         },
         row: 0, // Row the layer is in on the tree (0 is the first row)
@@ -56,7 +58,7 @@ addLayer("p", {
 			first: 0,
 		}},
 		upgrades: {
-			rows: 4,
+			rows: 5,
 			cols: 4,
 			11: {
 				title: "Begin",
@@ -82,7 +84,8 @@ addLayer("p", {
 					if (hasUpgrade("hn", 14)) eff = eff.pow(1.05);
 					if (hasUpgrade("b", 34) && player.i.buyables[12].gte(1)) eff = eff.pow(upgradeEffect("b", 34));
 					if ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false) eff = eff.pow(1.1);
-					
+					if (hasAchievement("a", 212)) eff = eff.pow(4);
+					if (hasUpgrade("p", 53)) eff = eff.times(upgradeEffect("p",53));
 					return eff;
 				},
 				unlocked() { return hasUpgrade("p", 11) },
@@ -112,6 +115,7 @@ addLayer("p", {
 					if (hasUpgrade("p", 33)) eff = eff.pow(upgradeEffect("p", 33));
 					if (hasUpgrade("g", 15)) eff = eff.pow(upgradeEffect("g", 15));
 					if (hasUpgrade("hn", 13)) eff = eff.pow(upgradeEffect("hn", 13));
+					if (hasUpgrade("p", 52)) eff = eff.pow(2);
 					if ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false) eff = eff.pow(75);
 					return eff;
 				},
@@ -276,6 +280,45 @@ addLayer("p", {
 				formula: "(x+1)^3",
 				style: {"font-size": "9px"},
 			},
+			51: {
+				title: "Reverse Potenticy",
+				description: "Prestige Points boost <b>Planet Dilators</b> and <b>Expontent Starship</b>.",
+				cost: new Decimal("e2.77e14"),
+				effect() { return player.p.points.plus(1).pow(0.000000000000001) },
+				unlocked() { return hasUpgrade("pt", 55) },
+				effectDisplay() { return format(tmp.p.upgrades[51].effect)+"x" },
+				formula: "x+1"
+			},
+			52: {
+				title: "Special Psuedo",
+				description: "<b>Self-Synergy</b>'s effect is squared",
+				cost: new Decimal("e3e14"),
+				
+				unlocked() { return hasUpgrade("pt", 55) },
+			
+			},
+			53: {
+				title: "Prestige Boost-Recursion",
+				description: "<b>Prestige Boost</b> is stronger based on Prestige Upgrades you brought.",
+				cost: new Decimal("e5e14"),
+				
+				unlocked() { return hasUpgrade("pt", 55) },
+				effect() {
+					let eff = Decimal.pow(1.1, player.p.upgrades.length);
+					
+					return eff;
+				},
+				effectDisplay() { return format(tmp.p.upgrades[53].effect)+"x" },
+			},
+			54: {
+				title: "WE NEED EVEN MORE PRESTIGE",
+				description: "Prestige Point gain is raised to the power of 1.08",
+				cost: new Decimal("e5e14"),
+				
+				unlocked() { return hasUpgrade("pt", 55) },
+				
+			},
+			
 		},
 })
 
@@ -638,6 +681,7 @@ addLayer("g", {
 			if ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false) exp = exp.times(1.05);
 			if (player.mc.upgrades.includes(11)) exp = exp.times(buyableEffect("mc", 12));
 			if (hasAchievement("a", 152)) exp = exp.times(1.4);
+			if (hasUpgrade("pt", 32)) exp = exp.times(1.1);
 			return exp;
 		},
 		powerEff() {
@@ -1388,6 +1432,7 @@ addLayer("e", {
 				effect() { 
 					let ret = player.e.total.add(1).pow(1.5) 
 					ret = softcap("e12", ret);
+					if (hasUpgrade("ra", 53)) ret = ret.times(2.5);
 					if ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false) ret = ret.pow(1.5);
 					return ret
 				},
@@ -1411,6 +1456,7 @@ addLayer("e", {
 				unlocked() { return hasAchievement("a", 33) },
 				effect() {
 					let e = new Decimal(4)
+
 					if (hasUpgrade("b", 33)) e = e.times(upgradeEffect("b", 33))
 					return e;
 				},
@@ -1437,6 +1483,7 @@ addLayer("e", {
 				unlocked() { return hasAchievement("a", 33) },
 				effect() {
 					let eff = player.s.points.pow(2).div(25);
+					if (hasUpgrade("ra", 53)) eff = eff.times(2.5);
 					if ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false) eff = eff.times(3.5);
 					return eff.floor();
 				},
@@ -1448,7 +1495,9 @@ addLayer("e", {
 				description: "Boosters & Generators boost Enhance Point gain.",
 				cost() { return new Decimal(((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?"e1.011e5":2.5e28) },
 				unlocked() { return hasAchievement("a", 33) },
-				effect() { return Decimal.pow(((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?"1e2000":1.1, player.b.points.plus(player.g.points).pow(0.9)) },
+				effect() { let eff = Decimal.pow(((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?"1e2000":1.1, player.b.points.plus(player.g.points).pow(0.9)) 
+				if (hasUpgrade("ra", 53)) eff = eff.times(2.5);
+			return eff;},
 				effectDisplay() { return format(tmp.e.upgrades[24].effect)+"x" },
 				formula() { return (((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?"1e2,000":"1.1")+"^((boosters+generators)^0.9)" },
 			},
@@ -2554,6 +2603,7 @@ addLayer("sg", {
 			let mult = new Decimal(1);
 			if (hasUpgrade("ss", 21)) mult = mult.div(1.2);
 			if ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false) mult = mult.div(1.1);
+			if (hasAchievement("a", 191)) mult = mult.div(2);
 			return mult;
 		},
 		autoPrestige() { return player.sg.auto && hasMilestone("q", 6) && player.ma.current!="sg" },
@@ -2579,6 +2629,7 @@ addLayer("sg", {
 			if (player.mc.unlocked) base = base.times(clickableEffect("mc", 21));
 			if (tmp.m.buyables[16].unlocked) base = base.times(buyableEffect("m", 16));
 			if (player.ne.unlocked) base = base.times(tmp.ne.thoughtEff2);
+			if (hasUpgrade("qe", 31)) base = base.times(upgradeEffect("qe", 31));
 			return base;
 		},
 		effect() {
@@ -2648,10 +2699,14 @@ addLayer("h", {
 			if (hasUpgrade("q", 14)) mult = mult.times(upgradeEffect("q", 14).h);
 			if (player.m.unlocked) mult = mult.times(((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes("m"):false)?tmp.m.mainHexEff:tmp.m.hexEff);
 			if (hasUpgrade("ba", 22)) mult = mult.times(tmp.ba.negBuff);
+			if (player.tp.unlocked) mult = mult.times(1.5);
+			if (hasUpgrade("pt", 61)) mult = mult.pow(upgradeEffect("pt", 61));
             return mult
         },
         gainExp() { // Calculate the exponent on main currency from bonuses
-            return new Decimal(1)
+            exp = new Decimal(1)
+			if (hasUpgrade("pt", 61)) mult = mult.times(upgradeEffect("pt", 61));
+			return exp;
         },
         row: 3, // Row the layer is in on the tree (0 is the first row)
         hotkeys: [
@@ -2683,6 +2738,7 @@ addLayer("h", {
 			h = softcap("hindr_base", h);
 			let eff = h.plus(1).pow(3).pow(hasChallenge("h", 11)?1.2:1).pow(hasUpgrade("ba", 21)?8:1);
 			if (hasUpgrade("q", 45) && player.i.buyables[12].gte(6)) eff = eff.pow(100);
+			if (hasUpgrade("pt", 62)) eff = eff.pow(500);
 			return eff;
 		},
 		effectDescription() {
@@ -4968,6 +5024,7 @@ addLayer("ps", {
 				title: "Wraiths",
 				scaleSlow() {
 					let speed = new Decimal(1);
+					if (hasUpgrade("a", 202)) slow = slow.times(1.8);
 					if ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false) speed = speed.times(2);
 					return speed;
 				},
@@ -5347,7 +5404,9 @@ addLayer("hn", {
 					},
 				],
 				unlocked() { return player.hn.unlocked && hasUpgrade("p", 12) },
-				effect() { return softcap("hn12", player.hn.total.plus(1).pow(1e4)) },
+				effect() { let ret = softcap("hn12", player.hn.total.plus(1).pow(1e4))
+				if (hasUpgrade("pt", 25)) ret = ret.times(20);
+			return ret; },
 				effectDisplay() { return format(tmp.hn.upgrades[12].effect)+"x later" },
 				formula: "(x+1)^1e4",
 			},
@@ -5543,7 +5602,9 @@ addLayer("hn", {
 					},
 				],
 				unlocked() { return player.hn.unlocked && hasUpgrade("p", 33) },
-				effect() { return Decimal.pow(10, player.hn.best.plus(1).log10().plus(1).log10().sqrt()).times(((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes("hn"):false)?1.1:1) },
+				effect() { let eff = Decimal.pow(10, player.hn.best.plus(1).log10().plus(1).log10().sqrt()).times(((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes("hn"):false)?1.1:1)
+				if (hasUpgrade("pt", 45)) eff = eff.times(upgradeEffect("pt",45));
+				return eff; },
 				effectDisplay() { return format(tmp.hn.upgrades[33].effect)+"x" },
 				formula: "10^sqrt(log(log(x+1)+1))",
 			},
@@ -5672,7 +5733,9 @@ addLayer("hn", {
 					},
 				],
 				unlocked() { return hasUpgrade("hn", 53) && hasUpgrade("hn", 54) && player.n.unlocked },
-				effect() { return player.n.blueDust.times(player.n.orangeDust).plus(1).log10().plus(1).pow(3) },
+				effect() { let eff = player.n.blueDust.times(player.n.orangeDust).plus(1).log10().plus(1).pow(3)
+			
+				return eff; },
 				effectDisplay() { return format(tmp.hn.upgrades[45].effect)+"x" },
 				formula: "(log(B*O+1)+1)^3",
 			},
@@ -5813,6 +5876,7 @@ addLayer("n", {
 			if (player.ge.unlocked) mult = mult.times(tmp.ge.rotEff);
 			if ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes("i"):false) mult = mult.times(Decimal.pow(10, player.i.nb));
 			if (hasUpgrade("ai", 24)) mult = mult.times(upgradeEffect("ai", 24));
+			if (hasUpgrade("qe", 21)) mult = mult.pow(upgradeEffect("qe", 21));
             return mult
         },
 		passiveGeneration() { return (hasMilestone("ma", 3)&&player.ma.current!="n")?1:0 },
@@ -6746,6 +6810,8 @@ addLayer("ma", {
 			if (hasAchievement("a", 171)) mult = mult.div(1.05);
 			if (hasMilestone("pt", 7)) mult = mult.div(2);
 			if (hasUpgrade("ra", 12)) mult = mult.div(upgradeEffect("ra", 12));
+			if (hasUpgrade("qe", 32)) mult = mult.div(upgradeEffect("qe", 32));
+			if (hasUpgrade("qe", 41)) mult = mult.div(player.qe.rbMultipler);
             return mult
         },
         gainExp() { // Calculate the exponent on main currency from bonuses
@@ -6969,7 +7035,8 @@ addLayer("ge", {
 			maxToggle: false,
 			auto: false,
 			autoTime: new Decimal(0),
-			autoGe: false
+			autoGe: false,
+			autoEv: false,
         }},
         color: "#bfbfbf",
 		nodeStyle() { return {
@@ -7047,7 +7114,8 @@ addLayer("ge", {
 				if (layers.ge.clickables[11].canClick()) layers.ge.clickables[11].onClick();
 				if (layers.ge.clickables[12].canClick()) layers.ge.clickables[12].onClick();
 				if (layers.ge.clickables[13].canClick()) layers.ge.clickables[13].onClick();
-			}
+			};
+			if (player.ge.autoEv && hasMilestone("pt", 9)) layers.ge.buyables[11].buyMax();
 		},
 		rotEff() {
 			return softcap("rotEff", player.ge.rotations.round().plus(1).pow(5));
@@ -7064,7 +7132,7 @@ addLayer("ge", {
 		rps() {
 			let rps = tmp.ge.speed.div(tmp.ge.teeth.times(tmp.ge.toothSize)).times(tmp.ge.gearSpeed)
 			if (hasUpgrade("pt", 34)) rps = rps.pow(upgradeEffect("pt",34));
-			 
+			if (player.ge.rotations.gte(player.tp.gearRotationHardcap)) rps = rps.root(player.tp.gearRotationDividcation);
 			return rps;
 		},
 		rotDesc() {
@@ -7103,6 +7171,7 @@ addLayer("ge", {
 				costDiv() {
 					let div = new Decimal(1);
 					if (hasAchievement("a", 124)) div = div.times(3);
+					if (hasAchievement("a", 211)) div = div.times(2.5);
 					return div;
 				},
 				free() {
@@ -7112,6 +7181,7 @@ addLayer("ge", {
 					if (hasUpgrade("pt",31)) free = free.plus(2);
 					if (hasUpgrade("pt", 44)) free = free.plus(3);
 					if (hasUpgrade("ra", 13)) free = free.plus(upgradeEffect("ra",13));
+					if (hasUpgrade("pt", 63)) free = free.plus(upgradeEffect("pt",63));
 					return free;
 				},
 				power() {
@@ -7144,11 +7214,12 @@ addLayer("ge", {
 					for (let i=11;i<=13;i++) player.ge.clickables[i] = "";
 					if (!hasMilestone("ge", 3)) doReset("ge", true);
                 },
-                buyMax() {
-					// later :)
+				buyMax() {
+				/*	let target = player.ge.rotations.div(1e22).max(1).log10().max(1).log(2).times(this.costDiv()).plus(1).floor(); */
+                    player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max()
 				},
                 style: {'height':'200px', 'width':'200px'},
-				autoed() { return false },
+				autoed() { return hasMilestone("pt", 9) && player.ge.autoEv },
 			},
 		},
 		clickables: {
@@ -7333,6 +7404,8 @@ addLayer("mc", {
 			if (player.mc.upgrades.includes(11)) mult = mult.times(buyableEffect("mc", 12));
 			if (hasMilestone("mc", 0)) mult = mult.times(player.ne.thoughts.max(1));
 			if (hasUpgrade("ai", 33)) mult = mult.times(upgradeEffect("ai", 33));
+			if (hasUpgrade("qe", 41)) mult = mult.times(player.qe.gbMultipler);
+			if (hasUpgrade("tp", 23)) mult = mult.pow(upgradeEffect("tp",23));
             return mult
         },
         gainExp() { // Calculate the exponent on main currency from bonuses
@@ -8082,6 +8155,7 @@ addLayer("id", {
 			if (hasUpgrade("pt",43)) mult = mult.div(3);
 			if (hasUpgrade("ra", 12)) mult = mult.div(upgradeEffect("ra", 12));
 			if (hasUpgrade("ra", 31)) mult = mult.div(upgradeEffect("ra", 31));
+			if (hasUpgrade("tp", 17)) mult = mult.div(5000);
             return mult
         },
         gainExp() { // Calculate the exponent on main currency from bonuses
@@ -8203,6 +8277,7 @@ addLayer("r", {
 			if (hasMilestone("r", 3)) mult = mult.times(2);
 			if (player.ai.unlocked && tmp.ai) mult = mult.times(tmp.ai.conscEff1);
 			if (hasUpgrade("ai", 33)) mult = mult.times(upgradeEffect("ai", 33));
+			if (hasUpgrade("pt", 25)) mult = mult.times(5);
 			return mult;
 		},
 		getResetGain() {
@@ -8769,6 +8844,7 @@ addLayer("ai", {
 				style: {height: '150px', width: '150px'},
 				effect() { let eff = player.ge.points.max(1).pow(5)
 					if (hasUpgrade("ra", 32)) eff = eff.times(upgradeEffect("ra", 32));
+					if (hasUpgrade("ra", 52)) eff = eff.times(2);
 				return eff;},
 				effectDisplay() { return format(tmp.ai.upgrades[24].effect)+"x" },
 				formula: "x^5",
@@ -8835,7 +8911,10 @@ addLayer("ai", {
 				},
 				unlocked() { return player.ai.unlocked && player.ai.upgrades.length>=4 },
 				style: {height: '150px', width: '150px'},
-				effect() { return player.ai.points.plus(1).pow(1.5) },
+				effect() { let eff = player.ai.points.plus(1).pow(1.5) 
+					if (hasUpgrade("pt", 35)) eff = eff.pow(1.05);
+					if (hasUpgrade("ra", 52)) eff = eff.times(2);
+				return eff;},
 				effectDisplay() { return format(tmp.ai.upgrades[33].effect)+"x" },
 				formula: "(x+1)^1.5",
 			},
@@ -8880,7 +8959,9 @@ addLayer("ai", {
 				},
 				unlocked() { return player.ai.unlocked && player.ai.upgrades.length>=9 },
 				style: {height: '150px', width: '150px'},
-				effect() { return Decimal.pow(1.05, player.ma.points) },
+				effect() { let eff = Decimal.pow(1.05, player.ma.points)
+					if (hasUpgrade("ra", 52)) eff = eff.times(2);
+				return eff; },
 				effectDisplay() { return format(tmp.ai.upgrades[41].effect)+"x" },
 				formula: "1.05^x",
 			},
@@ -8904,7 +8985,9 @@ addLayer("ai", {
 				},
 				unlocked() { return player.ai.unlocked && player.ai.upgrades.length>=9 },
 				style: {height: '150px', width: '150px'},
-				effect() { return Decimal.pow(100, player.ai.upgrades.length) },
+				effect() { let eff = Decimal.pow(100, player.ai.upgrades.length)
+					if (hasUpgrade("ra", 52)) eff = eff.times(2);
+				return eff; },
 				effectDisplay() { return format(tmp.ai.upgrades[42].effect)+"x" },
 				formula: "100^x",
 			},
@@ -8928,7 +9011,9 @@ addLayer("ai", {
 				},
 				unlocked() { return player.ai.unlocked && player.ai.upgrades.length>=9 },
 				style: {height: '150px', width: '150px'},
-				effect() { return Decimal.pow(1.075, player.id.points) },
+				effect() { let eff = Decimal.pow(1.075, player.id.points)
+					if (hasUpgrade("ra", 52)) eff = eff.times(2);
+				return eff; },
 				effectDisplay() { return format(tmp.ai.upgrades[43].effect)+"x" },
 				formula: "1.075^x",
 			},
@@ -8952,7 +9037,9 @@ addLayer("ai", {
 				},
 				unlocked() { return player.ai.unlocked && player.ai.upgrades.length>=9 },
 				style: {height: '150px', width: '150px'},
-				effect() { return player.ai.consc.plus(1).pow(5) },
+				effect() { let eff = player.ai.consc.plus(1).pow(5) 
+					if (hasUpgrade("ra", 52)) eff = eff.times(2);
+				return eff;},
 				effectDisplay() { return format(tmp.ai.upgrades[44].effect)+"x" },
 				formula: "x^5",
 			},
@@ -9038,6 +9125,8 @@ addLayer("c", {
             mult = new Decimal(1)
 			if (player.pt.unlocked) mult = mult.div(tmp.pt.effect);
 			if (hasUpgrade("pt", 14)) mult = mult.div(1.2);
+			if (hasUpgrade("ra", 42)) mult = mult.div(1.25);
+			if (hasUpgrade("ra", 43)) mult = mult.div(2);
             return mult
         },
         gainExp() { // Calculate the exponent on main currency from bonuses
@@ -9062,7 +9151,14 @@ addLayer("c", {
 		update(diff) {
 			if (!player.c.unlocked) return;
 			for (let i=0;i<5;i++) player.c.gainedPower[i] = Decimal.pow(2, player.c.gainedPower[i]).pow(3).plus(Decimal.pow(2, player.c.assigned[i]).sub(1).max(0).times(diff/100)).cbrt().log2();
-		
+			if (player.c.auto && hasMilestone("ra", 4)) {
+				player.c.autoTime = new Decimal(0);
+				if (layers.c.clickables[11].canClick()) layers.c.clickables[11].onClick();
+				if (layers.c.clickables[12].canClick()) layers.c.clickables[12].onClick();
+				if (layers.c.clickables[13].canClick()) layers.c.clickables[13].onClick();
+	if (layers.c.clickables[14].canClick()) layers.c.clickables[14].onClick();
+	if (layers.c.clickables[15].canClick()) layers.c.clickables[15].onClick();
+			}
 		},
 		power() {
 			let data = [];
@@ -9247,13 +9343,11 @@ addLayer("pt", {
 			"blank",
 			"blank",
 			
-					["display-text",
-					function() {return ''+(hasUpgrade("pt", 32)?("You have "+formatWhole(tmp.pt.decay)+" Decayed Particles "+""):"")},
-						{}],
-			"blank",
 			["display-text",
-				function() {return 'You have made a total of ' + formatWhole(player.pt.total) + ' planets'},
-					{}],
+			function() {return 'You have made a total of ' + formatWhole(player.pt.total) + ' planets'},
+				{}],	
+			"blank",
+			"blank",
 			"blank",
 			"milestones", "blank", "upgrades", "blank", "blank"],
 			effect() {
@@ -9264,12 +9358,16 @@ addLayer("pt", {
 				return "which multiplies Civilizations by "+format(tmp.pt.effect)+"x"+(tmp.nerdMode?(" ("+format(tmp.pt.effectBase)+"x each)"):"")
 			},
     gainMult() {                            // Returns your multiplier to your gain of the prestige resource.
-        return new Decimal(0.959)               // Factor in any bonuses multiplying gain here.
+        let mult = new Decimal(0.959)
+		if (hasAchievement("a", 201)) mult = mult.div(Decimal.pow(1.1, player.a.achievements.filter(x => x>200).length));   
+		if (hasUpgrade("ra", 42)) mult = mult.div(1.5);
+		if (hasUpgrade("tp", 16)) mult = mult.div(upgradeEffect("tp",16));      
+		return mult;      // Factor in any bonuses multiplying gain here.
     },
     gainExp() {                             // Returns the exponent to your gain of the prestige resource.
         return new Decimal(1)
     },
-	
+	canBuyMax() { return hasMilestone("pt", 8) },
  branches: ["ai","ma","c"],
  layerShown(){return player.c.unlocked},         // Returns a bool for if this layer's node should be visible in the tree.
 
@@ -9325,15 +9423,33 @@ addLayer("pt", {
 	effectDescription: "Triple the Ravager Gain and Mastery cost requirement is divided by 2",
 	
 },
+8: {
+	requirementDescription: "1,000 Total Planets",
+	done() { return player.pt.total.gte(1000)&&hasUpgrade("tp", 12) },
+	unlocked() { return hasUpgrade("tp", 12) },
+	effectDescription: "You can buy max Planets.",
+	
+},
+9: {
+	requirementDescription: "1,500 Total Planets",
+	done() { return player.pt.total.gte(1500)&&hasUpgrade("tp", 12) },
+	unlocked() { return hasUpgrade("tp", 12) },
+	effectDescription: "Automate Gear Evolution and gain 100% of Ravagers per second.",
+	toggles: [["ge", "autoEv"]],
+},
  },
  upgrades: {
 	rows: 9,
 	cols: 9,
 	11: {
 		title: "Planet Dilators",
-		description: "The Timp Energy Cap is increased for every Planets you have.",
+		description: "The Time Energy Cap is increased for every Planets you have.",
 	cost: new Decimal(1),
-	effect() { return player.pt.points.plus(1).pow(0.25) },
+	effect() { let eff = player.pt.points.plus(1).pow(0.25) 
+		if (hasUpgrade("pt", 15)) eff = eff.times(1.25);
+		if (hasUpgrade("pt", 51)) eff = eff.times(upgradeEffect("p",51));
+	return eff; }
+,
 	effectDisplay() { return "^"+format(tmp.pt.upgrades[11].effect) },
 		
 		formula: "x^1",
@@ -9363,6 +9479,30 @@ addLayer("pt", {
 		unlocked() {return hasUpgrade("pt",13)},
 		
 	},
+	15: {
+		title: "Reversing Planet Dilators",
+		description: "Planet Upgrade 11 is 1.25x stronger",
+		multiRes: [
+			
+			{
+				currencyDisplayName: "planets",
+				currencyInternalName: "points",
+				currencyLayer: "pt",
+				cost: new Decimal(16),
+			},
+	{
+				currencyDisplayName: "tachyon particles",
+				currencyInternalName: "points",
+				currencyLayer: "tp",
+				cost: new Decimal(10),
+			},
+	
+		],
+	
+	unlocked() {return hasUpgrade("pt",64)},
+		
+	},
+	
 	21: {
 		title: "Terraformation",
 		description: "The <b>Limit Stretcher</b>'s formula is better for every Civilizations you have.",
@@ -9401,6 +9541,29 @@ addLayer("pt", {
 		unlocked() {return hasUpgrade("pt",23)},
 		
 	},
+	25: {
+		title: "Planet Boost",
+		description: "<b>Honour Boost</b> is 20x stronger and quintuple the Robot gain.",
+		multiRes: [
+			
+			{
+				currencyDisplayName: "planets",
+				currencyInternalName: "points",
+				currencyLayer: "pt",
+				cost: new Decimal(16),
+			},
+	{
+				currencyDisplayName: "tachyon particles",
+				currencyInternalName: "points",
+				currencyLayer: "tp",
+				cost: new Decimal(20),
+			},
+	
+		],
+	
+	unlocked() {return hasUpgrade("pt",64)},
+		
+	},
 	31: {
 		title: "Circuitlar Dimension",
 		description: "There are new Planet Milestons and an additonial 2 free Gear Evolutions, but points gain is raised to the power of 1.45",
@@ -9411,7 +9574,7 @@ addLayer("pt", {
 	},
 	32: {
 		title: "Protonatic Decay",
-		description: "Unlock Decay",
+		description: "Raise the Super Generator Effect by 1.1",
 	cost: new Decimal(3),
 
 		unlocked() {return hasUpgrade("pt",31)},
@@ -9441,11 +9604,35 @@ addLayer("pt", {
 		unlocked() {return hasUpgrade("pt",33)},
 		
 	},
+	35: {
+		title: "Super Node I",
+		description: "<b>Node CC</b> is raised ^1.05",
+		multiRes: [
+			
+			{
+				currencyDisplayName: "planets",
+				currencyInternalName: "points",
+				currencyLayer: "pt",
+				cost: new Decimal(21),
+			},
+	{
+				currencyDisplayName: "tachyon particles",
+				currencyInternalName: "points",
+				currencyLayer: "tp",
+				cost: new Decimal(5000),
+			},
+	
+		],
+	
+	unlocked() {return hasUpgrade("pt",64)},
+		
+	},
 	41: {
 		title: "Expontent Starship",
 		description: "Superintelligence loss is divided based on your Points.",
 	cost: new Decimal(4),
 	effect() { let eff = player.points.plus(0.1).pow(0.000000000000000001); 
+		if (hasUpgrade("pt", 51)) eff = eff.times(upgradeEffect("p",51));
 	return eff;},
 	effectDisplay() { return "/"+format(tmp.pt.upgrades[41].effect) },
 		
@@ -9471,10 +9658,38 @@ addLayer("pt", {
 	},
 	44: {
 		title: "Reality of Continuum",
-		description: "Always have Population and AI Network, Planets reset nothing and get 3 free Gear Evolutions",
+		description: "Always have Population and AI Network, Planets reset nothing and get 3 free Gear Evolutions and the Row 3 cost scaling will start in 1,275 instead",
 	cost: new Decimal(5),
 	
+
 		unlocked() {return hasUpgrade("pt",43)},
+		
+	},
+	45: {
+		title: "Column King",
+		description: "<b>Column Leader Leader</b> is multipled based on your Planets",
+		multiRes: [
+			
+			{
+				currencyDisplayName: "planets",
+				currencyInternalName: "points",
+				currencyLayer: "pt",
+				cost: new Decimal(25),
+			},
+	{
+				currencyDisplayName: "tachyon particles",
+				currencyInternalName: "points",
+				currencyLayer: "tp",
+				cost: new Decimal(1e11),
+			},
+	
+		],
+		effect() { let eff = player.pt.points.plus(0.1).pow(0.08); 
+			return eff;},
+			effectDisplay() { return format(tmp.pt.upgrades[45].effect)+"x" },
+				
+				formula: "x+1",
+	unlocked() {return hasUpgrade("pt",64)},
 		
 	},
 	51: {
@@ -9513,6 +9728,102 @@ addLayer("pt", {
 	unlocked() {return hasUpgrade("pt",53)},
 		
 	},
+	55: {
+		title: "Pair of Prestige",
+		description: "There's a new row of Prestige Upgrades.",
+		multiRes: [
+			
+			{
+				currencyDisplayName: "planets",
+				currencyInternalName: "points",
+				currencyLayer: "pt",
+				cost: new Decimal(28),
+			},
+	{
+				currencyDisplayName: "tachyon particles",
+				currencyInternalName: "points",
+				currencyLayer: "tp",
+				cost: new Decimal(1e16),
+			},
+	
+		],
+		
+	unlocked() {return hasUpgrade("pt",64)},
+		
+	},
+	61: {
+		title: "Hindrance Compaction",
+		description: "Gain more Hindrance Spirits based on your Tachyon Galaxies.",
+	cost: new Decimal(10),
+	effect() { let eff = player.tp.tachyonGalaxies.plus(1).pow(6); 
+		if (eff.gte(30000000)) eff = eff.div(100).log2().plus(3)
+		return eff;},
+		effectDisplay() { return format(tmp.pt.upgrades[61].effect)+"x" },
+			
+			formula: "x+1",
+	unlocked() {return player.tp.unlocked},
+		
+	},
+	62: {
+		title: "Transcendion of Rings",
+		description: "The Hindrance Spirit Effect is raised to the power of 500",
+	cost: new Decimal(16),
+	
+	unlocked() {return hasUpgrade("pt",61)},
+		
+	},
+	63: {
+		title: "Spirit Ghostify",
+		description: "Current Subspace add free levels to Gear Evolution",
+	cost: new Decimal(16),
+	effect() { let eff = player.ss.subspace.plus(1).pow(0.00000001); 
+		return eff;},
+		effectDisplay() { return "+"+format(tmp.pt.upgrades[63].effect) },
+			
+			formula: "x+1",
+	unlocked() {return hasUpgrade("pt",62)},
+		
+	},
+	64: {
+		title: "Tachyon Compressors",
+		description: "Devastated Upgrade 2I is stronger based on your Super Generators",
+	cost: new Decimal(16),
+	effect() { let eff = player.sg.points.plus(1).pow(0.1); 
+		return eff;},
+		effectDisplay() { return format(tmp.pt.upgrades[64].effect)+"x" },
+			
+			formula: "(x+1)+1",
+	unlocked() {return hasUpgrade("pt",63)},
+		
+	},
+	65: {
+		title: "Think to See",
+		description: "Unlock Tachyon Fireworks",
+		multiRes: [
+			
+			{
+				currencyDisplayName: "planets",
+				currencyInternalName: "points",
+				currencyLayer: "pt",
+				cost: new Decimal(32),
+			},
+	{
+				currencyDisplayName: "mastery",
+				currencyInternalName: "points",
+				currencyLayer: "ma",
+				cost: new Decimal(44),
+			},
+			{
+				currencyDisplayName: "civillizations",
+				currencyInternalName: "points",
+				currencyLayer: "c",
+				cost: new Decimal(17),
+			},
+		],
+		
+	unlocked() {return hasUpgrade("pt",64)},
+		
+	},
 },
 
 })
@@ -9521,6 +9832,7 @@ addLayer("ra", {
         unlocked: false,                     // You can add more variables here to add them to your layer.
         points: new Decimal(0),
 		total: new Decimal(0),
+		pseudoUpgs: [],
 	            // "points" is the internal name for the main resource of the layer.
     }},
   name: "ravager", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -9534,7 +9846,7 @@ addLayer("ra", {
     baseAmount() { return player.ge.rotations },  // A function to return the current amount of baseResource.
 
     requires: new Decimal("1e10500"),              // The amount of the base needed to  gain 1 of the prestige currency.
-	passiveGeneration() { return (hasMilestone("ra",0)?0.05:0 )},                           // Also the amount required to unlock the layer.
+	passiveGeneration() { return (hasMilestone("pt", 9))?1:(hasMilestone("ra",0)?0.05:0 )},                           // Also the amount required to unlock the layer.
 
     type: "normal",                         // Determines the formula used for calculating prestige currency.
     exponent: 0.003,                          // "normal" prestige gain is (currency^exponent).
@@ -9561,6 +9873,12 @@ addLayer("ra", {
        let mult = new Decimal(1)
 	   if (hasAchievement("a", 184)) mult = mult.times(2);
 	   if (hasMilestone("pt", 7)) mult = mult.times(3);
+	   if (hasAchievement("a", 211)) mult = mult.times(Decimal.pow(1.25, player.qe.points));
+	   if (hasUpgrade("qe", 41)) mult = mult.times(player.qe.rgMultipler);
+	   if (hasAchievement("a", 221)) mult = mult.pow(1.5);
+	   if (hasUpgrade("qe", 41)) mult = mult.times(player.qe.positronicCharageMulti);
+	   if (hasUpgrade("tp", 13)) mult = mult.pow(upgradeEffect("tp",13));
+	   if (hasUpgrade("tp", 23)) mult = mult.pow(upgradeEffect("tp",23));
 	   return mult;               // Factor in any bonuses multiplying gain here.
     },
     gainExp() {                             // Returns the exponent to your gain of the prestige resource.
@@ -9598,10 +9916,17 @@ addLayer("ra", {
 	effectDescription: "Gain ^100 more Hyperspace.",
 
 },
+4: {
+	requirementDescription: "1e300 Ravagers",
+	done() { return player.ra.points.gte(1e300) && hasUpgrade("ra", 22)},
+	unlocked() { return player.qe.unlocked },
+	effectDescription: "Automate Civillizations Populations",
+
+},
 
  },
  upgrades: {
-	rows: 3,
+	rows: 5,
 	cols: 3,
 	11: {
 		title: "Devastated Upgrade 1I",
@@ -9629,6 +9954,7 @@ addLayer("ra", {
 		],
 		effect() { let eff = player.ra.points.plus(1).pow(0.001)
 			if (hasUpgrade("ra", 21)) eff = eff.times(upgradeEffect("ra",21));
+			if (hasUpgrade("ra", 41)) eff = eff.times(2);
 		return eff;},
 	effectDisplay() { return "^"+format(tmp.ra.upgrades[11].effect) },
 		
@@ -9660,7 +9986,12 @@ addLayer("ra", {
 				cost: new Decimal(5),
 			},
 		],
-		effect() { return player.i.points.plus(1).pow(0.25) },
+		effect() { let eff = player.i.points.plus(1).pow(0.25) 
+			if (hasUpgrade("pt", 64)) eff = eff.times(upgradeEffect("pt",64));
+			if (hasAchievement("a", 202)) eff = eff.times(2);
+
+			if (hasUpgrade("ra", 41)) eff = eff.times(2);
+		return eff;},
 	effectDisplay() { return format(tmp.ra.upgrades[12].effect)+"x" },
 		
 		formula: "(x+1)/2",
@@ -9691,7 +10022,9 @@ addLayer("ra", {
 				cost: new Decimal(5),
 			},
 		],
-		effect() { return player.i.points.plus(1).pow(0.08) },
+		effect() { let eff = player.i.points.plus(1).pow(0.08)
+			if (hasUpgrade("ra", 41)) eff = eff.times(2);
+		return eff; },
 	effectDisplay() { return "+"+format(tmp.ra.upgrades[13].effect) },
 		
 		formula: "(x+1)+1",
@@ -9722,7 +10055,9 @@ addLayer("ra", {
 				cost: new Decimal(12),
 			},
 		],
-		effect() { return player.ra.points.plus(1).pow(0.01) },
+		effect() { let eff= player.ra.points.plus(1).pow(0.01)
+			if (hasUpgrade("ra", 41)) eff = eff.times(2);
+		return eff; },
 	effectDisplay() { return format(tmp.ra.upgrades[21].effect)+"x" },
 		
 		formula: "(x+(sqrt+1)+1)+1",
@@ -9809,7 +10144,10 @@ addLayer("ra", {
 				cost: new Decimal(16),
 			},
 		],
-		effect() { return player.id.points.plus(1).pow(0.5) },
+		effect() { let eff= player.id.points.plus(1).pow(0.5) 
+			if (hasUpgrade("ra", 41)) eff = eff.times(2);
+			if (hasUpgrade("ra", 51)) eff = eff.times(3);
+		return eff;},
 		effectDisplay() { return format(tmp.ra.upgrades[31].effect)+"x" },
 			
 			formula: "x+1",
@@ -9840,7 +10178,9 @@ addLayer("ra", {
 				cost: new Decimal(16),
 			},
 		],
-		effect() { return player.ma.points.plus(1).pow(0.1) },
+		effect() { let eff= player.ma.points.plus(1).pow(0.1)
+			if (hasUpgrade("ra", 41)) eff = eff.times(2);
+		return eff; },
 		effectDisplay() { return format(tmp.ra.upgrades[32].effect)+"x" },
 			
 			formula: "x+1",
@@ -9875,21 +10215,97 @@ addLayer("ra", {
 		unlocked() { return hasUpgrade("ra",23)},
 		style: {height: '150px', width: '150px',background: 'white'},
 	},
+	41: {
+		title: "Ravager Booster I",
+		description: "Most Devastated Upgrades's effect is multipled by 2",
+		cost: new Decimal(1e95),
+		
+		unlocked() { return player.ra.points.gte(1e95)},
+		style: {height: '150px', width: '150px'},
+	},
+	42: {
+		title: "Ravager Booster II",
+		description: "Planet cost requirement is divided by 1.5 and Civillizations cost requirement is divided by 1.25",
+		cost: new Decimal(37),
+		currencyDisplayName: "mastery",
+		currencyInternalName: "points",
+		currencyLayer: "ma",
+		unlocked() { return player.ma.points.gte(37)},
+		style: {height: '150px', width: '150px'},
+	},
+	43: {
+		title: "Ravager Booster III",
+		description: "The Tachyon Particle gain is raised to the power of 1.05 and Civillizations cost requirement is divided by 2",
+		cost: new Decimal(20),
+		currencyDisplayName: "devastated humans",
+		currencyInternalName: "points",
+		currencyLayer: "c",
+		unlocked() { return player.c.points.gte(20)},
+		style: {height: '150px', width: '150px'},
+	},
+	51: {
+		title: "Devastated Forgotten Upgrade I",
+		description: "<b>Devastated Upgrade 1III</b> is multipled by 3",
+		cost: new Decimal(1e270),
+		pseudoUnl() { return player.ra.points.gte("1e270") && hasUpgrade("ra", 43) },
+		pseudoReq: "Req: e7.5e11 Quirks",
+		pseudoCan() { return player.q.points.gte("e7.5e11") },
+		unlocked() { return player.ra.pseudoUpgs.includes(Number(this.id)) },
+		style: {height: '150px', width: '150px'},
+	},
+	52: {
+		title: "Devastated Forgotten Upgrade II",
+		description: "Most AI Node's effect are 2x stronger",
+		cost: new Decimal(1e270),
+		pseudoUnl() { return player.ra.points.gte("1e270") && hasUpgrade("ra", 43) },
+		pseudoReq: "Req: 1e24 Tachyon Particles",
+		pseudoCan() { return player.tp.points.gte("1e24") },
+		unlocked() { return player.ra.pseudoUpgs.includes(Number(this.id)) },
+		style: {height: '150px', width: '150px'},
+	},
+	53: {
+		title: "Devastated Forgotten Upgrade III",
+		description: "Enhancer's upgrades effect is 2.5x stronger",
+		cost: new Decimal(1e270),
+		pseudoUnl() { return player.ra.points.gte("1e270") && hasUpgrade("ra", 43) },
+		pseudoReq: "Req: 1.8e308 Ravagers",
+		pseudoCan() { return player.ra.points.gte("1.8e308") },
+		unlocked() { return player.ra.pseudoUpgs.includes(Number(this.id)) },
+		style: {height: '150px', width: '150px'},
+	},
 },
+
+
 
 })
 addLayer("tp", {
     startData() { return {                  // startData is a function that returns default data for a layer. 
-        unlocked: false,                     // You can add more variables here to add them to your layer.
-        points: new Decimal(0),
+		unlocked: false,
+		points: new Decimal(0),
+		best: new Decimal(0),
 		total: new Decimal(0),
+		dilatedTime: new Decimal(0),
+		superhindrances: new Decimal(0),
+		devastatedPlanets: new Decimal(0),
+tachyonGalaxies: new Decimal(0),
+power: new Decimal(0),
+effect: new Decimal(0),
+fireworks: new Decimal(0),
+taxes: new Decimal("e1e20"),
+taxesDivPoints: new Decimal("60"),
+hardcap: new Decimal("e1e21"),
+costfiremulti: new Decimal(3),
+fireworks: new Decimal(0),
+fireworksCost: new Decimal(139),
+gearRotationHardcap: new Decimal("e300000"),
+gearRotationDividcation: new Decimal("150000")
 	            // "points" is the internal name for the main resource of the layer.
     }},
   name: "tachyon", // This is optional, only used in a few places, If absent it just uses the layer id.
         symbol: "TP", // This appears on the layer's node. Default is the id with the first letter capitalized
         position: 2,
     color: "#4CFF00",                       // The color for this layer, which affects many elements.
-    resource: "tachyon particless",            // The name of this layer's main prestige resource.
+    resource: "tachyon particles",            // The name of this layer's main prestige resource.
     row: 7,                                 // The row this layer is on (0 is the first row).
 	nodeStyle() { return {
 		background: (player.tp.unlocked||canReset("tp"))?((player.grad&&!player.oldStyle)?"radial-gradient(circle, #430082 0%, #4CFF00 100%)":"#430082"):"#bf8f8f",
@@ -9900,42 +10316,1155 @@ addLayer("tp", {
     baseResource: "hindrance spirits",                 // The name of the resource your prestige gain is based on.
     baseAmount() { return player.h.points },  // A function to return the current amount of baseResource.
 
-    requires: new Decimal("e1.5e14"),              // The amount of the base needed to  gain 1 of the prestige currency.
+    requires: new Decimal("e1.28e14"),              // The amount of the base needed to  gain 1 of the prestige currency.
                     // Also the amount required to unlock the layer.
-
+					tgAmt() {
+						let amt = player.tp.points.div(1).plus(1).log10().root(2)
+						return amt.floor();
+					},
+					nextTG() {
+						let next = Decimal.pow(2, player.tp.tachyonGalaxies.div(1).plus(1).log10().root(2))
+						
+						return next;
+					},
     type: "normal",                         // Determines the formula used for calculating prestige currency.
-    exponent: 0.0001,                          // "normal" prestige gain is (currency^exponent).
-	base: new Decimal(1.05),
-
-	tabFormat: ["main-display",
+    exponent: new Decimal(4.5e-13),                          // "normal" prestige gain is (currency^exponent).
+	base: new Decimal(1.2),
+	
+	effect() {
+		return new Decimal(3);
+	},
+	effect174() {
+		return new Decimal("e1e19");
+	},
+	
+	
+	
+	tabFormat: {
+		"Tachyon": {
+			buttonStyle() { return {'background-color': 'green',color:'black'} },
+			content: ["main-display",
 			"prestige-button",
-			"blank",
+			"resource-display",
+			
 			["display-text",
 				function() {return 'You have ' + format(player.h.points) + ' Hindrance Spirits'},
 					{}],
 			"blank",
-			"blank",
-			"blank",
+			
+			["display-text",
+				function() {return 'You have ' + format(player.tp.dilatedTime) + ' Dilated Time'},
+					{}],
+					["clickable", 11],
+					["display-text",
+				function() {return 'You have ' + format(player.tp.superhindrances) + ' Superhindrances'},
+					{}],
+					["clickable", 12],
+					
 "blank",
-			"blank", "blank", "blank", "challenges"],
+["display-text",
+				function() {return 'You can reset Dilated Time and Superhindrances if you need to.'},
+					{}],
+					["clickable", 13],
+"blank",
+["display-text",
+function() {return 'You currently got ' + format(player.tp.tachyonGalaxies) + ' Tachyon Galaxies. '+"(next at "+format(tmp.tp.nextTG)+" Tachyon Particles)"},
+	{}], "blank", "blank", 
+	["display-text",
+		function() {return (hasAchievement("a", 203)?("You unlocked Softcap Compaction, which currently you have " +format(player.tp.tachyonGalaxies) +" Tachyon Galaxies, translated to strongen the softcap later starten upgrades by " +format(player.tp.effect) + "x"):"")},
+			{}],"blank"]
+		},
+		"Fireworks": {
+			buttonStyle() { return {'background-color': 'blue',color:'black'} },
+			unlocked() { return hasUpgrade("pt",65) },
+			content: ["main-display",
+		"blank",
+			
+			["clickable", 21],
+			["display-text",
+				function() {return 'Disclamer: Lauching a firework would reset Planets!'},
+					{}],
+					"blank",
+					"blank",
+			["display-text",
+				function() {return 'At <h3>'+format(player.tp.taxes)+'</h3> points, Points would be brought to the <h3>'+format(player.tp.taxesDivPoints)+'</h3>th root to pay taxes! The points get hardcapped by <h3>'+format(player.tp.hardcap)+"</h3>!"},
+					{}],
+			"blank",
+			"blank",
+			["display-text",
+				function() {return 'Gear Rotations would be brought to the <h3>'+format(player.tp.gearRotationDividcation)+'</h3>th root if the rotations reach at least <h3>'+format(player.tp.gearRotationHardcap)+"</h3>!"},
+					{}],
+		"blank",
+		["display-text",
+		function() {return 'You have launched and exploded <h3>'+format(player.tp.fireworks)+'</h3> fireworks after its 8 second lifetime.'},
+			{}],
+		"blank",
+	"upgrades",]
+		},
+	},
     gainMult() {                            // Returns your multiplier to your gain of the prestige resource.
        let mult = new Decimal(1)
-	  
+	   if (hasUpgrade("qe", 51)) mult = mult.times(upgradeEffect("qe",51));
+	   if (hasUpgrade("tp", 19)) mult = mult.pow(upgradeEffect("tp",19));
+	   if (player.tp.points.gte("1e10000")) mult = mult.root(NaN);
 	   return mult;               // Factor in any bonuses multiplying gain here.
     },
     gainExp() {                             // Returns the exponent to your gain of the prestige resource.
-        return new Decimal(1)
+        let exp = new Decimal(1)
+		if (hasAchievement("a", 225)) exp = exp.add(1);
+		return exp;
     },
-	
+	update(diff) {
+		if (!player.tp.unlocked) return;
+		player.tp.tachyonGalaxies = player.tp.tachyonGalaxies.max(tmp.tp.tgAmt);
+		
+	},
  branches: ["mc",["hs",2]],
  layerShown(){return player.pt.unlocked},         // Returns a bool for if this layer's node should be visible in the tree.
 
- challenges: {
+ clickables: {
+	rows: 2,
+	cols: 6,
+	11: {
+		title: "+1",
+		unlocked() { return player.tp.unlocked },
+		canClick() { return player.tp.unlocked && player.tp.points.gt(0) },
+		onClick() { 
+			player.tp.dilatedTime = player.tp.dilatedTime.plus(1);
+			player.tp.points = player.tp.points.sub(1).max(0);
+		},
+		style: {width: "50px", height: "50px"},
+	},
+	12: {
+		title: "+1",
+		unlocked() { return player.tp.unlocked },
+		canClick() { return player.tp.unlocked && player.tp.points.gt(0) },
+		onClick() { 
+			player.tp.superhindrances = player.tp.superhindrances.plus(1);
+			player.tp.points = player.tp.points.sub(1).max(0);
+		},
+		style: {width: "50px", height: "50px"},
+	},
+	13: {
+		title: "Reset Dilated Time and Superhindrances",
+		
+		unlocked() { return player.tp.unlocked },
+		canClick() { return player.tp.unlocked },
+		onClick() { 
+			if (!confirm("Are you sure you want to reset Dilated Time and Superhindrances? This will force a Row 8 reset and you won't get any Tachyon Particles back!")) return;
+			player.tp.superhindrances = new Decimal(0)
+			player.tp.dilatedTime = new Decimal(0)
+			
+			doReset("tp", true);
+		},
+		style: {width: "160px", height: "80px"},
+	},
+	21: {
+		title: "Launch a firework",
+		display() { return "Resets Planets but launch a firework which is used to purchase Firework upgrades.<br><br>"+format(player.tp.fireworksCost)+" Planets required."},
+		unlocked() { return hasUpgrade("pt",65) },
+		canClick() { return player.pt.points.gte(player.tp.fireworksCost) },
+		onClick() { 
+			
+			player.pt.points = new Decimal(0)
+			player.tp.fireworksCost = player.tp.fireworksCost.plus(3);
+			player.tp.fireworks = player.tp.fireworks.plus(1);
+		},
+		style: {width: "240px", height: "160px"},
+	},
 
+},
+upgrades: {
+	rows: 5,
+	cols: 10,
+	11: {
+		title: "Cleaned Whistle",
+		description: "The taxes divication is subtracted by 1.1578",
+		cost: new Decimal(1),
+		currencyDisplayName: "fireworks",
+		currencyInternalName: "fireworks",
+				currencyLayer: "tp",
 
+		onPurchase() { player.tp.taxesDivPoints = player.tp.taxesDivPoints.minus(1.1578);player.tp.fireworksCost = player.tp.fireworksCost.minus(3);},
+		unlocked() { return player.tp.unlocked },
+		
+	
+	
+	},
+	12: {
+		title: "More??",
+		description: "Unlock new Planet milestones.",
+		cost: new Decimal(3),
+		currencyDisplayName: "fireworks",
+		currencyInternalName: "fireworks",
+				currencyLayer: "tp",
+
+		onPurchase() {player.tp.fireworksCost = player.tp.fireworksCost.minus(9);},
+		unlocked() { return player.tp.unlocked },
+		
+	
+	
+	},
+	13: {
+		title: "65 Fireworks",
+		description: "Tachyon Fireworks multiply the Ravager gain.",
+		cost: new Decimal(7),
+		currencyDisplayName: "fireworks",
+		currencyInternalName: "fireworks",
+				currencyLayer: "tp",
+
+		onPurchase() {player.tp.fireworksCost = player.tp.fireworksCost.minus(21);},
+		unlocked() { return hasUpgrade("tp",12) },
+		effect() { 
+			let eff =  player.tp.fireworks.plus(1).pow(1)
+		
+			return eff;
+							},
+					
+				effectDisplay() { return "^"+format(tmp.tp.upgrades[13].effect) },
+					
+					formula: "x+1",
+	
+	
+	},
+	14: {
+		title: "65 Fireworks Squared",
+		description: "Subtract the Points Taxes based on your Ravagers.",
+		cost: new Decimal(7),
+		currencyDisplayName: "fireworks",
+		currencyInternalName: "fireworks",
+				currencyLayer: "tp",
+
+		onPurchase() {player.tp.taxesDivPoints = player.tp.taxesDivPoints.minus(upgradeEffect("tp",14));player.tp.fireworksCost = player.tp.fireworksCost.minus(21);},
+		unlocked() { return hasUpgrade("tp",13) },
+		effect() { 
+			let eff =  player.ra.points.plus(1).pow(0.00035)
+		
+			return eff;
+							},
+					
+				effectDisplay() { return "-"+format(tmp.tp.upgrades[14].effect) },
+					
+					formula: "x+1",
+	
+	
+	},
+	15: {
+		title: "65 Fireworks Cubed",
+		description: "Subtract the Gear Rotation rootcap based on your Ravagers.",
+		cost: new Decimal(7),
+		currencyDisplayName: "fireworks",
+		currencyInternalName: "fireworks",
+				currencyLayer: "tp",
+
+		onPurchase() {player.tp.gearRotationDividcation = player.tp.gearRotationDividcation.minus(upgradeEffect("tp",15));player.tp.fireworksCost = player.tp.fireworksCost.minus(21);},
+		unlocked() { return hasUpgrade("tp",14) },
+		effect() { 
+			let eff =  player.ra.points.plus(1).pow(0.004)
+		
+			return eff;
+							},
+					
+				effectDisplay() { return "-"+format(tmp.tp.upgrades[15].effect) },
+					
+					formula: "x+1",
+	
+	
+	},
+	16: {
+		title: "65 Fireworksception",
+		description: "Planets divide its own cost requirement",
+		cost: new Decimal(7),
+		currencyDisplayName: "fireworks",
+		currencyInternalName: "fireworks",
+				currencyLayer: "tp",
+
+		onPurchase() {player.tp.fireworksCost = player.tp.fireworksCost.minus(21);},
+		unlocked() { return hasUpgrade("tp",15) },
+		effect() { 
+			let eff =  player.pt.points.plus(1).pow(0.08)
+		
+			return eff;
+							},
+					
+				effectDisplay() { return "/"+format(tmp.tp.upgrades[16].effect) },
+					
+					formula: "x+1",
+	
+	
+	},
+	17: {
+		title: "Exponentaned 65 Fireworks",
+		description: "Divide the Ideas cost requirement by 5,000",
+		cost: new Decimal(18),
+		currencyDisplayName: "fireworks",
+		currencyInternalName: "fireworks",
+				currencyLayer: "tp",
+
+		onPurchase() {player.tp.fireworksCost = player.tp.fireworksCost.minus(54);},
+		unlocked() { return hasUpgrade("tp",16) },
+	
+	
+	
+	},
+	18: {
+		title: "Tetrated 65 Fireworks",
+		description: "Quantum Energy divide its own cost requirement",
+		cost: new Decimal(18),
+		currencyDisplayName: "fireworks",
+		currencyInternalName: "fireworks",
+				currencyLayer: "tp",
+
+		onPurchase() {player.tp.fireworksCost = player.tp.fireworksCost.minus(54);},
+		unlocked() { return hasUpgrade("tp",17) },
+	
+		effect() { 
+			let eff =  player.qe.points.plus(1).pow(50000)
+		
+			return eff;
+							},
+					
+				effectDisplay() { return "/"+format(tmp.tp.upgrades[18].effect) },
+					
+					formula: "x+1",
+	
+	},
+	19: {
+		title: "Pentrated 65 Fireworks",
+		description: "Postronic Charge's effect now affects Tachyon Particles gain but at reduced rate.",
+		cost: new Decimal(18),
+		currencyDisplayName: "fireworks",
+		currencyInternalName: "fireworks",
+				currencyLayer: "tp",
+
+		onPurchase() {player.tp.fireworksCost = player.tp.fireworksCost.minus(54);},
+		unlocked() { return hasUpgrade("tp",18) },
+	
+		effect() { 
+			let eff =  player.qe.positronicCharageMulti.plus(1).pow(0.25)
+		
+			return eff;
+							},
+					
+				effectDisplay() { return "^"+format(tmp.tp.upgrades[19].effect) },
+					
+					formula: "x+1",
+	
+	},
+	21: {
+		title: "65 Fire-65-works",
+		description: "The Launch Planets requirement starts at 115",
+		cost: new Decimal(18),
+		currencyDisplayName: "fireworks",
+		currencyInternalName: "fireworks",
+				currencyLayer: "tp",
+
+		onPurchase() {player.tp.fireworksCost = new Decimal(115);},
+		unlocked() { return hasUpgrade("tp",19) },
+	
+		
+	
+	},
+	22: {
+		title: "65 Devastated Fireworks",
+		description: "The Gear Rotation rootcap is now 50,000",
+		cost: new Decimal(27),
+		currencyDisplayName: "fireworks",
+		currencyInternalName: "fireworks",
+				currencyLayer: "tp",
+
+				onPurchase() {player.tp.fireworksCost = player.tp.fireworksCost.minus(81);player.tp.gearRotationDividcation = new Decimal(50000);},
+				
+		unlocked() { return hasUpgrade("tp",21) },
+	
+		
+	
+	},
+	23: {
+		title: "65 Quantum Fireworks",
+		description: "Quantum Energy boosts the Ravager gain and even boosts the Machine Parts gain",
+		cost: new Decimal(27),
+		currencyDisplayName: "fireworks",
+		currencyInternalName: "fireworks",
+				currencyLayer: "tp",
+
+				onPurchase() {player.tp.fireworksCost = player.tp.fireworksCost.minus(81)},
+				
+		unlocked() { return hasUpgrade("tp",22) },
+		effect() { 
+			let eff =  player.qe.points.plus(1).pow(0.25)
+		
+			return eff;
+							},
+					
+				effectDisplay() { return "^"+format(tmp.tp.upgrades[23].effect) },
+					
+					formula: "x+1",
+		
+	
+	},
+	24: {
+		title: "Placebo Firework",
+		description: "Gear Rotation rootcap is now at 10,000.",
+		cost: new Decimal(35),
+		currencyDisplayName: "fireworks",
+		currencyInternalName: "fireworks",
+				currencyLayer: "tp",
+
+				onPurchase() {player.tp.fireworksCost = player.tp.fireworksCost.minus(105);player.tp.gearRotationDividcation = new Decimal(10000);},
+				
+		unlocked() { return hasUpgrade("tp",23) },
+		
+		
+	
+	},
+	25: {
+		title: "Placebo Firework",
+		description: "The Gear Rotation hardcap starts at e310,000 instead of e300,000",
+		cost: new Decimal(37),
+		currencyDisplayName: "fireworks",
+		currencyInternalName: "fireworks",
+				currencyLayer: "tp",
+
+				onPurchase() {player.tp.fireworksCost = player.tp.fireworksCost.minus(111);player.tp.gearRotationHardcap = new Decimal("e310000");},
+				
+		unlocked() { return hasUpgrade("tp",24) },
+		
+		
+	
+	},
+}
+	
+
+})
+addLayer("qe", {
+    startData() { return {                  // startData is a function that returns default data for a layer. 
+		unlocked: false,
+		points: new Decimal(0),
+		best: new Decimal(0),
+		total: new Decimal(0),
+	redQuarks: new Decimal(0),
+	greenQuarks: new Decimal(0),
+	blueQuarks: new Decimal(0),
+	redblueQuarks: new Decimal(0),
+	greenblueQuarks: new Decimal(0),
+	redgreenQuarks: new Decimal(0),
+	rbtangled: new Decimal(0),
+	gbtangled: new Decimal(0),
+	rgtangled: new Decimal(0),
+	rbMultipler: new Decimal(1),
+	gbMultipler: new Decimal(1),
+	rgMultipler: new Decimal(1),
+positrons: new Decimal(0),	
+positronicCharage: new Decimal(0),	
+positronicCharageMulti: new Decimal(1),
+positronCosts: new Decimal(5),
+	            // "points" is the internal name for the main resource of the layer.
+    }},
+  name: "quantum", // This is optional, only used in a few places, If absent it just uses the layer id.
+        symbol: "QE", // This appears on the layer's node. Default is the id with the first letter capitalized
+        position: 0,
+    color: "#0000ff",                       // The color for this layer, which affects many elements.
+    resource: "quantum energy",            // The name of this layer's main prestige resource.
+    row: 7,                                 // The row this layer is on (0 is the first row).
+	nodeStyle() { return {
+		background: (player.qe.unlocked||canReset("qe"))?((player.grad&&!player.oldStyle)?"radial-gradient(circle, #ff0000 0%,  #0000ff 100%)":"#430082"):"#0000ff",
+	}},
+	componentStyles: {
+		background() { return (player.qe.unlocked||canReset("qe"))?((player.grad&&!player.oldStyle)?"radial-gradient(circle, #ff0000 0%,  #0000ff 100%)":"#0000ff"):"#0000ff" },
+	},
+    baseResource: "gears",                 // The name of the resource your prestige gain is based on.
+    baseAmount() { return player.ge.points },  // A function to return the current amount of baseResource.
+
+    requires: new Decimal("1e1900"),              // The amount of the base needed to  gain 1 of the prestige currency.
+                    // Also the amount required to unlock the layer.
+					
+    type: "static",                         // Determines the formula used for calculating prestige currency.
+    exponent: new Decimal(5),                          // "normal" prestige gain is (currency^exponent).
+	base: new Decimal("1"),
+	
+	
+	
+		gainMult() { 
+			let mult = new Decimal(1);
+			if (hasAchievement("a", 222)) mult = mult.div(1.6666667);
+			if (hasUpgrade("qe", 52)) mult = mult.div(upgradeEffect("qe",52));
+			if (hasUpgrade("qe", 53)) mult = mult.div(upgradeEffect("qe",53));
+			if (hasUpgrade("tp", 18)) mult = mult.div(upgradeEffect("tp",18));
+			return mult;
+		},
+	
+	
+	
+ branches: ["ai","ge"],
+ layerShown(){return player.tp.unlocked},         // Returns a bool for if this layer's node should be visible in the tree.
+
+ 
+ tabFormat: {
+	"Quarks": {
+		buttonStyle() { return {'background-color': 'gray',color:'black'} },
+		content: ["main-display",
+"prestige-button",
+"resource-display",
+"blank",
+["display-text", function() { return"You have "+"<h3>"+formatWhole(player.qe.redQuarks)+" Red Quarks</h3>" }],
+["clickable",11],
+["display-text", function() { return"You have "+"<h3>"+formatWhole(player.qe.greenQuarks)+" Green Quarks</h3>" }],
+["clickable",12],
+["display-text", function() { return"You have "+"<h3>"+formatWhole(player.qe.blueQuarks)+" Blue Quarks</h3>" }],
+["clickable",13],
+"blank",
+"blank",
+["display-text", function() { return"<h1>Quark Upgrades</h1>" }],
+"blank",
+["display-text", function() { return"Get Quark Upgrades by spending your Quantum Energy." }],
+"blank",
+"upgrades", 
+],
+	},
+	"Gluons": {
+		unlocked() { return hasUpgrade("qe", 33) },
+		buttonStyle() { return {'background-color': 'green', color: "black"} },
+		content: ["main-display",
+"prestige-button",
+"resource-display",
+"blank",
+["row", [
+	["column", [
+		["display-text", function() { return "<h3>"+formatWhole(player.qe.redgreenQuarks)+" Green-Red Quarks</h3><br><br><br>" }], ["clickable",14],
+		"blank",
+		"blank",
+		["display-text", function() { return "You currently got "+formatWhole(player.qe.rgtangled)+"<br>Green-Red Entanglements, <br>which multiples the Ravagers gain by "+formatWhole(player.qe.rgMultipler)+"x" }],
+		["clickable",21],
+		
+]],
+"blank",
+"blank",
+["column", [
+	["display-text", function() { return "<h3>"+formatWhole(player.qe.greenblueQuarks)+" Blue-Green Quarks</h3><br><br><br>" }], ["clickable",15],
+	"blank",
+		"blank",
+		["display-text", function() { return "You currently got "+formatWhole(player.qe.gbtangled)+"<br>Blue-Green Entanglements, <br>which multiples the Machine Parts gain by "+formatWhole(player.qe.gbMultipler)+"x" }],
+		["clickable",22],
+]],
+"blank",
+"blank",
+["column", [
+	["display-text", function() { return "<h3>"+formatWhole(player.qe.redblueQuarks)+" Red-Blue Quarks</h3><br><br><br>" }], ["clickable",16],
+	"blank",
+		"blank",
+		["display-text", function() { return "You currently got "+formatWhole(player.qe.rbtangled)+"<br>Red-Blue Entanglements, <br>which multiples the Mastery <br>cost requirement divication by "+formatWhole(player.qe.rbMultipler)+"x" }],
+		["clickable",23],
+]],
+"blank",
+"blank",]],
+"blank",
+"blank",
+
+["display-text", function() { return"Reach 5 of any Quark Combinations to make Entanglement show." }],
+],
+
+	},
+	"Positrons": {
+		unlocked() { return hasAchievement("a", 224) },
+		buttonStyle() { return {'background-color': 'yellow', color: "black"} },
+		content: ["main-display",
+"prestige-button",
+"resource-display",
+"blank",
+["clickable",24],
+"blank",
+["display-text", function() { return "You currently got <h3>"+formatWhole(player.qe.positronicCharage)+" Positronic Charge</h3>, which are multiplying the Ravager gain by "+formatWhole(player.qe.positronicCharageMulti)+"x" }],
+"blank",
+"blank",
+["display-text", function() { return"Reach 20 Positronic Charge to unlock Preons." }],
+],
+
+	},
+	
 },
 
 
+clickables: {
+	rows: 6,
+	cols: 6,
+	11: {
+		title: "Assort",
+		unlocked() { return player.qe.unlocked },
+		canClick() { return player.qe.unlocked && player.qe.points.gt(0) },
+		onClick() { 
+			player.qe.redQuarks = player.qe.redQuarks.plus(1);
+			player.qe.points = player.qe.points.minus(1);
+		},
+		style: {width: "80px", height: "50px",background:"red",},
+	},
+	12: {
+		title: "Assort",
+		unlocked() { return player.qe.unlocked },
+		canClick() { return player.qe.unlocked && player.qe.points.gt(0) },
+		onClick() { 
+			player.qe.greenQuarks = player.qe.greenQuarks.plus(1);
+			player.qe.points = player.qe.points.minus(1);
+		},
+		style: {width: "80px", height: "50px",background:"green",},
+	},
+	13: {
+		title: "Assort",
+		unlocked() { return player.qe.unlocked },
+		canClick() { return player.qe.unlocked && player.qe.points.gt(0) },
+		onClick() { 
+			player.qe.blueQuarks = player.qe.blueQuarks.plus(1);
+			player.qe.points = player.qe.points.minus(1);
+		},
+		style: {width: "80px", height: "50px",background:"blue",},
+	},
+	14: {
+		title: "Sacrifice Red and Green Quarks but gain Green-Red Quarks",
+		display: "Requires 10 Green Quarks and 10 Red Quarks",
+		canClick() { return player.qe.unlocked && player.qe.redQuarks.gt(9) && player.qe.greenQuarks.gt(9) },
+		onClick() { 
+			player.qe.redgreenQuarks = player.qe.redgreenQuarks.plus(1);
+			player.qe.redQuarks = new Decimal(0);
+			player.qe.greenQuarks = new Decimal(0);
+		},
+		style: {width: "180px", height: "120px"},
+	},
+	15: {
+		title: "Sacrifice Blue and Green Quarks but gain Blue-Green Quarks",
+		display: "Requires 10 Blue Quarks and 10 Green Quarks",
+		canClick() { return player.qe.unlocked && player.qe.blueQuarks.gt(9) && player.qe.greenQuarks.gt(9) },
+		onClick() { 
+			player.qe.greenblueQuarks = player.qe.greenblueQuarks.plus(1);
+			player.qe.blueQuarks = new Decimal(0);
+			player.qe.greenQuarks = new Decimal(0);
+		},
+		style: {width: "180px", height: "120px"},
+	},
+	16: {
+		title: "Sacrifice Red and Blue Quarks but gain Red-Blue Quarks",
+		display: "Requires 10 Red Quarks and 10 Blue Quarks",
+		canClick() { return player.qe.unlocked && player.qe.blueQuarks.gt(9) && player.qe.redQuarks.gt(9) },
+		onClick() { 
+			player.qe.redblueQuarks = player.qe.redblueQuarks.plus(1);
+			player.qe.blueQuarks = new Decimal(0);
+			player.qe.redQuarks = new Decimal(0);
+		},
+		style: {width: "180px", height: "120px"},
+	},
+	21: {
+		title: "Entangle GR",
+		
+		canClick() { return player.qe.unlocked && player.qe.redgreenQuarks.gt(4) },
+		onClick() { 
+			if (!confirm("Entangling Green-Red Quarks would perform a Quantum reset which would reset your GR quarks and upgrades, Are you sure you want to do it? Entangling would give a concurrent multipler to the Ravager gain but not to any Quantum-related upgrades or boosts!")) return;
+			player.qe.redgreenQuarks = new Decimal(0);
+			player.qe.upgrades = [13,23,33,41];
+			player.qe.rgtangled = player.qe.rgtangled.plus(1);
+			player.qe.rgMultipler = player.qe.rgMultipler.plus(1.95);
+			doReset("ge", true);
+		},
+		style: {width: "180px", height: "80px"},
+		unlocked() {return player.qe.redgreenQuarks.gt(4)},
+	},
+	22: {
+		title: "Entangle BG",
+		
+		canClick() { return player.qe.unlocked && player.qe.greenblueQuarks.gt(4) },
+		onClick() { 
+			if (!confirm("Entangling Blue-Green Quarks would perform a Quantum reset which would reset your BG quarks and upgrades, Are you sure you want to do it? Entangling would give a concurrent multipler to the Machine Parts gain but not to any Quantum-related upgrades or boosts!")) return;
+			player.qe.greenblueQuarks = new Decimal(0);
+			player.qe.upgrades = [11,21,31,41];
+			player.qe.gbtangled = player.qe.gbtangled.plus(1);
+			player.qe.gbMultipler = player.qe.gbMultipler.plus(0.72);
+			doReset("ge", true);
+		},
+		style: {width: "180px", height: "80px"},
+		unlocked() {return player.qe.greenblueQuarks.gt(4)},
+	},
+	23: {
+		title: "Entangle RB",
+		
+		canClick() { return player.qe.unlocked && player.qe.redblueQuarks.gt(4) },
+		onClick() { 
+			if (!confirm("Entangling Red-Blue Quarks would perform a Quantum reset which would reset your RB quarks and upgrades, Are you sure you want to do it? Entangling would give a concurrent multipler to the power of Mastery cost requirement dividion but not to any Quantum-related upgrades or boosts!")) return;
+			player.qe.redblueQuarks = new Decimal(0);
+			player.qe.upgrades = [12,22,32,42];
+			player.qe.rbtangled = player.qe.rbtangled.plus(1);
+			player.qe.rbMultipler = player.qe.rbMultipler.plus(1);
+			doReset("ge", true);
+		},
+		style: {width: "180px", height: "80px"},
+		unlocked() {return player.qe.redblueQuarks.gt(4)},
+	},
+	24: {
+		title: "Get 1 Positronic Charge",
+		display() { return "Sacrifice all of your Ravagers and Tachyon Particles get gain 1 Positronic Charge.<br><br>Requires "+format(player.qe.positronCosts)+" Quantum Energy"},
+		canClick() { return player.qe.points.gt(player.qe.positronCosts) },
+		onClick() { 
+
+			player.ra.points = new Decimal(0);
+			player.tp.points = new Decimal(0);
+			player.qe.positronCosts = player.qe.positronCosts.plus(1);
+			player.qe.positronicCharageMulti = player.qe.positronicCharageMulti.plus(15.3);
+			player.qe.positronicCharage = player.qe.positronicCharage.plus(1);
+		},
+		style: {width: "180px", height: "180px",background:"yellow"},
+		unlocked() {return player.qe.unlocked},
+	},
+},
+upgrades: {
+	rows: 7,
+	cols: 3,
+	11: {
+		title: "Red Quark Upgrade",
+		description: "Gain more points based on your Red Quarks",
+		cost: new Decimal(2),
+	/*	multiRes: [
+			
+			{
+				currencyDisplayName: "red quarks",
+				currencyInternalName: "red quarks",
+				currencyLayer: "qe",
+				cost: new Decimal(2),
+			},
+{
+				currencyDisplayName: "green quarks",
+				currencyInternalName: "green quarks",
+				currencyLayer: "qe",
+				cost: new Decimal(2),
+			},
+
+		],
+		*/
+		effect() { 
+let eff =  player.qe.redQuarks.plus(1).pow(1)
+if (hasUpgrade("qe", 21)) eff = eff.times(2.5);
+if (hasAchievement("a", 205)) eff = eff.pow(1.28);
+return eff;
+				},
+		
+	effectDisplay() { return format(tmp.qe.upgrades[11].effect)+"x" },
+		
+		formula: "log+1",
+		unlocked() { return player.qe.unlocked },
+		style: {background:"red",},
+	
+	
+	},
+	12: {
+		title: "Green Quark Upgrade",
+		description: "Gain more points based on your Green Quarks",
+		cost: new Decimal(2),
+	/*	multiRes: [
+			
+			{
+				currencyDisplayName: "red quarks",
+				currencyInternalName: "red quarks",
+				currencyLayer: "qe",
+				cost: new Decimal(2),
+			},
+{
+				currencyDisplayName: "green quarks",
+				currencyInternalName: "green quarks",
+				currencyLayer: "qe",
+				cost: new Decimal(2),
+			},
+
+		],
+		*/
+		effect() { 
+
+					let eff = player.qe.greenQuarks.plus(1).pow(1)
+					if (hasUpgrade("qe", 22)) eff = eff.times(2.5);
+					if (hasAchievement("a", 205)) eff = eff.pow(1.28);
+					return eff;
+				},
+		
+	effectDisplay() { return format(tmp.qe.upgrades[12].effect)+"x" },
+		
+		formula: "log+1",
+		unlocked() { return player.qe.unlocked },
+		style: {background:"green",},
+	
+	
+	},
+	13: {
+		title: "Blue Quark Upgrade",
+		description: "Gain more points based on your Blue Quarks",
+		cost: new Decimal(2),
+	/*	multiRes: [
+			
+			{
+				currencyDisplayName: "red quarks",
+				currencyInternalName: "red quarks",
+				currencyLayer: "qe",
+				cost: new Decimal(2),
+			},
+{
+				currencyDisplayName: "green quarks",
+				currencyInternalName: "green quarks",
+				currencyLayer: "qe",
+				cost: new Decimal(2),
+			},
+
+		],
+		*/
+		effect() { 
+
+					let eff = player.qe.blueQuarks.plus(1).pow(1)
+					if (hasUpgrade("qe", 22)) eff = eff.times(2.5);
+					if (hasAchievement("a", 205)) eff = eff.pow(1.28);
+					return eff;
+				},
+		
+	effectDisplay() { return format(tmp.qe.upgrades[13].effect)+"x" },
+		
+		formula: "log+1",
+		unlocked() { return player.qe.unlocked },
+		style: {background:"blue",},
+	
+	
+	},
+	21: {
+		title: "Red Charged Quark Upgrade",
+		description: "The above upgrade's effect is 2.5x stronger and gain more Nebula Energy based on your Red Quarks.",
+		cost: new Decimal(3),
+	/*	multiRes: [
+			
+			{
+				currencyDisplayName: "red quarks",
+				currencyInternalName: "red quarks",
+				currencyLayer: "qe",
+				cost: new Decimal(2),
+			},
+{
+				currencyDisplayName: "green quarks",
+				currencyInternalName: "green quarks",
+				currencyLayer: "qe",
+				cost: new Decimal(2),
+			},
+
+		],
+		*/
+		effect() { 
+
+					let eff = player.qe.redQuarks.plus(1).pow(0.25)
+					if (eff.gte(2.75)) eff = eff.div(10).log2().plus(3)
+					return eff;
+				},
+		
+	effectDisplay() { return "^"+format(tmp.qe.upgrades[21].effect) },
+		
+		formula: "x+1",
+		unlocked() { return player.qe.upgrades.length>=3 },
+		style: {background:"red",},
+	
+	
+	},
+	22: {
+		title: "Green Charged Quark Upgrade",
+		description: "The above upgrade's effect is 2.5x stronger and add the Row 2 cost scaling layer starting based on your Green Quarks.",
+		cost: new Decimal(3),
+	/*	multiRes: [
+			
+			{
+				currencyDisplayName: "red quarks",
+				currencyInternalName: "red quarks",
+				currencyLayer: "qe",
+				cost: new Decimal(2),
+			},
+{
+				currencyDisplayName: "green quarks",
+				currencyInternalName: "green quarks",
+				currencyLayer: "qe",
+				cost: new Decimal(2),
+			},
+
+		],
+		*/
+		effect() { 
+
+					let eff = player.qe.greenQuarks.plus(1).pow(0.4)
+					if (eff.gte(44)) eff = eff.div(10).log2().plus(3)
+					return eff;
+				},
+		
+	effectDisplay() { return "+"+format(tmp.qe.upgrades[22].effect) },
+		
+		formula: "x+1",
+		unlocked() { return player.qe.upgrades.length>=3 },
+		style: {background:"green",},
+	
+	
+	},
+	23: {
+		title: "Blue Charged Quark Upgrade",
+		description: "The above upgrade's effect is 2.5x stronger and tetrate the Super Generator gain based on your Blue Quarks",
+		cost: new Decimal(4),
+	/*	multiRes: [
+			
+			{
+				currencyDisplayName: "red quarks",
+				currencyInternalName: "red quarks",
+				currencyLayer: "qe",
+				cost: new Decimal(2),
+			},
+{
+				currencyDisplayName: "green quarks",
+				currencyInternalName: "green quarks",
+				currencyLayer: "qe",
+				cost: new Decimal(2),
+			},
+
+		],
+		*/
+		effect() { 
+
+					let eff = player.qe.blueQuarks.plus(1).pow(0.5)
+					if (eff.gte(4)) eff = eff.div(20).log2().plus(3)
+					return eff;
+				},
+		
+	effectDisplay() { return "^^"+format(tmp.qe.upgrades[23].effect) },
+		
+		formula: "x{2}1",
+		unlocked() { return player.qe.upgrades.length>=3 },
+		style: {background:"blue",},
+	
+	
+	},
+	31: {
+		title: "Red Flucutated Quark Upgrade",
+		description: "Gain more Prestige Points based on your Red Quarks",
+		cost: new Decimal(6),
+	/*	multiRes: [
+			
+			{
+				currencyDisplayName: "red quarks",
+				currencyInternalName: "red quarks",
+				currencyLayer: "qe",
+				cost: new Decimal(2),
+			},
+{
+				currencyDisplayName: "green quarks",
+				currencyInternalName: "green quarks",
+				currencyLayer: "qe",
+				cost: new Decimal(2),
+			},
+
+		],
+		*/
+		effect() { 
+
+					return player.qe.redQuarks.plus(1).pow(0.25)
+				},
+		
+	effectDisplay() { return "^"+format(tmp.qe.upgrades[31].effect) },
+		
+		formula: "x+1",
+		unlocked() { return player.qe.upgrades.length>=6 },
+		style: {background:"red",},
+	
+	
+	},
+	32: {
+		title: "Green Flucutated Quark Upgrade",
+		description: "Divide the Mastery cost requirement based on your Green Quarks",
+		cost: new Decimal(6),
+	/*	multiRes: [
+			
+			{
+				currencyDisplayName: "red quarks",
+				currencyInternalName: "red quarks",
+				currencyLayer: "qe",
+				cost: new Decimal(2),
+			},
+{
+				currencyDisplayName: "green quarks",
+				currencyInternalName: "green quarks",
+				currencyLayer: "qe",
+				cost: new Decimal(2),
+			},
+
+		],
+		*/
+		effect() { 
+
+					return player.qe.greenQuarks.plus(1).pow(0.25)
+				},
+		
+	effectDisplay() { return "/"+format(tmp.qe.upgrades[32].effect) },
+		
+		formula: "x+1",
+		unlocked() { return player.qe.upgrades.length>=6 },
+		style: {background:"green",},
+	
+	
+	},
+	33: {
+		title: "Blue Flucutated Quark Upgrade",
+		description: "The Row 2 Cost Scaling now starts at 2,225",
+		cost: new Decimal(6),
+	/*	multiRes: [
+			
+			{
+				currencyDisplayName: "red quarks",
+				currencyInternalName: "red quarks",
+				currencyLayer: "qe",
+				cost: new Decimal(2),
+			},
+{
+				currencyDisplayName: "green quarks",
+				currencyInternalName: "green quarks",
+				currencyLayer: "qe",
+				cost: new Decimal(2),
+			},
+
+		],
+		*/
+		
+		unlocked() { return player.qe.upgrades.length>=6 },
+		style: {background:"blue",},
+	
+	
+	},
+	41: {
+		title: "Enlargement",
+		description: "Unlock Gluons and Entanglements",
+		cost: new Decimal(7),
+	/*	multiRes: [
+			
+			{
+				currencyDisplayName: "red quarks",
+				currencyInternalName: "red quarks",
+				currencyLayer: "qe",
+				cost: new Decimal(2),
+			},
+{
+				currencyDisplayName: "green quarks",
+				currencyInternalName: "green quarks",
+				currencyLayer: "qe",
+				cost: new Decimal(2),
+			},
+
+		],
+		*/
+		
+		unlocked() { return player.qe.upgrades.length>=9 },
+		style: {'height':'160px', 'width':'160px'},
+	
+	
+	},
+	51: {
+		title: "Positronic Quark",
+		description: "Positronic Charges boost Tachyon Particles gain",
+		cost: new Decimal(6),
+		effect() { 
+
+			let eff = player.qe.positronicCharage.plus(1).pow(5)
+			if (eff.gte(1e20)) eff = eff.div(20).log2().plus(3)
+					return eff;
+		},
+
+effectDisplay() { return format(tmp.qe.upgrades[51].effect)+"x" },
+
+formula: "x+1",
+		unlocked() { return hasAchievement("a",224)},
+	
+	
+	
+	},
+	52: {
+		title: "Replicated Dilators",
+		description: "Tachyon Particles divide the Quantum cost requirement",
+		cost: new Decimal(6),
+		effect() { 
+
+			let eff = player.tp.points.plus(1).pow(0.002)
+			if (eff.gte(500)) eff = eff.div(20).log2().plus(3)
+					return eff;
+		},
+
+effectDisplay() { return "/"+format(tmp.qe.upgrades[52].effect) },
+
+formula: "x+1",
+		unlocked() { return hasAchievement("a",224)},
+	
+	
+	
+	},
+	53: {
+		title: "Devastated Dilators",
+		description: "Ravagers divide the Quantum cost requirement",
+		cost: new Decimal(6),
+		effect() { 
+
+			let eff = player.ra.points.plus(1).pow(0.002)
+			if (eff.gte(500)) eff = eff.div(20).log2().plus(3)
+					return eff;
+		},
+
+effectDisplay() { return "/"+format(tmp.qe.upgrades[53].effect) },
+
+formula: "x+1",
+		unlocked() { return hasAchievement("a",224)},
+	
+	
+	
+	},
+}
+})
+addLayer("row", {
+	startData() { return {                  // startData is a function that returns default data for a layer. 
+		unlocked: false,
+		points: new Decimal(0),
+		best: new Decimal(0),
+		total: new Decimal(0),
+		currentRow: new Decimal(0),
+	            // "points" is the internal name for the main resource of the layer.
+    }},
+  name: "row dimension", // This is optional, only used in a few places, If absent it just uses the layer id.
+        symbol: "R", // This appears on the layer's node. Default is the id with the first letter capitalized
+        position: 2,
+    color: "cyan",                       // The color for this layer, which affects many elements.
+    resource: "row",            // The name of this layer's main prestige resource.
+   row: "side",                               // The row this layer is on (0 is the first row).
+	
+    baseResource: "points",                 // The name of the resource your prestige gain is based on.
+    baseAmount() { return player.points },  // A function to return the current amount of baseResource.
+
+    requires: new Decimal("e3.640e25"),         
+   layerShown() {return player.points.gte("e3.640e25")}, 
+   type: "static",                         // Determines the formula used for calculating prestige currency.
+   exponent: new Decimal(5),                          // "normal" prestige gain is (currency^exponent).
+   base: new Decimal("1"),
+   
+   
+   
+	   gainMult() { 
+		   let mult = new Decimal(1);
+		  
+		   return mult;
+	   },
+	   clickables: {
+		rows: 6,
+		cols: 6,
+		11: {
+			title: "Go meta",
+	 display:"We are going to break the Jacorb90's layers law! Go meta!",
+			
+			canClick() {return true},
+			onClick() { 
+				if (!confirm("You have been chosen to go meta because you have reached the homestretch, Going meta would reset anything, With the exception of achievements, Are you sure you want to go meta?")) return;
+				player.points = new Decimal(0)
+	player.p.points = new Decimal(0)
+	player.p.best = new Decimal(0)
+	
+			},
+			style: {width: "160px", height: "120px"},
+		},
+		
+	},
 })
 addLayer("a", {
         startData() { return {
@@ -9948,7 +11477,7 @@ addLayer("a", {
             return ("Achievements")
         },
         achievements: {
-            rows: 19,
+            rows: 25,
             cols: 5,
             11: {
                 name: "All that progress is gone!",
@@ -10450,7 +11979,7 @@ addLayer("a", {
 				name: "Conquering everything.",
 		
 				done() { return player.pt.unlocked },
-				tooltip: "Unlock Planets. Reward: Keep AI Node Upgrades and the Mastery gain is raised to the power of 1.05",
+				tooltip: "Perform a Row 8 reset. Reward: Keep AI Node Upgrades and the Mastery cost requirement is divided by 1.05",
 				image: "images/achs/171.png",
 			},
 			172: {
@@ -10464,7 +11993,7 @@ addLayer("a", {
 				name: "Can't find the Rebcoana?",
 		
 				done() { return player.mc.mechEn.times(tmp.mc.mechEnMult).gte("ee6") },
-				tooltip: "Reach 1e1,000,000 Mech Energy. Reward: Keep all Gears and Machine Parts Milestones on Row 7 reset.",
+				tooltip: "Reach e1,000,000 Mech Energy. Reward: Keep all Gears and Machine Parts Milestones on Row 8 reset.",
 				image: "images/achs/173.png",
 			},
 			174: {
@@ -10485,7 +12014,7 @@ addLayer("a", {
 				name: "Ravager's big day",
 				
 				done() {return player.ra.unlocked },
-				tooltip: "Unlock Ravagers. Reward: The Artificial Consciousness loss is halved and keep Core buyables in reset.",
+				tooltip: "Unlock Ravagers. Reward: The Artificial Consciousness loss is halved and keep Core buyables in Row 8 reset.",
 				image: "images/achs/181.png",
 			},
 			182: {
@@ -10506,7 +12035,7 @@ addLayer("a", {
 				name: "Ravager Squared",
 				
 				done() { return player.ra.points.gte(10500) },
-				tooltip: "Reach 10500 Ravagers. Reward: Double the Ravager Gain.",
+				tooltip: "Reach 10,500 Ravagers. Reward: Double the Ravager Gain.",
 				image: "images/achs/184.png",
 			},
 			185: {
@@ -10519,8 +12048,8 @@ addLayer("a", {
 			191: {
 				name: "The Female Slayer of Normie",
 			
-				done() { return player.i.hb.gte("5e6") },
-				tooltip: "Get 5,000,000 Hyperspatial Bricks. Reward: Super-Generator cost requirement is divided by 3",
+				done() { return player.i.hb.gte("4e6") },
+				tooltip: "Get 4,000,000 Hyperspatial Bricks. Reward: Super-Generator cost requirement is divided by 2",
 				image: "images/achs/191.png",
 			},
 			192: {
@@ -10533,15 +12062,15 @@ addLayer("a", {
 			193: {
 				name: "Shadow of AI",
 			
-				done() { return player.sg.power.gte("ee9") },
-				tooltip: "Reach e1e9 Super Generator Power",
+				done() { return player.sg.power.gte("e3e8") },
+				tooltip: "Reach e3e8 Super Generator Power",
 				image: "images/achs/193.png",
 			},
 			194: {
 				name: "Destroyer of World",
 			
-				done() { return player.ps.points.gte("1e100000") },
-				tooltip: "Reach 2750 Phantom Souls. Reward: Imperium Bricks boost Planets Gain and Hex Gain is squared (unaffected by softcap)",
+				done() { return player.ps.points.gte("2000") },
+				tooltip: "Reach 2000 Phantom Souls. Reward: Imperium Bricks boost Planets Gain and Hex Gain is squared (unaffected by softcap)",
 				image: "images/achs/194.png",
 			},
 			195: {
@@ -10550,6 +12079,137 @@ addLayer("a", {
 				done() { return player.h.challenges[32]>=1e9 },
 				tooltip: "Complete Option D at least 1,000,000,000 times.",
 				image: "images/achs/195.png",
+			},
+			201: {
+				name: "Absolute Zero Breath",
+			
+				done() { return player.tp.unlocked },
+				tooltip() { return "Unlock Tachyon Particles. Reward: Divide the Planet requirement by 1.1 for each achievement in this row and below (/"+format(Decimal.pow(1.1, player.a.achievements.filter(x => x>200).length))+")." },
+				image: "images/achs/201.png",
+			},
+			202: {
+				name: "Boosterator Slowdown",
+			
+				done() { return player.g.power.gte("e1.2e14") },
+				tooltip: "Reach e1.2e14 Generator Power. Reward: Devastated Upgrade 2I is multipled by 2 and the Post-1,400 Booster & Generator cost scaling start at 2,000 instead.",
+				image: "images/achs/202.png",
+			},
+			203: {
+				name: "Time speeds up over time.",
+			
+				done() { return player.tp.points.gte("1e20") },
+				tooltip: "Reach 1e20 Tachyon Particles. Reward: Unlock Softcap Compaction and Wraiths cost scaler 18% slower.",
+				image: "images/achs/203.png",
+			},
+			204: {
+				name: "Ravager Cubed.",
+			
+				done() { return player.ra.points.gte("1e145") },
+				tooltip: "Reach 1e145 Ravagers.",
+				image: "images/achs/204.png",
+			},
+			205: {
+				name: "Brickell is a boy -Some clown",
+				unlocked() { return hasAchievement("a", 111) },
+				done() { return player.ge.rotations.gte("e100000") },
+				tooltip: "Reach e100,000 Rotations",
+				image: "images/achs/205.png",
+			},
+			211: {
+				name: "WELCOME TO HELL",
+			
+				done() {return player.qe.unlocked },
+			
+				tooltip() { return "Unlock Quantum Energy. Reward: Ravagers gain is multipled by your Quantum Energy and Gear Evolution cost increases 25% slower ("+format(Decimal.pow(1.25, player.qe.points))+"x)." },
+				image: "images/achs/211.png",
+			},
+			212: {
+				name: "Ravager Infinity",
+			
+				done() { return player.ra.points.gte(Number.MAX_VALUE) },
+			
+				tooltip: "Reach 1.80e308 Ravagers. Reward: Tesseract the Prestige Upgrade 2",
+				image: "images/achs/212.png",
+			},
+			213: {
+				name: "Gwendolin Pact",
+			
+				done() { return inChallenge("h", 42) && player.ss.points.gte("3")&& player.points.gte("e1e14") },
+			
+				tooltip: "Get e1e14 points in Productionless with 3 Subspace Energy.",
+				image: "images/achs/213.png",
+			},
+			214: {
+				name: "This nilly-nilly thing won't stop!",
+			
+				done() { return hasUpgrade("qe", 41) },
+			
+				tooltip: "Unlock Gluons and Entanglement.",
+				image: "images/achs/214.png",
+			},
+			215: {
+				name: "4.3333 days to December 1st",
+				unlocked() { return hasAchievement("a", 111) },
+				done() { return player.qe.redblueQuarks.gte("10")&&player.qe.redgreenQuarks.gte("10")&&player.qe.greenblueQuarks.gte("10") },
+			
+				tooltip: "Reach 10 of all Quark Combinations. Reward: Boost the first 3 Quantum Upgrades by ^1.28",
+				image: "images/achs/215.png",
+			},
+			221: {
+				name: "What the hell is Constantin Roman?!",
+			
+				done() { return player.qe.rbtangled.gte("1")&&player.qe.rgtangled.gte("1")&&player.qe.gbtangled.gte("1") },
+			
+				tooltip: "Reach 3 of all Entangled Quarks. Reward: Ravager gain is raised ^1.5",
+				image: "images/achs/221.png",
+			},
+			222: {
+				name: "Zero Deaths",
+			
+				done() { return player.qe.greenblueQuarks.gte("20")&&player.pt.points.eq("0") },
+			
+				tooltip: "Get 20 Blue-Green Quarks with no planets. Reward: The Quantum cost requirement is reduced by 0.002. (additive by base of 0.002, which is brought to 0.45th root)",
+				image: "images/achs/222.png",
+			},
+			223: {
+				name: "Obscure Island",
+			
+				done() { return player.ne.thoughts.gte(10000) },
+			
+				tooltip: "Reach 10,000 Thoughts.",
+				image: "images/achs/223.png",
+			},
+			224: {
+				name: "???",
+			
+				done() { return player.tp.points.gte("1e750") ||player.ra.points.gte("1e975")},
+			
+				tooltip: "Reach 1e750 Tachyon Particles or 1e975 Ravagers. Reward: Unlock Positrons and the Solarity Gain is multipled by 1e20000",
+				image: "images/achs/224.png",
+			},
+			225: {
+				name: "Cooking Angel V",
+				unlocked() { return hasAchievement("a", 111) },
+				done() { return player.qe.positronicCharage.gte(5)},
+			
+				tooltip: "Get at least 5 Positronic Charge. Reward: +1 to the Tachyon Particle's expontent",
+				image: "images/achs/225.png",
+			},
+			231: {
+				name: "Lai'Tela's Star Shop",
+		
+				done() { return player.pt.total.gte(50000)},
+			
+				tooltip: "Reach 50,000 total Planets",
+				image: "images/achs/231.png",
+			},
+			232: {
+				name: "Ravager Tesseracted",
+		
+				done() { return player.ra.points.gte("1e1450")},
+			
+				tooltip: "Reach 1e1,450 Ravagers. Reward: Ravagers expontent is added by 10.",
+				image: "images/achs/232.png",
 			},
 		},
 		tabFormat: [
@@ -10836,6 +12496,14 @@ addLayer("ab", {
 			canClick() { return hasMilestone("pt", 5) },
 			onClick() { player.c.auto = !player.c.auto },
 			style: {"background-color"() { return player.c.auto?"#edb3ff":"#666666" }},
+		},
+		72: {
+			title: "Planets",
+			display() { return hasMilestone("pt", 6)?(player.pt.auto?"On":"Off"):"Locked" },
+			unlocked() { return hasUpgrade("pt",31)},
+			canClick() { return hasMilestone("pt", 6) },
+			onClick() { player.pt.auto = !player.pt.auto },
+			style: {"background-color"() { return player.c.auto?"#32a852":"#666666" }},
 		},
 	},
 	

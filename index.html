@@ -31,10 +31,10 @@
 			<div v-if="(gameEnded && !player.keepGoing)" class="fullWidth">
 				<br>
 				<h2>{{modInfo.name}} {{VERSION.withoutName}}</h2><br><br>
-				<h3>Congratulations! You have reached the end and beaten this game, but for now...</h3><br>
-				<h3>Please check the Discord to see if there are new content updates!</h3><br><br>
-				<div v-if="!player.timePlayedReset">It took you {{formatTime(player.timePlayed)}} to beat the game.</div>
-				<div v-if="player.timePlayedReset">Make sure that you record the time in your stream or else your speedrun won't count!</div>
+				<h3>Congratulations! You didn't finish the game yet, but your at homestretch!</h3><br>
+				<h3>Your not done yet, there is something that you have missed. Go find it.</h3><br><br>
+				<div v-if="!player.timePlayedReset">It took you {{formatTime(player.timePlayed)}} get to the homestrecth.</div>
+				<div v-if="player.timePlayedReset">>Make sure that you record the time in your stream or else your speedrun won't count!</div>
 				<br>
 				<button class="longUpg can" onclick="hardReset(true)">Play Again</button>&nbsp;&nbsp;&nbsp;&nbsp;<button class="longUpg can" onclick="keepGoing()">Keep Going</button>
 				<br><br><br>
@@ -43,7 +43,7 @@
 				<br><br>
 				If you would like to speedrun this, press Play Again and record your attempt, then submit on the Discord Server in the channel #speedrun-submissions.
 				<br><br><br>
-				This game is currently running on NG+ Patch 2, which adds Planets, Ravagers and Tachyon Particles (I might work on Quantum and Flucutators)
+				This game is currently running on NG+ Patch 4, which adds Planets, Ravagers, Tachyon Particles and Quantum
 			</div>
 
 			<!-- Notifications -->
@@ -71,7 +71,7 @@
 				<br>
 				Original idea by papyrus#6977 (on discord)
 				<br><br>
-				Note: If anyone wishes to make a mod of this game, that is perfectly fine with me, just make sure to name it something different (ex: Prestige Tree NG+), and to make sure that the credit shown above is kept in-game.<br><br>
+				This is given credit to Jacorb90, which is the original creator of this game, I did not make the original project by myself, i instead forked it and added many stuff to the game, like more achievements.<br><br>
 				<a v-bind:href="modInfo.changelogLink" target="_blank" class="link" >Changelog</a><br>
 				<a class="link" href="http://discord.gg/wwQfgPa" target="_blank" v-bind:style="{'font-size': '16px'}">The Prestige Tree Discord</a><br>
 				<a class="link" href="https://discord.gg/F3xveHV" target="_blank" v-bind:style="modInfo.discordLink ? {'font-size': '16px'} : {}">The Modding Tree Discord</a><br>
@@ -171,6 +171,7 @@
 						<li><a class="link" href="https://discord.gg/F3xveHV" target="_blank" v-bind:style="modInfo.discordLink ? {'font-size': '16px'} : {}">The Modding Tree Discord</a><br></li>
 					</ul>
 				</div>
+			
 				<div class="overlayThing" style="padding-bottom:7px; width: 90%;">
 					<span v-if="player.devSpeed && player.devSpeed != 1" class="overlayThing">
 						<br>Dev Speed: {{format(player.devSpeed)}}x<br>
@@ -179,7 +180,7 @@
 						<br>Offline Time: {{formatTime(player.offTime?player.offTime.remain:0)}}<br>
 					</span>
 					<span v-if="!player.keepGoing" class="overlayThing">
-						<br><span v-if="modInfo.specialEndgameText">{{modInfo.specialEndgameText}}</span><span v-if="!modInfo.specialEndgameText">Reach {{formatWhole(modInfo.endgame)+" "+modInfo.pointsName}} to beat the game!</span><br>
+						<br><span v-if="modInfo.specialEndgameText">{{modInfo.specialEndgameText}}</span><span v-if="!modInfo.specialEndgameText">Reach {{formatWhole(modInfo.endgame)+" "+modInfo.pointsName}} to reach the homestretch!</span><br>
 					</span>
 					<br>
 					<span v-if="player.points.lt('1e1000')">You have </span>

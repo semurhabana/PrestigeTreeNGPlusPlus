@@ -100,7 +100,13 @@ let help_data = {
 	rava: {
 		id: "rava",
 		title: "Ravagers",
-		text: "Once you unlock Ravagers, begin farming Rotations for more Ravagers and more Planets, You'll also be able to gain one of 3 devastated stuff, which allows you to purchase the Devastated Upgrades. I'll recommend getting the Devastated Upgrade 2I (green devasator) because it cheapens Mastery, Ideas and Subspaces, the first red devasator multiply Hyperspace gain, so be worthy to get it, the first blue devasator give a free level to Gear Evolutions based on Ideas. <br><br> You should push these 3 Devastated Perks, and keep on getting more of them, Just push Ravagers a little bit, until you eventually unlock the III Devasated upgrades. Keep in mind that reaching 1e30 ravagers makes some row 7 and 8 more tricker, Keep on pushing until you can unlock more Ravager milestones, which are making go past e1e17 points, Keep pushing progress and achievements until you unlock Superhindrance spirits.",
+		text: "Once you unlock Ravagers, begin farming Rotations for more Ravagers and more Planets, You'll also be able to gain one of 3 devastated stuff, which allows you to purchase the Devastated Upgrades. I'll recommend getting the Devastated Upgrade 2I (green devasator) because it cheapens Mastery, Ideas and Subspaces, the first red devasator multiply Hyperspace gain, so be worthy to get it, the first blue devasator give a free level to Gear Evolutions based on Ideas. <br><br> You should push these 3 Devastated Upgrades, and keep on getting more of them, Just push Ravagers a little bit, until you eventually unlock the III Devasated upgrades. Keep in mind that reaching 1e30 ravagers makes some row 7 and 8 more tricker, Keep on pushing until you can unlock more Ravager milestones, which are making go past e1e17 points, Keep pushing progress and achievements until you unlock Tachyon Particles.",
 		unlocked() { return player.ra.unlocked },
+	},
+	tachy: {
+		id: "tachy",
+		title: "Tachyon Particles",
+		text: "Once you unlock Tachyon Particles, begin to get more Hindrances and Tachyon Galaxies, At Post-Tachyon Particles, you'll get new Ravager upgrades, which boosts any of Devastated Upgrades to increase progression and you'll get more Gear Evolutions if you have more Planets, Getting the Boosterator Slowdown achievement causes the Row 2 cost scaling to start to 2,000 which makes points generation faster. <br><br> There is a new Planets upgrades if you unlock Tachyon Particles as soon, there would be new column of Planet upgrades when you get the Planet Upgrade 64, New column of Planet upgrades require Tachyon Particles, but push more Tachyon Particles a little bit. Keep on pushing the Tachyon Particles until you get 1e20 Tachyon Particles, which unlocks Softcap Compaction.<br><br>Just get more Gear Evolutions and you'll get 1e1,900 Gears, which will unlock Quantum.",
+		unlocked() { return player.tp.unlocked },
 	},
 }

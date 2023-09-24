@@ -8,15 +8,15 @@ let modInfo = {
 	changelogLink: "https://github.com/Jacorb90/Prestige-Tree/blob/master/changelog.md",
     offlineLimit: 1,  // In hours
     initialStartPoints: new Decimal(10), // Used for hard resets and new players
-	endgame: new Decimal("e8.43e19"),
+	endgame: new Decimal("e3.64e25"),
 	// specialEndgameText: "v1.3 Endgame: e3.14e16 Points",
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "1.4",
+	num: "1.5",
 	patch: 2,
-	name: "A New Game",
+	name: "The row 9 is a lie.",
 }
 
 // If you add new functions anywhere inside of a layer, and those functions have an effect when called, add them here.
@@ -60,6 +60,11 @@ function getPointGen() {
 	if (hasUpgrade("ss", 43)) gain = gain.pow(gain.lt(tmp.ss.upgrades[43].endpoint)?1.1:1.01);
 	if (hasUpgrade("hn", 31)) gain = gain.pow(1.05);
 	if (hasUpgrade("pt", 31)) gain = gain.pow(1.45);
+	if (hasUpgrade("qe", 11)) gain = gain.times(upgradeEffect("qe", 11));
+	if (hasUpgrade("qe", 12)) gain = gain.times(upgradeEffect("qe", 12));
+	if (hasUpgrade("qe", 13)) gain = gain.times(upgradeEffect("qe", 13));
+	if (player.points.gte(player.tp.taxes)) gain = gain.root(player.tp.taxesDivPoints);
+	if (player.points.gte(player.tp.hardcap)) gain = gain.root(1e30);
 	return gain
 }
 
@@ -71,6 +76,7 @@ function getRow1to6Speed() {
 
 // You can add non-layer related variables that should to into "player" and be saved here, along with default values
 function addedPlayerData() { return {
+	newsTotal: decimalZero,
 }}
 
 // Display extra things at the top of the page
