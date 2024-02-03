@@ -7126,13 +7126,14 @@ addLayer("ge", {
 		gearSpeed() {
 			let speed = player.ge.points.cbrt().times(player.mc.unlocked?tmp.mc.mechEff:1);
 			if (player.mc.upgrades.includes(11)) speed = speed.times(buyableEffect("mc", 12));
-			
+			if (player.repair.repaired.gte(1)) speed = speed.times(0);
 			return speed;
 		},
 		rps() {
 			let rps = tmp.ge.speed.div(tmp.ge.teeth.times(tmp.ge.toothSize)).times(tmp.ge.gearSpeed)
 			if (hasUpgrade("pt", 34)) rps = rps.pow(upgradeEffect("pt",34));
 			if (player.ge.rotations.gte(player.tp.gearRotationHardcap)) rps = rps.root(player.tp.gearRotationDividcation);
+			if (player.repair.repaired.gte(1)) rps= rps.times(0);
 			return rps;
 		},
 		rotDesc() {
@@ -11414,16 +11415,16 @@ formula: "x+1",
 	},
 }
 })
-addLayer("row", {
+addLayer("repair", {
 	startData() { return {                  // startData is a function that returns default data for a layer. 
 		unlocked: false,
 		points: new Decimal(0),
 		best: new Decimal(0),
 		total: new Decimal(0),
-		currentRow: new Decimal(0),
+	 repaired: new Decimal(0),
 	            // "points" is the internal name for the main resource of the layer.
     }},
-  name: "row dimension", // This is optional, only used in a few places, If absent it just uses the layer id.
+  name: "repairments", // This is optional, only used in a few places, If absent it just uses the layer id.
         symbol: "R", // This appears on the layer's node. Default is the id with the first letter capitalized
         position: 2,
     color: "cyan",                       // The color for this layer, which affects many elements.
@@ -11433,13 +11434,15 @@ addLayer("row", {
     baseResource: "points",                 // The name of the resource your prestige gain is based on.
     baseAmount() { return player.points },  // A function to return the current amount of baseResource.
 
-    requires: new Decimal("e3.640e25"),         
-   layerShown() {return player.points.gte("e3.640e25")}, 
+    requires: new Decimal("e1e21"),         
+   layerShown() {return player.points.gte("e1e21")}, 
    type: "static",                         // Determines the formula used for calculating prestige currency.
    exponent: new Decimal(5),                          // "normal" prestige gain is (currency^exponent).
    base: new Decimal("1"),
    
-   
+   tabFormat: ["main-display",
+   "prestige-button",
+			"clickables",],
    
 	   gainMult() { 
 		   let mult = new Decimal(1);
@@ -11450,15 +11453,16 @@ addLayer("row", {
 		rows: 6,
 		cols: 6,
 		11: {
-			title: "Go meta",
-	 display:"We are going to break the Jacorb90's layers law! Go meta!",
+			title: "Mend the Game",
+	 display:"Mends the game, also disables Gear evolution, so it can stop from growing.",
 			
-			canClick() {return true},
+			canClick() {return player.ge.unlocked = true},
 			onClick() { 
-				if (!confirm("You have been chosen to go meta because you have reached the homestretch, Going meta would reset anything, With the exception of achievements, Are you sure you want to go meta?")) return;
-				player.points = new Decimal(0)
-	player.p.points = new Decimal(0)
-	player.p.best = new Decimal(0)
+				if (!confirm("Your layers, except for Gears is not going to get affected, Only the gear evolutions would be paused. Please note that it ")) return;
+				
+				player.ge.unlocked = false
+				
+				
 	
 			},
 			style: {width: "160px", height: "120px"},
