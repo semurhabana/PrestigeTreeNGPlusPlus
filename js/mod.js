@@ -8,7 +8,7 @@ let modInfo = {
 	changelogLink: "https://github.com/Jacorb90/Prestige-Tree/blob/master/changelog.md",
     offlineLimit: 1,  // In hours
     initialStartPoints: new Decimal(10), // Used for hard resets and new players
-	endgame: new Decimal("e3.64e25"),
+	endgame: new Decimal("e1e44"),
 	// specialEndgameText: "v1.3 Endgame: e3.14e16 Points",
 }
 
@@ -56,15 +56,20 @@ function getPointGen() {
 	if (player.h.unlocked) gain = gain.times(tmp.h.effect);
 	if (player.q.unlocked) gain = gain.times(tmp.q.enEff);
 	
+	if (hasUpgrade("tp", 16)) gaon = gain.times(8)     
 	if (inChallenge("h", 31)) gain = gain.root(tmp.h.pointRoot31);
 	if (hasUpgrade("ss", 43)) gain = gain.pow(gain.lt(tmp.ss.upgrades[43].endpoint)?1.1:1.01);
+	if (hasUpgrade("sy", 11)) gain = gain.pow(gain.lt(tmp.sy.upgrades[11].endpoint)?1.7:1);
+	if (hasUpgrade("ss", 53)) gain = gain.pow(1.18);
 	if (hasUpgrade("hn", 31)) gain = gain.pow(1.05);
+	if (hasAchievement("a", 192)) gain = gain.times(1.2);
 	if (hasUpgrade("pt", 31)) gain = gain.pow(1.45);
 	if (hasUpgrade("qe", 11)) gain = gain.times(upgradeEffect("qe", 11));
 	if (hasUpgrade("qe", 12)) gain = gain.times(upgradeEffect("qe", 12));
 	if (hasUpgrade("qe", 13)) gain = gain.times(upgradeEffect("qe", 13));
-	if (player.points.gte(player.tp.taxes)) gain = gain.root(player.tp.taxesDivPoints);
-	if (player.points.gte(player.tp.hardcap)) gain = gain.root(1e30);
+	if (player.points.gte("e1e20")) new Decimal(0)
+	if (hasUpgrade("tp",23)) gain = gain.pow(upgradeEffect("tp",23))
+	if (hasUpgrade("sy",13)) gain = gain.pow(upgradeEffect("sy",13))
 	return gain
 }
 

@@ -23,7 +23,7 @@ addLayer("p", {
 			if (player.s.unlocked) mult = mult.times(buyableEffect("s", 11));
 			if (hasUpgrade("e", 12)) mult = mult.times(upgradeEffect("e", 12));
 			if (hasUpgrade("b", 31)) mult = mult.times(upgradeEffect("b", 31));
-			if (hasUpgrade("ra", 33)) mult = mult.times(3);
+		
 			if (hasUpgrade("qe", 31)) mult = mult.times(upgradeEffect("qe",31));
             return mult
         },
@@ -229,7 +229,7 @@ addLayer("p", {
 				pseudoReq: "Req: 30 Achievements",
 				pseudoCan() { return player.a.achievements.length>=30 },
 				unlocked() { return player.p.pseudoUpgs.includes(Number(this.id)) },
-				effect() { return player.o.points.plus(1).log10().plus(1).log10().plus(1).log10().plus(1).times((hasUpgrade("hn", 34)) ? upgradeEffect("hn", 34) : 1) },
+				effect() { return player.o.points.plus(1).log10().plus(1).log10().plus(1).log10().plus(1).times((hasUpgrade("hn", 34)) ? upgradeEffect("hn", 34) : 1).times((hasUpgrade("hn", 62)) ? 2 : 1) },
 				effectDisplay() { return format(tmp.p.upgrades[34].effect)+"x" },
 				formula: "log(log(log(x+1)+1)+1)+1",
 			},
@@ -282,7 +282,7 @@ addLayer("p", {
 			},
 			51: {
 				title: "Reverse Potenticy",
-				description: "Prestige Points boost <b>Planet Dilators</b> and <b>Expontent Starship</b>.",
+				description: "Prestige Points boost <b>Planet Dilators</b> and <b>exponent Starship</b>.",
 				cost: new Decimal("e2.77e14"),
 				effect() { return player.p.points.plus(1).pow(0.000000000000001) },
 				unlocked() { return hasUpgrade("pt", 55) },
@@ -339,7 +339,7 @@ addLayer("b", {
 			let mult = new Decimal(1);
 			if (hasUpgrade("b", 23)) mult = mult.div(upgradeEffect("b", 23));
 			if (player.s.unlocked) mult = mult.div(buyableEffect("s", 13));
-			if (hasUpgrade("ra",22)) mult = mult.div(10);
+		
 			return mult;
 		},
 		canBuyMax() { return hasMilestone("b", 1) },
@@ -612,7 +612,7 @@ addLayer("g", {
 			let mult = new Decimal(1);
 			if (hasUpgrade("g", 22)) mult = mult.div(upgradeEffect("g", 22));
 			if (player.s.unlocked) mult = mult.div(buyableEffect("s", 13));
-			if (hasUpgrade("ra",22)) mult = mult.div(10);
+		
 			return mult;
 		},
 		canBuyMax() { return hasMilestone("g", 2) },
@@ -981,7 +981,7 @@ addLayer("t", {
 			if (player.h.unlocked) mult = mult.times(tmp.h.effect);
 			if (player.o.unlocked) mult = mult.times(tmp.o.solEnEff2);
 			if (hasUpgrade("pt", 11)) mult = mult.pow(upgradeEffect("pt", 11));
-			if (hasUpgrade("ra", 23)) mult = mult.pow(20);
+			if (hasUpgrade("tp",13)) mult = mult.pow(upgradeEffect("tp",13));
 			if (hasUpgrade("pt", 54)) mult = mult.pow(8);
 			return mult;
 		},
@@ -1114,7 +1114,9 @@ addLayer("t", {
                 currencyLayer: "t",
 				unlocked() { return player.t.best.gte(2) },
 				effect() { 
-					return player.b.points.pow(0.95).add(1)
+					let eff = player.b.points.pow(0.95).add(1)
+					if (hasUpgrade("pt",21)) eff = eff.times(upgradeEffect("pt",21))
+					return eff;
 				},
 				effectDisplay() { return format(tmp.t.upgrades[12].effect)+"x" },
 				formula: "x^0.95+1",
@@ -1432,7 +1434,7 @@ addLayer("e", {
 				effect() { 
 					let ret = player.e.total.add(1).pow(1.5) 
 					ret = softcap("e12", ret);
-					if (hasUpgrade("ra", 53)) ret = ret.times(2.5);
+				
 					if ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false) ret = ret.pow(1.5);
 					return ret
 				},
@@ -1483,7 +1485,7 @@ addLayer("e", {
 				unlocked() { return hasAchievement("a", 33) },
 				effect() {
 					let eff = player.s.points.pow(2).div(25);
-					if (hasUpgrade("ra", 53)) eff = eff.times(2.5);
+					
 					if ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false) eff = eff.times(3.5);
 					return eff.floor();
 				},
@@ -1496,7 +1498,7 @@ addLayer("e", {
 				cost() { return new Decimal(((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?"e1.011e5":2.5e28) },
 				unlocked() { return hasAchievement("a", 33) },
 				effect() { let eff = Decimal.pow(((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?"1e2000":1.1, player.b.points.plus(player.g.points).pow(0.9)) 
-				if (hasUpgrade("ra", 53)) eff = eff.times(2.5);
+				
 			return eff;},
 				effectDisplay() { return format(tmp.e.upgrades[24].effect)+"x" },
 				formula() { return (((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?"1e2,000":"1.1")+"^((boosters+generators)^0.9)" },
@@ -1767,7 +1769,7 @@ addLayer("s", {
 			if (hasAchievement("a", 103)) pow = pow.plus(.1);
 			if (inChallenge("h", 21)) pow = pow.sub(0.9);
 			if (player.n.buyables[11].gte(5)) pow = pow.plus(buyableEffect("o", 33));
-			if (hasAchievement("a", 192)) pow = pow.plus(8);
+			
 			if ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false) pow = pow.div(5);
 			return pow;
 		},
@@ -2604,6 +2606,8 @@ addLayer("sg", {
 			if (hasUpgrade("ss", 21)) mult = mult.div(1.2);
 			if ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false) mult = mult.div(1.1);
 			if (hasAchievement("a", 191)) mult = mult.div(2);
+			if (player.ra.unlocked) mult = mult.div(buyableEffect2("ra", 11));
+			if (hasUpgrade("pt",65)) mult = mult.times(0.5)
 			return mult;
 		},
 		autoPrestige() { return player.sg.auto && hasMilestone("q", 6) && player.ma.current!="sg" },
@@ -2700,7 +2704,7 @@ addLayer("h", {
 			if (player.m.unlocked) mult = mult.times(((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes("m"):false)?tmp.m.mainHexEff:tmp.m.hexEff);
 			if (hasUpgrade("ba", 22)) mult = mult.times(tmp.ba.negBuff);
 			if (player.tp.unlocked) mult = mult.times(1.5);
-			if (hasUpgrade("pt", 61)) mult = mult.pow(upgradeEffect("pt", 61));
+		
             return mult
         },
         gainExp() { // Calculate the exponent on main currency from bonuses
@@ -2738,7 +2742,7 @@ addLayer("h", {
 			h = softcap("hindr_base", h);
 			let eff = h.plus(1).pow(3).pow(hasChallenge("h", 11)?1.2:1).pow(hasUpgrade("ba", 21)?8:1);
 			if (hasUpgrade("q", 45) && player.i.buyables[12].gte(6)) eff = eff.pow(100);
-			if (hasUpgrade("pt", 62)) eff = eff.pow(500);
+		
 			return eff;
 		},
 		effectDescription() {
@@ -3681,6 +3685,7 @@ addLayer("o", {
 		solPow() {
 			let pow = new Decimal(1);
 			if (hasUpgrade("ss", 33)) pow = pow.plus(upgradeEffect("ss", 33));
+			if (hasUpgrade("ss", 51)) pow = pow.plus(upgradeEffect("ss", 51));
 			if (hasUpgrade("ss", 41)) pow = pow.plus(buyableEffect("o", 21));
 			if (hasUpgrade("ba", 11)) pow = pow.plus(upgradeEffect("ba", 11));
 			if (hasUpgrade("hn", 55)) pow = pow.plus(upgradeEffect("hn", 55));
@@ -3992,7 +3997,7 @@ addLayer("ss", {
 			if (player.ne.unlocked) mult = mult.div(tmp.ne.thoughtEff1);
 			if (hasUpgrade("pt", 13)) mult = mult.div(1.5)
 			if (hasAchievement("a", 182)) mult = mult.div(1.5)
-			if (hasUpgrade("ra", 12)) mult = mult.div(upgradeEffect("ra", 12));
+			
             return mult
         },
         gainExp() { // Calculate the exponent on main currency from bonuses
@@ -4020,6 +4025,8 @@ addLayer("ss", {
 			if (hasUpgrade("ss", 13)) gain = gain.times(upgradeEffect("ss", 13));
 			if (player.o.unlocked) gain = gain.times(buyableEffect("o", 13));
 			if (player.m.unlocked) gain = gain.times(tmp.m.hexEff);
+			if (hasUpgrade("tp",25)) gain = gain.pow(3)
+			if (hasMilestone("ne",10)) gain = gain.pow(1.9)
 			return gain;
 		},
 		autoPrestige() { return player.ss.auto && hasMilestone("ba", 2) && player.ma.current!="ss" },
@@ -4062,7 +4069,7 @@ addLayer("ss", {
         layerShown(){return (player.s.unlocked&&player.h.unlocked)||player.m.unlocked||player.ba.unlocked},
         branches: ["s"],
 		upgrades: {
-			rows: 4,
+			rows: 5,
 			cols: 3,
 			11: {
 				title: "Spatial Awakening",
@@ -4190,6 +4197,50 @@ addLayer("ss", {
 				currencyLayer: "ss",
 				unlocked() { return hasChallenge("h", 42) },
 				style: {"font-size": "9px"},
+			},
+			51: {
+				title: "Devastated Sun",
+				cost() { return new Decimal(1e240) },
+				description: "Ravagerers boost Solar Power",
+				currencyDisplayName: "tachyon particles",
+				currencyInternalName: "points",
+				currencyLayer: "tp",
+				effect() { return player.ra.buyables[12].plus(1).log10().div(10) },
+				effectDisplay() { return "+"+format(tmp.ss.upgrades[51].effect.times(100))+"%" },
+				unlocked() { return player.tp.points.gte("5e239")||hasUpgrade("ss",51)},
+				style: {"font-size": "9px"},
+			},
+			52: {
+				title: "Beforespacial",
+				cost() { return new Decimal(1e241) },
+				description: "Subspace boosts Superintelligence gain.",
+				currencyDisplayName: "tachyon particles",
+				currencyInternalName: "points",
+				currencyLayer: "tp",
+				effect() { 
+					let eff = player.ss.subspace.pow(0.0000000001).plus(1)
+					
+					return eff;
+				},
+				effectDisplay() { return format(tmp.ss.upgrades[52].effect)+"x" },
+				unlocked() { return hasUpgrade("ss",51)},
+				style: {"font-size": "9px"},
+			},
+			53: {
+				title: "Keep The Vandal Away",
+				cost() { return new Decimal(1.5e241) },
+				description: "Subspace boosts Tachyon Particle gain and points are raised ^1.18.",
+				currencyDisplayName: "tachyon particles",
+				currencyInternalName: "points",
+				currencyLayer: "tp",
+				effect() { 
+					let eff = player.ss.subspace.pow(0.00000000025).plus(1)
+					
+					return eff;
+				},
+				effectDisplay() { return format(tmp.ss.upgrades[53].effect)+"x" },
+				unlocked() { return hasUpgrade("ss",52)},
+			
 			},
 		},
 })
@@ -4926,7 +4977,7 @@ addLayer("ps", {
         gainMult() { // Calculate the multiplier for main currency from bonuses
             mult = new Decimal(1)
 			if (player.i.buyables[11].gte(2)) mult = mult.div(buyableEffect("s", 17));
-			if (hasUpgrade("ra", 33)) mult = mult.div(2);
+	
             return mult
         },
         gainExp() { // Calculate the exponent on main currency from bonuses
@@ -5024,7 +5075,7 @@ addLayer("ps", {
 				title: "Wraiths",
 				scaleSlow() {
 					let speed = new Decimal(1);
-					if (hasUpgrade("a", 202)) slow = slow.times(1.8);
+					if (hasUpgrade("a", 202)) slow = slow.times(1.12);
 					if ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false) speed = speed.times(2);
 					return speed;
 				},
@@ -5092,7 +5143,7 @@ addLayer("ps", {
 					if (hasUpgrade("hn", 51)) slow = slow.times(2);
 					if ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false) slow = slow.times(1.2);
 					if (tmp.ps.impr[31].unlocked) slow = slow.times(improvementEffect("ps", 31));
-					if (hasUpgrade("pt", 23)) slow = slow.times(3);
+					if (hasUpgrade("pt", 23)) slow = slow.times(1.15);
 					return slow;
 				},
 				cost(x=player[this.layer].buyables[this.id]) { // cost for buying xth buyable, can be an object if there are multiple currencies
@@ -5228,6 +5279,7 @@ addLayer("hn", {
 			best: new Decimal(0),
 			total: new Decimal(0),
 			first: 0,
+			pseudoUpgs: [],
         }},
         color: "#ffbf00",
 		nodeStyle() {return {
@@ -5244,10 +5296,12 @@ addLayer("hn", {
 		gainMult() {
 			let mult = new Decimal(1);
 			if (player.n.buyables[11].gte(1)) mult = mult.times(buyableEffect("o", 22));
+			if (player.ra.buyables[12].gte(1)) mult = mult.times(buyableEffect("ra", 12));
 			if (hasAchievement("a", 91)) mult = mult.times(1.1);
 			if (hasUpgrade("g", 35) && player.i.buyables[12].gte(2)) mult = mult.times(upgradeEffect("g", 35));
 			if (hasUpgrade("s", 35) && player.i.buyables[12].gte(5)) mult = mult.times(upgradeEffect("s", 35));
 			if (player.ma.unlocked) mult = mult.times(tmp.ma.effect);
+			if (hasUpgrade("hn", 61)) mult = mult.pow(upgradeEffect("hn",61));
 			return mult;
 		},
 		getResetGain() {
@@ -5371,7 +5425,7 @@ addLayer("hn", {
 			},
 		},
 		upgrades: {
-			rows: 5,
+			rows: 7,
 			cols: 5,
 			11: {
 				title: "Begin Again",
@@ -5832,6 +5886,156 @@ addLayer("hn", {
 				effectDisplay() { return "+"+format(tmp.hn.upgrades[55].effect.times(100))+"%" },
 				formula: "log(O*P+1)*100",
 			},
+			61: {
+				title: "We. Are. Not. Dumb",
+				description: "Quantum Energy boosts Honour gain.",
+				
+						currencyDisplayName: "tachyon particles",
+						currencyInternalName: "points",
+						currencyLayer: "tp",
+						cost: new Decimal("1.2e244"),
+				
+				
+				unlocked() { return player.tp.points.gte(6e243)||hasUpgrade("hn",61)},
+				effect() { 
+
+					return player.qe.points.plus(1).pow(0.25)
+				},
+		
+	effectDisplay() { return "^"+format(tmp.hn.upgrades[61].effect) },
+			},
+			62: {
+				title: "Solar Flare",
+				description: "Multiply the effect of <b>Solar Potential</b> by 2.",
+				
+						currencyDisplayName: "tachyon particles",
+						currencyInternalName: "points",
+						currencyLayer: "tp",
+						cost: new Decimal("1.8e244"),
+				
+				
+				unlocked() { return hasUpgrade("hn",61)},
+				
+			},
+			63: {
+				title: "Harmful Ravagers",
+				description: "The <b>Take-backing</b> upgrade is boosted by your Honour.",
+				
+						currencyDisplayName: "tachyon particles",
+						currencyInternalName: "points",
+						currencyLayer: "tp",
+						cost: new Decimal("2e244"),
+						effect() { 
+
+							return player.hn.points.plus(1).pow(0.000000001)
+						},
+				
+			effectDisplay() { return format(tmp.hn.upgrades[63].effect)+"x" },
+				
+				unlocked() { return hasUpgrade("hn",62)},
+				
+			},
+			64: {
+				title: "Rigel Avengers",
+				description: "<b>Quirky Generation</b> is boosted by your Honour.",
+				
+						currencyDisplayName: "tachyon particles",
+						currencyInternalName: "points",
+						currencyLayer: "tp",
+						cost: new Decimal("5e285"),
+						effect() { 
+
+							let eff = player.hn.points.plus(1).pow(0.0000000006)
+							if (hasUpgrade("hn",65)) eff = eff.pow(2.5)
+							if (hasUpgrade("sy",12)) eff = eff.pow(upgradeEffect("sy",12))
+							if (hasAchievement("a",242)) eff = eff.times(3)
+							return eff;
+						},
+				
+			effectDisplay() { return format(tmp.hn.upgrades[64].effect)+"x" },
+				
+				unlocked() { return hasUpgrade("hn",63)},
+				
+			},
+			65: {
+				title: "Galaxy Alpha",
+				description: "The previous upgrade is raised ^2.5.",
+				
+						currencyDisplayName: "tachyon particles",
+						currencyInternalName: "points",
+						currencyLayer: "tp",
+						cost: new Decimal("1e286"),
+				
+				
+				unlocked() { return hasUpgrade("hn",64)},
+				
+			},
+			71: {
+				title: "Galaxy Beta",
+				description: "Tachyon Particles gain is cubed.",
+				
+						currencyDisplayName: "tachyon particles",
+						currencyInternalName: "points",
+						currencyLayer: "tp",
+						cost: new Decimal("2e286"),
+				
+				
+				unlocked() { return hasUpgrade("hn",65)},
+				
+			},
+			72: {
+				title: "Galaxy Gamma",
+				description: "Tachyon Particles multiply their own gain.",
+				
+						currencyDisplayName: "tachyon particles",
+						currencyInternalName: "points",
+						currencyLayer: "tp",
+						cost: new Decimal("1e301"),
+						effect() { 
+
+							let eff = player.tp.points.plus(1).pow(0.025)
+						  if (hasUpgrade("hn",73)) eff = eff.times(upgradeEffect("hn",73))
+							return eff;
+						},
+				
+			effectDisplay() { return format(tmp.hn.upgrades[72].effect)+"x" },
+				
+				unlocked() { return hasUpgrade("hn",71)},
+				
+			},
+			73: {
+				title: "Archangels",
+				description: "The previous upgrade is boosted by your Planets",
+				
+						currencyDisplayName: "tachyon particles",
+						currencyInternalName: "points",
+						currencyLayer: "tp",
+						cost: new Decimal("1e304"),
+						effect() { 
+
+							let eff = player.pt.points.plus(1).pow(2)
+						
+							return eff;
+						},
+				
+			effectDisplay() { return format(tmp.hn.upgrades[73].effect)+"x" },
+				
+				unlocked() { return hasUpgrade("hn",72)&&player.sy.unlocked},
+				
+			},
+			74: {
+				title: "Passive Angelicc",
+				description: "Raise the Tachyon Particle gain by 1.5.",
+				
+						currencyDisplayName: "tachyon particles",
+						currencyInternalName: "points",
+						currencyLayer: "tp",
+						cost: new Decimal("6e306"),
+	
+				unlocked() { return hasUpgrade("hn",73)&&player.sy.total.gte(2)},
+				
+			},
+			
 		},
 })
 
@@ -5936,6 +6140,7 @@ addLayer("n", {
 			let mult = new Decimal(1);
 			if (player.n.buyables[11].gte(1)) mult = mult.times(buyableEffect("o", 22));
 			if (hasUpgrade("hn", 25)) mult = mult.times(upgradeEffect("hn", 25));
+			if (hasMilestone("ra", 6)) mult = mult.pow(10500)
 			if (hasUpgrade("g", 33) && player.i.buyables[12].gte(2)) mult = mult.times(upgradeEffect("g", 33));
 			if (player.ge.unlocked) mult = mult.times(tmp.ge.rotEff);
 			if ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false) mult = mult.times(1e30);
@@ -6100,7 +6305,7 @@ addLayer("hs", {
 			if (hasUpgrade("t", 41) && player.i.buyables[12].gte(4)) mult = mult.times(2.5e3);
 			if (hasUpgrade("s", 33) && player.i.buyables[12].gte(5)) mult = mult.times(upgradeEffect("s", 33));
 			if (player.ma.unlocked) mult = mult.times(tmp.ma.effect);
-			if (hasUpgrade("ra", 11)) mult = mult.pow(upgradeEffect("ra", 11));
+	
 			if ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes("i"):false) mult = mult.times(Decimal.pow(10, player.i.hb));
 			if (hasMilestone("ra", 3)) mult = mult.pow(100);
             return mult
@@ -6782,7 +6987,9 @@ addLayer("ma", {
 			current: null,
         }},
         color: "#ff9f7f",
-        requires() { return new Decimal(100) }, // Can be a function that takes requirement increases into account
+        requires() { let req = new Decimal(100)
+			if (hasUpgrade("tp",19)) req = req.minus(10)
+		return req; }, // Can be a function that takes requirement increases into account
         resource: "mastery", // Name of prestige currency
         baseResource: "phantom souls", // Name of resource prestige is based on
         baseAmount() {return player.ps.points}, // Get the current amount of baseResource
@@ -6809,7 +7016,6 @@ addLayer("ma", {
 			if (hasAchievement("a", 163)) mult = mult.div(Decimal.pow(1.1, player.a.achievements.filter(x => x>160).length));
 			if (hasAchievement("a", 171)) mult = mult.div(1.05);
 			if (hasMilestone("pt", 7)) mult = mult.div(2);
-			if (hasUpgrade("ra", 12)) mult = mult.div(upgradeEffect("ra", 12));
 			if (hasUpgrade("qe", 32)) mult = mult.div(upgradeEffect("qe", 32));
 			if (hasUpgrade("qe", 41)) mult = mult.div(player.qe.rbMultipler);
             return mult
@@ -7060,6 +7266,7 @@ addLayer("ge", {
 			if (hasMilestone("id", 5) && tmp.id) mult = mult.times(tmp.id.rev.max(1));
 			if (hasUpgrade("ai", 33)) mult = mult.times(upgradeEffect("ai", 33));
 			if (hasUpgrade("ai", 44)) mult = mult.times(upgradeEffect("ai", 44));
+			if (hasUpgrade("pt",65)) mult = mult.times(1e30)
             return mult
         },
         gainExp() { // Calculate the exponent on main currency from bonuses
@@ -7075,7 +7282,7 @@ addLayer("ge", {
         doReset(resettingLayer){ 
 			let keep = [];
 			if (hasAchievement("a", 173)) keep.push("milestones")
-			if (hasMilestone("ra", 1)) keep.push("buyables")
+			if (hasMilestone("ra", 0)) keep.push("buyables")
 			if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
 			if (layers[resettingLayer].row >= this.row) {
 				player.ge.energy = new Decimal(0);
@@ -7132,6 +7339,8 @@ addLayer("ge", {
 		rps() {
 			let rps = tmp.ge.speed.div(tmp.ge.teeth.times(tmp.ge.toothSize)).times(tmp.ge.gearSpeed)
 			if (hasUpgrade("pt", 34)) rps = rps.pow(upgradeEffect("pt",34));
+			if (hasUpgrade("tp", 22)) rps = rps.times(1.1);
+			if (player.ra.buyables[13].gte(1)) rps = rps.times(buyableEffect("ra", 13));
 			if (player.ge.rotations.gte(player.tp.gearRotationHardcap)) rps = rps.root(player.tp.gearRotationDividcation);
 			if (player.repair.repaired.gte(1)) rps= rps.times(0);
 			return rps;
@@ -7172,7 +7381,13 @@ addLayer("ge", {
 				costDiv() {
 					let div = new Decimal(1);
 					if (hasAchievement("a", 124)) div = div.times(3);
+					if (hasAchievement("a", 194)) div = div.div(1e15);
 					if (hasAchievement("a", 211)) div = div.times(2.5);
+					if (player.pt.unlocked) div = div.times(0.01)
+					if (hasUpgrade("pt",34)) div = div.div(1e75);
+					if (hasUpgrade("pt",51)) div = div.times(1.05);
+					if (hasUpgrade("tp", 22)) div = div.div(2);
+					if (player.ra.buyables[13].gte(1))div = div.div(buyableEffect2("ra", 13));
 					return div;
 				},
 				free() {
@@ -7181,8 +7396,8 @@ addLayer("ge", {
 					if (hasUpgrade("pt",13)) free = free.plus(2);
 					if (hasUpgrade("pt",31)) free = free.plus(2);
 					if (hasUpgrade("pt", 44)) free = free.plus(3);
-					if (hasUpgrade("ra", 13)) free = free.plus(upgradeEffect("ra",13));
-					if (hasUpgrade("pt", 63)) free = free.plus(upgradeEffect("pt",63));
+				
+			
 					return free;
 				},
 				power() {
@@ -7220,6 +7435,7 @@ addLayer("ge", {
                     player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max()
 				},
                 style: {'height':'200px', 'width':'200px'},
+				
 				autoed() { return hasMilestone("pt", 9) && player.ge.autoEv },
 			},
 		},
@@ -7406,7 +7622,7 @@ addLayer("mc", {
 			if (hasMilestone("mc", 0)) mult = mult.times(player.ne.thoughts.max(1));
 			if (hasUpgrade("ai", 33)) mult = mult.times(upgradeEffect("ai", 33));
 			if (hasUpgrade("qe", 41)) mult = mult.times(player.qe.gbMultipler);
-			if (hasUpgrade("tp", 23)) mult = mult.pow(upgradeEffect("tp",23));
+		
             return mult
         },
         gainExp() { // Calculate the exponent on main currency from bonuses
@@ -7920,9 +8136,11 @@ addLayer("ne", {
 		base: new Decimal("1e10000"),
         gainMult() { // Calculate the multiplier for main currency from bonuses
             mult = new Decimal(1)
+			if (hasAchievement("a",232)) mult = mult.times(0.25)
+			if (hasMilestone("ne",8)) mult = mult.times(0.10)
             return mult
         },
-		canBuyMax() { return false },
+		canBuyMax() { return hasMilestone("ne", 9)},
         row: 4, // Row the layer is in on the tree (0 is the first row)
         hotkeys: [
             {key: "u", description: "Press U to Neuron Reset", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
@@ -8111,6 +8329,28 @@ addLayer("ne", {
 				effectDescription: "Unlock Auto-Neural Networks.",
 				toggles: [["ne", "autoNN"]],
 			},
+			8: {
+				unlocked() { return player.tp.points.gte(1e223) },
+				requirementDescription: "1.5e223 Tachyon Particles",
+				done() { return player.tp.points.gte(1.5e223) },
+				effectDescription: "Neuron is 90% cheaper.",
+				
+			},9: {
+				unlocked() { return player.tp.points.gte(1e223) },
+				requirementDescription: "3e223 Tachyon Particles",
+				done() { return player.tp.points.gte(3e223) },
+				effectDescription: "You can buy max Neurons.",
+				
+			},
+			10: {
+				unlocked() { return player.tp.points.gte(1e223) },
+				requirementDescription: "7e223 Tachyon Particles",
+				done() { return player.tp.points.gte(7e223) },
+	
+				effectDescription() { return "Subspace gain is raised ^1.9" },
+			},
+
+			
 		},
 		tabFormat: ["main-display",
 			"prestige-button",
@@ -8154,8 +8394,7 @@ addLayer("id", {
             mult = new Decimal(1)
 			if (hasMilestone("id", 2)) mult = mult.div(player.ne.points.plus(1).log10().plus(1));
 			if (hasUpgrade("pt",43)) mult = mult.div(3);
-			if (hasUpgrade("ra", 12)) mult = mult.div(upgradeEffect("ra", 12));
-			if (hasUpgrade("ra", 31)) mult = mult.div(upgradeEffect("ra", 31));
+			if (player.co.unlocked) mult = mult.div(player.co.power)
 			if (hasUpgrade("tp", 17)) mult = mult.div(5000);
             return mult
         },
@@ -8627,6 +8866,7 @@ addLayer("ai", {
 			if (hasUpgrade("ai", 41)) mult = mult.times(upgradeEffect("ai", 41));
 			if (hasUpgrade("ai", 43)) mult = mult.times(upgradeEffect("ai", 43));
 			if (hasUpgrade("ai", 44)) mult = mult.times(player.ai.buyables[11].max(1));
+			if (hasUpgrade("ss", 52)) mult = mult.times(upgradeEffect("ss", 52));
             return mult
         },
         gainExp() { // Calculate the exponent on main currency from bonuses
@@ -8844,8 +9084,7 @@ addLayer("ai", {
 				unlocked() { return player.ai.unlocked && player.ai.upgrades.length>=9 },
 				style: {height: '150px', width: '150px'},
 				effect() { let eff = player.ge.points.max(1).pow(5)
-					if (hasUpgrade("ra", 32)) eff = eff.times(upgradeEffect("ra", 32));
-					if (hasUpgrade("ra", 52)) eff = eff.times(2);
+				
 				return eff;},
 				effectDisplay() { return format(tmp.ai.upgrades[24].effect)+"x" },
 				formula: "x^5",
@@ -8914,7 +9153,7 @@ addLayer("ai", {
 				style: {height: '150px', width: '150px'},
 				effect() { let eff = player.ai.points.plus(1).pow(1.5) 
 					if (hasUpgrade("pt", 35)) eff = eff.pow(1.05);
-					if (hasUpgrade("ra", 52)) eff = eff.times(2);
+				
 				return eff;},
 				effectDisplay() { return format(tmp.ai.upgrades[33].effect)+"x" },
 				formula: "(x+1)^1.5",
@@ -8961,7 +9200,7 @@ addLayer("ai", {
 				unlocked() { return player.ai.unlocked && player.ai.upgrades.length>=9 },
 				style: {height: '150px', width: '150px'},
 				effect() { let eff = Decimal.pow(1.05, player.ma.points)
-					if (hasUpgrade("ra", 52)) eff = eff.times(2);
+				
 				return eff; },
 				effectDisplay() { return format(tmp.ai.upgrades[41].effect)+"x" },
 				formula: "1.05^x",
@@ -8987,7 +9226,7 @@ addLayer("ai", {
 				unlocked() { return player.ai.unlocked && player.ai.upgrades.length>=9 },
 				style: {height: '150px', width: '150px'},
 				effect() { let eff = Decimal.pow(100, player.ai.upgrades.length)
-					if (hasUpgrade("ra", 52)) eff = eff.times(2);
+					
 				return eff; },
 				effectDisplay() { return format(tmp.ai.upgrades[42].effect)+"x" },
 				formula: "100^x",
@@ -9013,7 +9252,7 @@ addLayer("ai", {
 				unlocked() { return player.ai.unlocked && player.ai.upgrades.length>=9 },
 				style: {height: '150px', width: '150px'},
 				effect() { let eff = Decimal.pow(1.075, player.id.points)
-					if (hasUpgrade("ra", 52)) eff = eff.times(2);
+					
 				return eff; },
 				effectDisplay() { return format(tmp.ai.upgrades[43].effect)+"x" },
 				formula: "1.075^x",
@@ -9039,7 +9278,7 @@ addLayer("ai", {
 				unlocked() { return player.ai.unlocked && player.ai.upgrades.length>=9 },
 				style: {height: '150px', width: '150px'},
 				effect() { let eff = player.ai.consc.plus(1).pow(5) 
-					if (hasUpgrade("ra", 52)) eff = eff.times(2);
+					
 				return eff;},
 				effectDisplay() { return format(tmp.ai.upgrades[44].effect)+"x" },
 				formula: "x^5",
@@ -9124,10 +9363,9 @@ addLayer("c", {
 		base: new Decimal(1.025),
         gainMult() { // Calculate the multiplier for main currency from bonuses
             mult = new Decimal(1)
-			if (player.pt.unlocked) mult = mult.div(tmp.pt.effect);
+		
 			if (hasUpgrade("pt", 14)) mult = mult.div(1.2);
-			if (hasUpgrade("ra", 42)) mult = mult.div(1.25);
-			if (hasUpgrade("ra", 43)) mult = mult.div(2);
+			if (player.co.unlocked) mult = mult.div(player.co.power)
             return mult
         },
         gainExp() { // Calculate the exponent on main currency from bonuses
@@ -9330,7 +9568,10 @@ addLayer("pt", {
     baseResource: "time capsules",                 // The name of the resource your prestige gain is based on.
     baseAmount() { return player.t.points },  // A function to return the current amount of baseResource.
 
-    requires: new Decimal(3600),              // The amount of the base needed to  gain 1 of the prestige currency.
+    requires() { let req = new Decimal(3600)
+	if (hasUpgrade("pt",54)) req = req.minus(100)
+
+return req;},              // The amount of the base needed to  gain 1 of the prestige currency.
 	autoPrestige() { return hasMilestone("pt", 6) && player.pt.auto },                           // Also the amount required to unlock the layer.
 	resetsNothing() { return hasUpgrade("pt", 44)},      
     type: "static",                         // Determines the formula used for calculating prestige currency.
@@ -9351,18 +9592,16 @@ addLayer("pt", {
 			"blank",
 			"blank",
 			"milestones", "blank", "upgrades", "blank", "blank"],
-			effect() {
-				return Decimal.pow(tmp.pt.effectBase);
-			},
-			
-			effectDescription() {
-				return "which multiplies Civilizations by "+format(tmp.pt.effect)+"x"+(tmp.nerdMode?(" ("+format(tmp.pt.effectBase)+"x each)"):"")
-			},
+		
     gainMult() {                            // Returns your multiplier to your gain of the prestige resource.
         let mult = new Decimal(0.959)
 		if (hasAchievement("a", 201)) mult = mult.div(Decimal.pow(1.1, player.a.achievements.filter(x => x>200).length));   
-		if (hasUpgrade("ra", 42)) mult = mult.div(1.5);
-		if (hasUpgrade("tp", 16)) mult = mult.div(upgradeEffect("tp",16));      
+	
+		if (hasUpgrade("tp", 16)) mult = mult.times(0.98)     
+		if (hasUpgrade("tp", 17)) mult = mult.times(0.90)  
+		if (hasMilestone("ra", 3)) mult = mult.times(0.99);  
+		if (hasUpgrade("tp",18)) mult = mult.div(buyableEffect("tp", 11));  
+		if (hasUpgrade("pt", 62)) mult = mult.div(upgradeEffect("pt",62));   
 		return mult;      // Factor in any bonuses multiplying gain here.
     },
     gainExp() {                             // Returns the exponent to your gain of the prestige resource.
@@ -9435,10 +9674,17 @@ addLayer("pt", {
 	requirementDescription: "1,500 Total Planets",
 	done() { return player.pt.total.gte(1500)&&hasUpgrade("tp", 12) },
 	unlocked() { return hasUpgrade("tp", 12) },
-	effectDescription: "Automate Gear Evolution and gain 100% of Ravagers per second.",
-	toggles: [["ge", "autoEv"]],
+	effectDescription: "Gain 100% of Ravagers per second.",
+
 },
+
  },
+ doReset(resettingLayer){ 
+	let keep = [];
+	if (hasMilestone("sy", 0)) keep.push("milestones")
+	if (hasMilestone("sy", 2)) keep.push("upgrades")
+	if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
+},
  upgrades: {
 	rows: 9,
 	cols: 9,
@@ -9448,7 +9694,7 @@ addLayer("pt", {
 	cost: new Decimal(1),
 	effect() { let eff = player.pt.points.plus(1).pow(0.25) 
 		if (hasUpgrade("pt", 15)) eff = eff.times(1.25);
-		if (hasUpgrade("pt", 51)) eff = eff.times(upgradeEffect("p",51));
+	
 	return eff; }
 ,
 	effectDisplay() { return "^"+format(tmp.pt.upgrades[11].effect) },
@@ -9457,9 +9703,9 @@ addLayer("pt", {
 	},
 	12: {
 		title: "Advanced",
-		description: "<b>Basic</b>'s effect is multipled for every Mastery you collected.",
+		description: "<b>Basic</b>'s effect is multipled for every Mastery you have in this Row 8 run.",
 	cost: new Decimal(1),
-	effect() { return player.ma.points.plus(0.25).pow(0.125) },
+	effect() { return player.ma.points.plus(1).pow(0.125) },
 	effectDisplay() { return format(tmp.pt.upgrades[12].effect)+"x" },
 		unlocked() {return hasUpgrade("pt",11)},
 		formula: "x^1",
@@ -9474,7 +9720,7 @@ addLayer("pt", {
 	},
 	14: {
 		title: "Heterodilation",
-		description: "Civilizations is cheapen by 1.2x",
+		description: "Civilizations is 20% cheaper.",
 	cost: new Decimal(1),
 	
 		unlocked() {return hasUpgrade("pt",13)},
@@ -9489,13 +9735,13 @@ addLayer("pt", {
 				currencyDisplayName: "planets",
 				currencyInternalName: "points",
 				currencyLayer: "pt",
-				cost: new Decimal(16),
+				cost: new Decimal(125),
 			},
 	{
 				currencyDisplayName: "tachyon particles",
 				currencyInternalName: "points",
 				currencyLayer: "tp",
-				cost: new Decimal(10),
+				cost: new Decimal(75),
 			},
 	
 		],
@@ -9506,9 +9752,9 @@ addLayer("pt", {
 	
 	21: {
 		title: "Terraformation",
-		description: "The <b>Limit Stretcher</b>'s formula is better for every Civilizations you have.",
+		description: "Upgrade <b>Limit Stretcher</b> are better based on Civilizations.",
 	cost: new Decimal(1),
-	effect() { return player.c.points.plus(1).pow(0.125) },
+	effect() { return player.c.points.plus(1).pow(0.05) },
 	effectDisplay() { return +format(tmp.pt.upgrades[21].effect)+"x" },
 		
 		formula: "x+1",
@@ -9536,7 +9782,7 @@ addLayer("pt", {
 	},
 	24: {
 		title: "Injecting Neuronatic",
-		description: "Neurons and Energy acts as if you chose it first.",
+		description: "Neurons and Energy acts as if you chose them first.",
 	cost: new Decimal(2),
 	onPurchase() { player.ne.unlockOrder = 0; player.en.unlockOrder = 0;},
 		unlocked() {return hasUpgrade("pt",23)},
@@ -9551,13 +9797,13 @@ addLayer("pt", {
 				currencyDisplayName: "planets",
 				currencyInternalName: "points",
 				currencyLayer: "pt",
-				cost: new Decimal(16),
+				cost: new Decimal(135),
 			},
 	{
 				currencyDisplayName: "tachyon particles",
 				currencyInternalName: "points",
 				currencyLayer: "tp",
-				cost: new Decimal(20),
+				cost: new Decimal(500),
 			},
 	
 		],
@@ -9567,7 +9813,7 @@ addLayer("pt", {
 	},
 	31: {
 		title: "Circuitlar Dimension",
-		description: "There are new Planet Milestons and an additonial 2 free Gear Evolutions, but points gain is raised to the power of 1.45",
+		description: "Unlocks new Planet milestones, gain additional 2 free Gear Evolutions and points gain is raised to the power of 1.45",
 	cost: new Decimal(2),
 	
 		unlocked() {return hasUpgrade("pt",23)},
@@ -9595,9 +9841,9 @@ addLayer("pt", {
 	},
 	34: {
 		title: "Continuum Flatten",
-		description: "Gain more Rotations based on your Planets.",
+		description: "Gain more Rotations based on your Planets, however Gear Evolution cost is increased by x1e75.",
 	cost: new Decimal(3),
-	effect() { let eff = player.pt.points.plus(3).pow(0.2); 
+	effect() { let eff = player.pt.points.plus(1).pow(0.1); 
 	return eff;},
 	effectDisplay() { return "^"+format(tmp.pt.upgrades[34].effect) },
 		
@@ -9614,13 +9860,13 @@ addLayer("pt", {
 				currencyDisplayName: "planets",
 				currencyInternalName: "points",
 				currencyLayer: "pt",
-				cost: new Decimal(21),
+				cost: new Decimal(145),
 			},
 	{
 				currencyDisplayName: "tachyon particles",
 				currencyInternalName: "points",
 				currencyLayer: "tp",
-				cost: new Decimal(5000),
+				cost: new Decimal(1e5),
 			},
 	
 		],
@@ -9629,7 +9875,7 @@ addLayer("pt", {
 		
 	},
 	41: {
-		title: "Expontent Starship",
+		title: "Exponent Starship",
 		description: "Superintelligence loss is divided based on your Points.",
 	cost: new Decimal(4),
 	effect() { let eff = player.points.plus(0.1).pow(0.000000000000000001); 
@@ -9675,7 +9921,7 @@ addLayer("pt", {
 				currencyDisplayName: "planets",
 				currencyInternalName: "points",
 				currencyLayer: "pt",
-				cost: new Decimal(25),
+				cost: new Decimal(150),
 			},
 	{
 				currencyDisplayName: "tachyon particles",
@@ -9695,17 +9941,22 @@ addLayer("pt", {
 	},
 	51: {
 		title: "Celestials of Continuum",
-		description: "Time Capsule's cost requirement is divided by 3",
-	cost: new Decimal(10),
+		description: "Ravagers gain is tripled. Gear Evolution is 5% cheaper.",
+	cost: new Decimal(8),
 	
 	unlocked() { return hasMilestone("ra", 2) },
 		
 	},
 	52: {
-		title: "Creeps of Living",
-		description: "The Magic Spell 1 is multipled by 1.5",
-	cost: new Decimal(10),
-	
+		title: "Anti-Ravagering",
+		description: "Ravagerer buyable is cheaper based on points. 1st Magic spell is 50% stronger.",
+	cost: new Decimal(11),
+	effect() { let eff = player.points.plus(1).pow(0.1) 
+		if (hasUpgrade("pt",63)) eff = eff.pow("1e125")
+		if (hasUpgrade("tp",12)) eff = eff.pow(upgradeEffect("tp",12))
+	return eff; }
+,
+	effectDisplay() { return "/"+format(tmp.pt.upgrades[52].effect) },
 	unlocked() {return hasUpgrade("pt",51)},
 		
 	},
@@ -9723,7 +9974,7 @@ addLayer("pt", {
 	},
 	54: {
 		title: "Time Expander",
-		description: "Time Energy Cap is raised to the power of 8",
+		description: "Reduce the base cost of Planets (3,600 --> 3,500)<br>Time Energy Cap is raised to the power of 8",
 	cost: new Decimal(10),
 	
 	unlocked() {return hasUpgrade("pt",53)},
@@ -9738,7 +9989,7 @@ addLayer("pt", {
 				currencyDisplayName: "planets",
 				currencyInternalName: "points",
 				currencyLayer: "pt",
-				cost: new Decimal(28),
+				cost: new Decimal(145),
 			},
 	{
 				currencyDisplayName: "tachyon particles",
@@ -9754,72 +10005,66 @@ addLayer("pt", {
 	},
 	61: {
 		title: "Hindrance Compaction",
-		description: "Gain more Hindrance Spirits based on your Tachyon Galaxies.",
+		description: "All Ravager Buyables are 99.9% cheaper. Ravager exponent is doubled again.",
 	cost: new Decimal(10),
-	effect() { let eff = player.tp.tachyonGalaxies.plus(1).pow(6); 
-		if (eff.gte(30000000)) eff = eff.div(100).log2().plus(3)
-		return eff;},
-		effectDisplay() { return format(tmp.pt.upgrades[61].effect)+"x" },
+
 			
-			formula: "x+1",
-	unlocked() {return player.tp.unlocked},
+	
+	unlocked() {return hasMilestone("ra",7)},
 		
 	},
 	62: {
-		title: "Transcendion of Rings",
-		description: "The Hindrance Spirit Effect is raised to the power of 500",
-	cost: new Decimal(16),
-	
+		title: "Transcendence",
+		description: "Each Planet upgrade bought increases exponent of Ravagers. The effect also divides Planet cost.",
+	cost: new Decimal(14),
+	effect() {
+		let eff = Decimal.pow(1.05, player.pt.upgrades.length).min(tmp.pt.upgrades[this.id].cap);
+		return eff;
+	},
+	cap() { let cap = new Decimal(3.07)
+		if (hasUpgrade("sy",14)) cap = cap.plus(0.75)
+	return cap; },
+	effectDisplay() { return format(tmp.pt.upgrades[62].effect)+"x for Ravager exponent. <br><br>"+"/"+format(tmp.pt.upgrades[62].effect)+" Planet cost."+(tmp.pt.upgrades[62].effect.gte(tmp.pt.upgrades[this.id].cap)?" (MAXED)":"") },
 	unlocked() {return hasUpgrade("pt",61)},
 		
 	},
 	63: {
-		title: "Spirit Ghostify",
-		description: "Current Subspace add free levels to Gear Evolution",
-	cost: new Decimal(16),
-	effect() { let eff = player.ss.subspace.plus(1).pow(0.00000001); 
-		return eff;},
-		effectDisplay() { return "+"+format(tmp.pt.upgrades[63].effect) },
+		title: "Omega Fruits",
+		description: "<b>Anti-Ravagering</b> is raised ^1e125 and affects Composting Ravagers",
+	cost: new Decimal(91),
 			
-			formula: "x+1",
+			
 	unlocked() {return hasUpgrade("pt",62)},
 		
 	},
 	64: {
-		title: "Tachyon Compressors",
-		description: "Devastated Upgrade 2I is stronger based on your Super Generators",
-	cost: new Decimal(16),
-	effect() { let eff = player.sg.points.plus(1).pow(0.1); 
-		return eff;},
-		effectDisplay() { return format(tmp.pt.upgrades[64].effect)+"x" },
+		title: "Pantheon Upgrades",
+		description: "Unlocks a new column of Planet upgrades.",
+	cost: new Decimal(115),
+
 			
 			formula: "(x+1)+1",
 	unlocked() {return hasUpgrade("pt",63)},
 		
 	},
 	65: {
-		title: "Think to See",
-		description: "Unlock Tachyon Fireworks",
+		title: "Barneysaurus",
+		description: "Gain 1e30x more Gears and Super Generator is 50% cheaper.",
 		multiRes: [
 			
 			{
 				currencyDisplayName: "planets",
 				currencyInternalName: "points",
 				currencyLayer: "pt",
-				cost: new Decimal(32),
+				cost: new Decimal(166),
 			},
 	{
-				currencyDisplayName: "mastery",
+				currencyDisplayName: "tachyon particles",
 				currencyInternalName: "points",
-				currencyLayer: "ma",
-				cost: new Decimal(44),
+				currencyLayer: "tp",
+				cost: new Decimal(2.5e35),
 			},
-			{
-				currencyDisplayName: "civillizations",
-				currencyInternalName: "points",
-				currencyLayer: "c",
-				cost: new Decimal(17),
-			},
+
 		],
 		
 	unlocked() {return hasUpgrade("pt",64)},
@@ -9846,436 +10091,240 @@ addLayer("ra", {
     baseResource: "rotations",                 // The name of the resource your prestige gain is based on.
     baseAmount() { return player.ge.rotations },  // A function to return the current amount of baseResource.
 
-    requires: new Decimal("1e10500"),              // The amount of the base needed to  gain 1 of the prestige currency.
-	passiveGeneration() { return (hasMilestone("pt", 9))?1:(hasMilestone("ra",0)?0.05:0 )},                           // Also the amount required to unlock the layer.
+    requires: new Decimal("1e5500"),              // The amount of the base needed to  gain 1 of the prestige currency.
+	passiveGeneration() { return (hasMilestone("pt", 9))?1:(hasMilestone("ra",1)?0.2:0 )},                           // Also the amount required to unlock the layer.
 
     type: "normal",                         // Determines the formula used for calculating prestige currency.
-    exponent: 0.003,                          // "normal" prestige gain is (currency^exponent).
+    exponent: 0.0001,                          // "normal" prestige gain is (currency^exponent).
 	base: new Decimal(1.05),
 
 	tabFormat: ["main-display",
 			"prestige-button",
+			"resource-display",
 			"blank",
-			["display-text",
-				function() {return 'You have ' + format(player.pt.points) + ' Devastated Planetirium'},
-					{}],
-			"blank",
-			["display-text",
-				function() {return 'You have ' + formatWhole(player.c.points) + " Devastated Humans"},
-					{}],
-			"blank",
-["display-text",
-				function() {return 'You have ' + formatWhole(player.id.points) + " Devastated Think-outside-of-boxirium"},
-					{}],
-			"milestones", "blank", ["display-text",
-			function() {return 'NOTE: Some Devastated upgrades only affect to these layers on the row within each colonum!'},
-				{}], "upgrades"],
+			
+			"milestones", "blank", ["buyable",11],["buyable",12],["buyable",13]],
     gainMult() {                            // Returns your multiplier to your gain of the prestige resource.
        let mult = new Decimal(1)
 	   if (hasAchievement("a", 184)) mult = mult.times(2);
+	   if (hasUpgrade("pt", 51)) mult = mult.times(3);
 	   if (hasMilestone("pt", 7)) mult = mult.times(3);
 	   if (hasAchievement("a", 211)) mult = mult.times(Decimal.pow(1.25, player.qe.points));
 	   if (hasUpgrade("qe", 41)) mult = mult.times(player.qe.rgMultipler);
 	   if (hasAchievement("a", 221)) mult = mult.pow(1.5);
 	   if (hasUpgrade("qe", 41)) mult = mult.times(player.qe.positronicCharageMulti);
-	   if (hasUpgrade("tp", 13)) mult = mult.pow(upgradeEffect("tp",13));
-	   if (hasUpgrade("tp", 23)) mult = mult.pow(upgradeEffect("tp",23));
+	   if (hasUpgrade("tp",14)) mult = mult.times(upgradeEffect("tp", 14));    
+	 
+	   if (player.ra.unlocked) mult= mult.times(buyableEffect("ra", 13));    
 	   return mult;               // Factor in any bonuses multiplying gain here.
     },
-    gainExp() {                             // Returns the exponent to your gain of the prestige resource.
-        return new Decimal(1)
+    gainExp() {       
+		let exp = new Decimal(1)
+		if (hasUpgrade("tp",11)) exp = exp.times(1.5)
+		if (hasUpgrade("tp",16)) exp = exp.times(1.5)
+		if (player.ra.unlocked) exp= exp.times(buyableEffect("ra", 11));    
+		if (hasUpgrade("tp",18)) exp= exp.times(buyableEffect("tp", 11));    
+		if (hasMilestone("ra",5)) exp = exp.times(2)       
+		if (hasUpgrade("pt",61)) exp = exp.times(2)
+		if (hasUpgrade("pt", 62)) mult = mult.div(upgradeEffect("pt",62));                  // Returns the exponent to your gain of the prestige resource.
+        return exp;
     },
-	
+	doReset(resettingLayer){ 
+		let keep = [];
+
+	},
  branches: ["ge",["hn",2]],
  layerShown(){return player.pt.unlocked},         // Returns a bool for if this layer's node should be visible in the tree.
 
 
  milestones: {
 	0: {
-		requirementDescription: "1e9 Ravagers",
-		done() { return player.ra.points.gte(1e9)},
-		effectDescription: "Gain 5% of Ravagers per second.",
+		requirementDescription: "15 Total Ravagers",
+		done() { return player.ra.total.gte(15)},
+		effectDescription: "Keep Gear Evolution in Row 8 reset.",
 	
 },
 1: {
-	requirementDescription: "1e13 Ravagers",
-	done() { return player.ra.points.gte(1e13)},
-	effectDescription: "Always have Gear Evolution in resets.",
+	requirementDescription: "125 Total Ravagers",
+	done() { return player.ra.total.gte(125)},
+	effectDescription: "Gain 20% of Ravagers per second.",
 
 },
 2: {
-	requirementDescription: "1e21 Ravagers",
-	done() { return player.ra.points.gte(1e21) && hasUpgrade("ra", 22)},
-	unlocked() { return hasUpgrade("ra", 22) },
+	requirementDescription: "2,000 Total Ravagers",
+	done() { return player.ra.total.gte(2000)},
+
 	effectDescription: "There is a new set of Planets upgrade.",
 
 },
 3: {
-	requirementDescription: "1e28 Ravagers",
-	done() { return player.ra.points.gte(1e28) && hasUpgrade("ra", 22)},
-	unlocked() { return hasUpgrade("ra", 22) },
-	effectDescription: "Gain ^100 more Hyperspace.",
+	requirementDescription: "7,000 Total Ravagers",
+	done() { return player.ra.total.gte(7000)},
+
+	effectDescription: "Unlock a new Ravager buyable and Planets are 1% cheaper.",
 
 },
 4: {
-	requirementDescription: "1e300 Ravagers",
-	done() { return player.ra.points.gte(1e300) && hasUpgrade("ra", 22)},
-	unlocked() { return player.qe.unlocked },
-	effectDescription: "Automate Civillizations Populations",
+	requirementDescription: "25,000 Total Ravagers",
+	done() { return player.ra.total.gte(25000)},
+
+	effectDescription: "Automate Civilization Population. The first 3 Ravager Buyables are cheaper by 50%.",
+
+},
+5: {
+	requirementDescription: "37,000 Total Ravagers",
+	done() { return player.ra.total.gte(37000)},
+
+	effectDescription: "Double the Ravagers exponent.",
+
+},
+6: {
+	requirementDescription: "1,000,000 Total Ravagers",
+	done() { return player.ra.total.gte(1e6)},
+
+	effectDescription: "Dust gain is raised ^10500.",
+
+},
+7: {
+	requirementDescription: "7,000,000 Total Ravagers",
+	done() { return player.ra.total.gte(7e6)},
+
+	effectDescription: "Unlock more Planet upgrades.",
 
 },
 
  },
- upgrades: {
-	rows: 5,
-	cols: 3,
+ buyables: {
+	
 	11: {
-		title: "Devastated Upgrade 1I",
-		description: "Ravagers multiply Hyperspace gain at a reduced rate.",
-		multiRes: [
-			
-			{
-				currencyDisplayName: "devastated planetirum",
-				currencyInternalName: "points",
-				currencyLayer: "pt",
-				cost: new Decimal(5),
-			},
-{
-				currencyDisplayName: "devastated humans",
-				currencyInternalName: "points",
-				currencyLayer: "c",
-				cost: new Decimal(5),
-			},
-{
-				currencyDisplayName: "devastated think-outside-of-the-boxirum",
-				currencyInternalName: "points",
-				currencyLayer: "id",
-				cost: new Decimal(5),
-			},
-		],
-		effect() { let eff = player.ra.points.plus(1).pow(0.001)
-			if (hasUpgrade("ra", 21)) eff = eff.times(upgradeEffect("ra",21));
-			if (hasUpgrade("ra", 41)) eff = eff.times(2);
-		return eff;},
-	effectDisplay() { return "^"+format(tmp.ra.upgrades[11].effect) },
+		title: "Ravagers",
+		costDiv() {
+			let div = new Decimal(1);
+			if (player.ra.unlocked) div = div.times(buyableEffect2("ra", 13));   
+			if (hasMilestone("ra",4)) div = div.div(0.5)
+			if (hasUpgrade("pt",61)) div = div.div(0.001)
+			if (hasUpgrade("tp",15)) div = div.times(upgradeEffect("tp", 15));   
+							return div;
+		},
+		cost(x=player[this.layer].buyables[this.id]) {
+			if (x.gte(3)) x = x.pow(3);
 		
-		formula: "(x+1)+1",
-		unlocked() { return player.ra.unlocked },
-		style: {height: '150px', width: '150px',background: 'red'},
+			return Decimal.pow(2, Decimal.pow(1.5, x.plus().cbrt()).times(2)).div(tmp.ra.buyables[this.id].costDiv)
+		},
+		effect() { return player[this.layer].buyables[this.id].times(1.002).plus(1).pow(.1) },
+		effect2() { return player[this.layer].buyables[this.id].times(1.05).plus(1).pow(.36) },
+		display() { // Everything else displayed in the buyable button after the title
+			let data = tmp[this.layer].buyables[this.id];
+			let cost = data.cost;
+			let amt = player[this.layer].buyables[this.id];
+			let display = "Cost: "+format(cost)+" Ravagers"+".<br><br>Level: "+formatWhole(amt)+"<br><br>Effect: Multiply Ravager exponent by x"+format(data.effect)+". Super Generator cost is also divided by "+format(data.effect2);
+			return display;
+		},
+		unlocked() { return unl(this.layer)}, 
+		canAfford() {
+			if (!tmp[this.layer].buyables[this.id].unlocked) return false;
+			let cost = tmp[this.layer].buyables[this.id].cost
+			return player[this.layer].unlocked && player.ra.points.gte(cost);
+		},
+		buy() { 
+			player.ra.points = player.ra.points.sub(tmp[this.layer].buyables[this.id].cost)
+			player.ra.buyables[this.id] = player.ra.buyables[this.id].plus(1);
+		},
+		buyMax() {
+			let c = player.ra.points.times(tmp[this.layer].buyables[this.id].costDiv);
+			
+			player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(n);
+			return c;
+		},
+		style: {'height':'250px', 'width':'250px'},
 	},
 	12: {
-		title: "Devastated Upgrade 2I",
-		description: "Mastery, Subspace and Idea cost requirement is divided for every Imperium Bricks you collected.",
-		multiRes: [
+		title: "Ravagerers",
+		costDiv() {
+			let div = new Decimal(1);
+			if (player.ra.unlocked) div = div.times(buyableEffect2("ra", 13));   
+			if (hasUpgrade("pt",52)) div = div.times(upgradeEffect("pt", 52));   
+			if (hasMilestone("ra",4)) div = div.div(0.5)
+			if (hasUpgrade("pt",61)) div = div.div(0.001)
+							return div;
+		},
+		cost(x=player[this.layer].buyables[this.id]) {
+			if (x.gte(3)) x = x.pow(12);
+			if (x.gte(56)) x = x.pow(1.01);
+			if (x.gte(66)) x = x.pow(1.05);
+			if (x.gte(140)) x = x.pow(1.25);
+			return Decimal.pow(25, Decimal.pow(1.5, x.plus().cbrt()).times(2)).div(tmp.ra.buyables[this.id].costDiv)
+		},
+		effect() { return player[this.layer].buyables[this.id].times(1.5).plus(1).pow(.56) },
+		display() { // Everything else displayed in the buyable button after the title
+			let data = tmp[this.layer].buyables[this.id];
+			let cost = data.cost;
+			let amt = player[this.layer].buyables[this.id];
+			let display = "Cost: "+format(cost)+" Ravagers"+".<br><br>Level: "+formatWhole(amt)+"<br><br>Backfire: Performs a Row 8 reset when bought<br><br>Effect: Honour gain is multiplied by x"+format(data.effect)+".";
+			return display;
+		},
+		unlocked() { return unl(this.layer) && getBuyableAmount("ra",11).gte(4)}, 
+		canAfford() {
+			if (!tmp[this.layer].buyables[this.id].unlocked) return false;
+			let cost = tmp[this.layer].buyables[this.id].cost
+			return player[this.layer].unlocked && player.ra.points.gte(cost);
+		},
+		buy() { 
+			player.ra.points = player.ra.points.sub(tmp[this.layer].buyables[this.id].cost)
+			player.ra.buyables[this.id] = player.ra.buyables[this.id].plus(1);
+			if (!hasUpgrade("tp", 17)) doReset("ra", true);
+		},
+		buyMax() {
+			let c = player.ra.points.times(tmp[this.layer].buyables[this.id].costDiv);
 			
-			{
-				currencyDisplayName: "devastated planetirum",
-				currencyInternalName: "points",
-				currencyLayer: "pt",
-				cost: new Decimal(5),
-			},
-{
-				currencyDisplayName: "devastated humans",
-				currencyInternalName: "points",
-				currencyLayer: "c",
-				cost: new Decimal(5),
-			},
-{
-				currencyDisplayName: "devastated think-outside-of-the-boxirum",
-				currencyInternalName: "points",
-				currencyLayer: "id",
-				cost: new Decimal(5),
-			},
-		],
-		effect() { let eff = player.i.points.plus(1).pow(0.25) 
-			if (hasUpgrade("pt", 64)) eff = eff.times(upgradeEffect("pt",64));
-			if (hasAchievement("a", 202)) eff = eff.times(2);
-
-			if (hasUpgrade("ra", 41)) eff = eff.times(2);
-		return eff;},
-	effectDisplay() { return format(tmp.ra.upgrades[12].effect)+"x" },
-		
-		formula: "(x+1)/2",
-		unlocked() { return player.ra.unlocked },
-		style: {height: '150px', width: '150px',background: 'green'},
+			player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(n);
+			return c;
+		},
+		style: {'height':'250px', 'width':'250px'},
 	},
 	13: {
-		title: "Devastated Upgrade 3I",
-		description: "Add free levels to Gear Evolution based on your Subspace.",
-		multiRes: [
+		title: "Composting Ravagers",
+		costDiv() {
+			let div = new Decimal(1);
+			if (hasMilestone("ra",4)) div = div.div(0.5)
+			if (hasUpgrade("pt",61)) div = div.div(0.001)
+			if (hasUpgrade("pt",62)) div = div.times(upgradeEffect("pt", 52));   
+							return div;
+		},
+		cost(x=player[this.layer].buyables[this.id]) {
+			if (x.gte(3)) x = x.pow(18);
+			return Decimal.pow(80, Decimal.pow(1.5, x.plus().cbrt()).times(2)).div(tmp.ra.buyables[this.id].costDiv)
+		},
+		effect() { return player[this.layer].buyables[this.id].times(1.1).plus(1).pow(.3) },
+		effect2() { return player[this.layer].buyables[this.id].times(1.4).plus(1).pow(.4) },
+		display() { // Everything else displayed in the buyable button after the title
+			let data = tmp[this.layer].buyables[this.id];
+			let cost = data.cost;
+			let amt = player[this.layer].buyables[this.id];
+			let display = "Cost: "+format(cost)+" Ravagers"+".<br><br>Level: "+formatWhole(amt)+"<br><br>Backfire: Performs a Row 8 reset and reset Rotations when bought<br><br>Effect: Gain x"+format(data.effect)+" more rotations and Ravagers but Gear Evolution is x"+format(data.effect2)+" more expensive. Makes 2 previous buyables "+format(data.effect2)+"x cheaper.";
+			return display;
+		},
+		unlocked() { return unl(this.layer) && hasMilestone("ra",3)}, 
+		canAfford() {
+			if (!tmp[this.layer].buyables[this.id].unlocked) return false;
+			let cost = tmp[this.layer].buyables[this.id].cost
+			return player[this.layer].unlocked && player.ra.points.gte(cost);
+		},
+		buy() { 
+			player.ra.points = player.ra.points.sub(tmp[this.layer].buyables[this.id].cost)
+			player.ra.buyables[this.id] = player.ra.buyables[this.id].plus(1);
+			if (!hasUpgrade("tp", 17)) 	doReset("ra", true);
+			if (!hasUpgrade("tp", 17)) player.ge.rotations = new Decimal(0)
+		},
+		buyMax() {
+			let c = player.ra.points.times(tmp[this.layer].buyables[this.id].costDiv);
 			
-			{
-				currencyDisplayName: "devastated planetirum",
-				currencyInternalName: "points",
-				currencyLayer: "pt",
-				cost: new Decimal(5),
-			},
-{
-				currencyDisplayName: "devastated humans",
-				currencyInternalName: "points",
-				currencyLayer: "c",
-				cost: new Decimal(5),
-			},
-{
-				currencyDisplayName: "devastated think-outside-of-the-boxirum",
-				currencyInternalName: "points",
-				currencyLayer: "id",
-				cost: new Decimal(5),
-			},
-		],
-		effect() { let eff = player.i.points.plus(1).pow(0.08)
-			if (hasUpgrade("ra", 41)) eff = eff.times(2);
-		return eff; },
-	effectDisplay() { return "+"+format(tmp.ra.upgrades[13].effect) },
-		
-		formula: "(x+1)+1",
-		unlocked() { return player.ra.unlocked },
-		style: {height: '150px', width: '150px',background: 'blue'},
-	},
-	21: {
-		title: "Devastated Upgrade 1II",
-		description: "The Devastated Upgrade 1I is stronger based on your Ravagers",
-		multiRes: [
-			
-			{
-				currencyDisplayName: "devastated planetirum",
-				currencyInternalName: "points",
-				currencyLayer: "pt",
-				cost: new Decimal(7),
-			},
-	{
-				currencyDisplayName: "devastated humans",
-				currencyInternalName: "points",
-				currencyLayer: "c",
-				cost: new Decimal(10),
-			},
-	{
-				currencyDisplayName: "devastated think-outside-of-the-boxirum",
-				currencyInternalName: "points",
-				currencyLayer: "id",
-				cost: new Decimal(12),
-			},
-		],
-		effect() { let eff= player.ra.points.plus(1).pow(0.01)
-			if (hasUpgrade("ra", 41)) eff = eff.times(2);
-		return eff; },
-	effectDisplay() { return format(tmp.ra.upgrades[21].effect)+"x" },
-		
-		formula: "(x+(sqrt+1)+1)+1",
-		unlocked() { return hasUpgrade("ra",11)},
-		style: {height: '150px', width: '150px',background: 'yellow'},
-	},
-	22: {
-		title: "Devastated Upgrade 2II",
-		description: "There is a new set of Ravager Milestone and Booster/Generators cost requirement is divided by 10.",
-		multiRes: [
-			
-			{
-				currencyDisplayName: "devastated planetirum",
-				currencyInternalName: "points",
-				currencyLayer: "pt",
-				cost: new Decimal(7),
-			},
-	{
-				currencyDisplayName: "devastated humans",
-				currencyInternalName: "points",
-				currencyLayer: "c",
-				cost: new Decimal(10),
-			},
-	{
-				currencyDisplayName: "devastated think-outside-of-the-boxirum",
-				currencyInternalName: "points",
-				currencyLayer: "id",
-				cost: new Decimal(12),
-			},
-		],
-		
-		unlocked() { return hasUpgrade("ra",12)},
-		style: {height: '150px', width: '150px',background: 'cyan'},
-	},
-	23: {
-		title: "Devastated Upgrade 3II",
-		description: "Time Energy Gain Cap is raised to the power of 20",
-		multiRes: [
-			
-			{
-				currencyDisplayName: "devastated planetirum",
-				currencyInternalName: "points",
-				currencyLayer: "pt",
-				cost: new Decimal(7),
-			},
-	{
-				currencyDisplayName: "devastated humans",
-				currencyInternalName: "points",
-				currencyLayer: "c",
-				cost: new Decimal(10),
-			},
-	{
-				currencyDisplayName: "devastated think-outside-of-the-boxirum",
-				currencyInternalName: "points",
-				currencyLayer: "id",
-				cost: new Decimal(12),
-			},
-		],
-		
-		unlocked() { return hasUpgrade("ra",13)},
-		style: {height: '150px', width: '150px',background: 'purple'},
-	},
-	31: {
-		title: "Devastated Upgrade 1III",
-		description: "Idea cost requirement is divided based on this amount.",
-		multiRes: [
-			
-			{
-				currencyDisplayName: "devastated planetirum",
-				currencyInternalName: "points",
-				currencyLayer: "pt",
-				cost: new Decimal(11),
-			},
-	{
-				currencyDisplayName: "devastated humans",
-				currencyInternalName: "points",
-				currencyLayer: "c",
-				cost: new Decimal(14),
-			},
-	{
-				currencyDisplayName: "devastated think-outside-of-the-boxirum",
-				currencyInternalName: "points",
-				currencyLayer: "id",
-				cost: new Decimal(16),
-			},
-		],
-		effect() { let eff= player.id.points.plus(1).pow(0.5) 
-			if (hasUpgrade("ra", 41)) eff = eff.times(2);
-			if (hasUpgrade("ra", 51)) eff = eff.times(3);
-		return eff;},
-		effectDisplay() { return format(tmp.ra.upgrades[31].effect)+"x" },
-			
-			formula: "x+1",
-		unlocked() { return hasUpgrade("ra",21)},
-		style: {height: '150px', width: '150px',background: 'Orange'},
-	},
-	32: {
-		title: "Devastated Upgrade 2III",
-		description: "<b>Node BD</b> is stronger for every Mastery you have",
-		multiRes: [
-			
-			{
-				currencyDisplayName: "devastated planetirum",
-				currencyInternalName: "points",
-				currencyLayer: "pt",
-				cost: new Decimal(11),
-			},
-	{
-				currencyDisplayName: "devastated humans",
-				currencyInternalName: "points",
-				currencyLayer: "c",
-				cost: new Decimal(14),
-			},
-	{
-				currencyDisplayName: "devastated think-outside-of-the-boxirum",
-				currencyInternalName: "points",
-				currencyLayer: "id",
-				cost: new Decimal(16),
-			},
-		],
-		effect() { let eff= player.ma.points.plus(1).pow(0.1)
-			if (hasUpgrade("ra", 41)) eff = eff.times(2);
-		return eff; },
-		effectDisplay() { return format(tmp.ra.upgrades[32].effect)+"x" },
-			
-			formula: "x+1",
-		unlocked() { return hasUpgrade("ra",22)},
-		style: {height: '150px', width: '150px',background: 'black',color: 'white'},
-	},
-	33: {
-		title: "Devastated Upgrade 3III",
-		description: "Prestige Points gain is multipled by 3 and cheapen Phantom Souls by 2",
-		multiRes: [
-			
-			{
-				currencyDisplayName: "devastated planetirum",
-				currencyInternalName: "points",
-				currencyLayer: "pt",
-				cost: new Decimal(11),
-			},
-	{
-				currencyDisplayName: "devastated humans",
-				currencyInternalName: "points",
-				currencyLayer: "c",
-				cost: new Decimal(14),
-			},
-	{
-				currencyDisplayName: "devastated think-outside-of-the-boxirum",
-				currencyInternalName: "points",
-				currencyLayer: "id",
-				cost: new Decimal(16),
-			},
-		],
-		
-		unlocked() { return hasUpgrade("ra",23)},
-		style: {height: '150px', width: '150px',background: 'white'},
-	},
-	41: {
-		title: "Ravager Booster I",
-		description: "Most Devastated Upgrades's effect is multipled by 2",
-		cost: new Decimal(1e95),
-		
-		unlocked() { return player.ra.points.gte(1e95)},
-		style: {height: '150px', width: '150px'},
-	},
-	42: {
-		title: "Ravager Booster II",
-		description: "Planet cost requirement is divided by 1.5 and Civillizations cost requirement is divided by 1.25",
-		cost: new Decimal(37),
-		currencyDisplayName: "mastery",
-		currencyInternalName: "points",
-		currencyLayer: "ma",
-		unlocked() { return player.ma.points.gte(37)},
-		style: {height: '150px', width: '150px'},
-	},
-	43: {
-		title: "Ravager Booster III",
-		description: "The Tachyon Particle gain is raised to the power of 1.05 and Civillizations cost requirement is divided by 2",
-		cost: new Decimal(20),
-		currencyDisplayName: "devastated humans",
-		currencyInternalName: "points",
-		currencyLayer: "c",
-		unlocked() { return player.c.points.gte(20)},
-		style: {height: '150px', width: '150px'},
-	},
-	51: {
-		title: "Devastated Forgotten Upgrade I",
-		description: "<b>Devastated Upgrade 1III</b> is multipled by 3",
-		cost: new Decimal(1e270),
-		pseudoUnl() { return player.ra.points.gte("1e270") && hasUpgrade("ra", 43) },
-		pseudoReq: "Req: e7.5e11 Quirks",
-		pseudoCan() { return player.q.points.gte("e7.5e11") },
-		unlocked() { return player.ra.pseudoUpgs.includes(Number(this.id)) },
-		style: {height: '150px', width: '150px'},
-	},
-	52: {
-		title: "Devastated Forgotten Upgrade II",
-		description: "Most AI Node's effect are 2x stronger",
-		cost: new Decimal(1e270),
-		pseudoUnl() { return player.ra.points.gte("1e270") && hasUpgrade("ra", 43) },
-		pseudoReq: "Req: 1e24 Tachyon Particles",
-		pseudoCan() { return player.tp.points.gte("1e24") },
-		unlocked() { return player.ra.pseudoUpgs.includes(Number(this.id)) },
-		style: {height: '150px', width: '150px'},
-	},
-	53: {
-		title: "Devastated Forgotten Upgrade III",
-		description: "Enhancer's upgrades effect is 2.5x stronger",
-		cost: new Decimal(1e270),
-		pseudoUnl() { return player.ra.points.gte("1e270") && hasUpgrade("ra", 43) },
-		pseudoReq: "Req: 1.8e308 Ravagers",
-		pseudoCan() { return player.ra.points.gte("1.8e308") },
-		unlocked() { return player.ra.pseudoUpgs.includes(Number(this.id)) },
-		style: {height: '150px', width: '150px'},
+			player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(n);
+			return c;
+		},
+		style: {'height':'250px', 'width':'250px'},
 	},
 },
-
 
 
 })
@@ -10288,7 +10337,8 @@ addLayer("tp", {
 		dilatedTime: new Decimal(0),
 		superhindrances: new Decimal(0),
 		devastatedPlanets: new Decimal(0),
-tachyonGalaxies: new Decimal(0),
+tg: new Decimal(0),
+dt: new Decimal(0),
 power: new Decimal(0),
 effect: new Decimal(0),
 fireworks: new Decimal(0),
@@ -10314,22 +10364,31 @@ gearRotationDividcation: new Decimal("150000")
 	componentStyles: {
 		background() { return (player.tp.unlocked||canReset("tp"))?((player.grad&&!player.oldStyle)?"radial-gradient(circle, #430082 0%, #4CFF00 100%)":"#430082"):"#bf8f8f" },
 	},
-    baseResource: "hindrance spirits",                 // The name of the resource your prestige gain is based on.
-    baseAmount() { return player.h.points },  // A function to return the current amount of baseResource.
+    baseResource: "ravagers",                 // The name of the resource your prestige gain is based on.
+    baseAmount() { return player.ra.points },  // A function to return the current amount of baseResource.
 
-    requires: new Decimal("e1.28e14"),              // The amount of the base needed to  gain 1 of the prestige currency.
+    requires: new Decimal("2e15"),              // The amount of the base needed to  gain 1 of the prestige currency.
                     // Also the amount required to unlock the layer.
 					tgAmt() {
-						let amt = player.tp.points.div(1).plus(1).log10().root(2)
+						let amt = player.tp.points.div(1e6).plus(1).log10().root(1.35)
 						return amt.floor();
 					},
 					nextTG() {
-						let next = Decimal.pow(2, player.tp.tachyonGalaxies.div(1).plus(1).log10().root(2))
+						let next = Decimal.pow(10, player.tp.tg.plus(1).pow(1.35)).sub(1).times(1e6);
+						
+						return next;
+					},
+					dtAmt() {
+						let amt = player.tp.points.div(3).plus(1).log10().root(1.35)
+						return amt.floor();
+					},
+					nextTDT() {
+						let next = Decimal.pow(1.7, player.tp.dt.plus(1).pow(1.35)).sub(1).times(1e6);
 						
 						return next;
 					},
     type: "normal",                         // Determines the formula used for calculating prestige currency.
-    exponent: new Decimal(4.5e-13),                          // "normal" prestige gain is (currency^exponent).
+    exponent: new Decimal(0.3),                          // "normal" prestige gain is (currency^exponent).
 	base: new Decimal(1.2),
 	
 	effect() {
@@ -10338,9 +10397,15 @@ gearRotationDividcation: new Decimal("150000")
 	effect174() {
 		return new Decimal("e1e19");
 	},
+	onPrestige() { player.ra.points = new Decimal(0) },
+	passiveGeneration() { return (hasMilestone("sy", 0))?1:0 },
+	doReset(resettingLayer){ 
+		let keep = [];
 	
-	
-	
+		if (hasMilestone("sy", 2)) keep.push("upgrades")
+		if (hasMilestone("sy", 5)) keep.push("buyables")
+		if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
+	},
 	tabFormat: {
 		"Tachyon": {
 			buttonStyle() { return {'background-color': 'green',color:'black'} },
@@ -10349,76 +10414,60 @@ gearRotationDividcation: new Decimal("150000")
 			"resource-display",
 			
 			["display-text",
-				function() {return 'You have ' + format(player.h.points) + ' Hindrance Spirits'},
+				function() {return 'NOTE: Reseting for Tachyon Particles resets Ravagers!'},
 					{}],
 			"blank",
 			
 			["display-text",
-				function() {return 'You have ' + format(player.tp.dilatedTime) + ' Dilated Time'},
+				function() {return 'Your ' + format(player.tp.points) + ' Tachyon Particles translates into ' + format(player.tp.dt) + " Dilated Time."},
 					{}],
-					["clickable", 11],
-					["display-text",
-				function() {return 'You have ' + format(player.tp.superhindrances) + ' Superhindrances'},
-					{}],
-					["clickable", 12],
+					"blank","blank",
 					
 "blank",
-["display-text",
-				function() {return 'You can reset Dilated Time and Superhindrances if you need to.'},
-					{}],
-					["clickable", 13],
+["display-text", function() { return player.tp.unlocked?("You have "+formatWhole(player.tp.tg)+" Tachyon Galaxies"+(tmp.nerdMode?"(Formula: log(TP/1e6+1)^0.74)":(" (next at "+format(tmp.tp.nextTG)+" Tachyon Particles)"))):"" }],
+"blank","blank",
 "blank",
-["display-text",
-function() {return 'You currently got ' + format(player.tp.tachyonGalaxies) + ' Tachyon Galaxies. '+"(next at "+format(tmp.tp.nextTG)+" Tachyon Particles)"},
-	{}], "blank", "blank", 
-	["display-text",
-		function() {return (hasAchievement("a", 203)?("You unlocked Softcap Compaction, which currently you have " +format(player.tp.tachyonGalaxies) +" Tachyon Galaxies, translated to strongen the softcap later starten upgrades by " +format(player.tp.effect) + "x"):"")},
-			{}],"blank"]
+		]
 		},
-		"Fireworks": {
+		"Softcap Compaction": {
 			buttonStyle() { return {'background-color': 'blue',color:'black'} },
-			unlocked() { return hasUpgrade("pt",65) },
+			unlocked() { return hasAchievement("a",203) },
 			content: ["main-display",
 		"blank",
 			
-			["clickable", 21],
-			["display-text",
-				function() {return 'Disclamer: Lauching a firework would reset Planets!'},
-					{}],
+			["buyable",11],
+		
 					"blank",
 					"blank",
-			["display-text",
-				function() {return 'At <h3>'+format(player.tp.taxes)+'</h3> points, Points would be brought to the <h3>'+format(player.tp.taxesDivPoints)+'</h3>th root to pay taxes! The points get hardcapped by <h3>'+format(player.tp.hardcap)+"</h3>!"},
-					{}],
-			"blank",
-			"blank",
-			["display-text",
-				function() {return 'Gear Rotations would be brought to the <h3>'+format(player.tp.gearRotationDividcation)+'</h3>th root if the rotations reach at least <h3>'+format(player.tp.gearRotationHardcap)+"</h3>!"},
-					{}],
-		"blank",
-		["display-text",
-		function() {return 'You have launched and exploded <h3>'+format(player.tp.fireworks)+'</h3> fireworks after its 8 second lifetime.'},
-			{}],
+			
 		"blank",
 	"upgrades",]
 		},
 	},
     gainMult() {                            // Returns your multiplier to your gain of the prestige resource.
        let mult = new Decimal(1)
+	   if (hasAchievement("a", 195)) mult = mult.times(3)
 	   if (hasUpgrade("qe", 51)) mult = mult.times(upgradeEffect("qe",51));
 	   if (hasUpgrade("tp", 19)) mult = mult.pow(upgradeEffect("tp",19));
 	   if (player.tp.points.gte("1e10000")) mult = mult.root(NaN);
+	   if (hasUpgrade("tp",18)) mult = mult.times(buyableEffect("tp", 11));  
+	   if (hasAchievement("a",233)) mult = mult.times(580000)
+	   if (hasAchievement("a", 234)) mult = mult.pow(1.25)
+	   if (hasUpgrade("hn", 71)) mult = mult.pow(3)
+	   if (hasUpgrade("hn", 74)) mult = mult.pow(1.5)
+	   if (hasUpgrade("hn", 72)) mult = mult.times(upgradeEffect("hn",72))
+	   if (hasUpgrade("ss",53)) mult = mult.times(upgradeEffect("ss",53))
 	   return mult;               // Factor in any bonuses multiplying gain here.
     },
     gainExp() {                             // Returns the exponent to your gain of the prestige resource.
         let exp = new Decimal(1)
-		if (hasAchievement("a", 225)) exp = exp.add(1);
+
 		return exp;
     },
 	update(diff) {
 		if (!player.tp.unlocked) return;
-		player.tp.tachyonGalaxies = player.tp.tachyonGalaxies.max(tmp.tp.tgAmt);
-		
+		player.tp.tg = player.tp.tg.max(tmp.tp.tgAmt);
+		player.tp.dt = player.tp.dt.max(tmp.tp.dtAmt);
 	},
  branches: ["mc",["hs",2]],
  layerShown(){return player.pt.unlocked},         // Returns a bool for if this layer's node should be visible in the tree.
@@ -10480,44 +10529,39 @@ upgrades: {
 	cols: 10,
 	11: {
 		title: "Cleaned Whistle",
-		description: "The taxes divication is subtracted by 1.1578",
-		cost: new Decimal(1),
-		currencyDisplayName: "fireworks",
-		currencyInternalName: "fireworks",
-				currencyLayer: "tp",
-
-		onPurchase() { player.tp.taxesDivPoints = player.tp.taxesDivPoints.minus(1.1578);player.tp.fireworksCost = player.tp.fireworksCost.minus(3);},
+		description: "Ravager exponent is increased by 50%.",
+		cost: new Decimal(100),
 		unlocked() { return player.tp.unlocked },
 		
 	
 	
 	},
 	12: {
-		title: "More??",
-		description: "Unlock new Planet milestones.",
-		cost: new Decimal(3),
-		currencyDisplayName: "fireworks",
-		currencyInternalName: "fireworks",
-				currencyLayer: "tp",
+		title: "Spontaneous Edifice",
+		description: "Anti-Ravagering is now raised by Points. Also unlocks new Planet milestones.",
+		cost: new Decimal(10000),
+		effect() { 
+			let eff =  player.points.plus(1).pow(0.00000000001)
+		
+			return eff;
+							},
+					
+				effectDisplay() { return "^"+format(tmp.tp.upgrades[12].effect) },
 
-		onPurchase() {player.tp.fireworksCost = player.tp.fireworksCost.minus(9);},
+
 		unlocked() { return player.tp.unlocked },
 		
 	
 	
 	},
 	13: {
-		title: "65 Fireworks",
-		description: "Tachyon Fireworks multiply the Ravager gain.",
-		cost: new Decimal(7),
-		currencyDisplayName: "fireworks",
-		currencyInternalName: "fireworks",
-				currencyLayer: "tp",
+		title: "No-Cap",
+		description: "Points also raise the Time Particle cap.",
+		cost: new Decimal(50000),
 
-		onPurchase() {player.tp.fireworksCost = player.tp.fireworksCost.minus(21);},
 		unlocked() { return hasUpgrade("tp",12) },
 		effect() { 
-			let eff =  player.tp.fireworks.plus(1).pow(1)
+			let eff =  player.points.plus(1).pow(0.0000000000000005)
 		
 			return eff;
 							},
@@ -10529,152 +10573,94 @@ upgrades: {
 	
 	},
 	14: {
-		title: "65 Fireworks Squared",
-		description: "Subtract the Points Taxes based on your Ravagers.",
-		cost: new Decimal(7),
-		currencyDisplayName: "fireworks",
-		currencyInternalName: "fireworks",
-				currencyLayer: "tp",
-
-		onPurchase() {player.tp.taxesDivPoints = player.tp.taxesDivPoints.minus(upgradeEffect("tp",14));player.tp.fireworksCost = player.tp.fireworksCost.minus(21);},
+		title: "Take-backing",
+		description: "Ravagers multiply Tachyon Particles gain.",
+		cost: new Decimal(1e5),
+	
 		unlocked() { return hasUpgrade("tp",13) },
 		effect() { 
-			let eff =  player.ra.points.plus(1).pow(0.00035)
-		
+			let eff =  player.ra.points.plus(1).pow(0.035)
+		if (hasUpgrade("tp", 21)) eff = eff.times(3)
+		if (hasUpgrade("hn", 63)) eff = eff.times(upgradeEffect("hn",63))
 			return eff;
 							},
 					
-				effectDisplay() { return "-"+format(tmp.tp.upgrades[14].effect) },
+				effectDisplay() { return format(tmp.tp.upgrades[14].effect)+"x" },
 					
 					formula: "x+1",
 	
 	
 	},
 	15: {
-		title: "65 Fireworks Cubed",
-		description: "Subtract the Gear Rotation rootcap based on your Ravagers.",
-		cost: new Decimal(7),
-		currencyDisplayName: "fireworks",
-		currencyInternalName: "fireworks",
-				currencyLayer: "tp",
-
-		onPurchase() {player.tp.gearRotationDividcation = player.tp.gearRotationDividcation.minus(upgradeEffect("tp",15));player.tp.fireworksCost = player.tp.fireworksCost.minus(21);},
+		title: "Ravager devastating ravagers",
+		description: "Ravagers makes ravagers cheaper.",
+		cost: new Decimal(1e7),
 		unlocked() { return hasUpgrade("tp",14) },
 		effect() { 
-			let eff =  player.ra.points.plus(1).pow(0.004)
+			let eff =  player.ra.points.plus(1).pow(1)
 		
 			return eff;
 							},
 					
-				effectDisplay() { return "-"+format(tmp.tp.upgrades[15].effect) },
+				effectDisplay() { return format(tmp.tp.upgrades[15].effect)+"x" },
 					
 					formula: "x+1",
 	
 	
 	},
 	16: {
-		title: "65 Fireworksception",
-		description: "Planets divide its own cost requirement",
-		cost: new Decimal(7),
-		currencyDisplayName: "fireworks",
-		currencyInternalName: "fireworks",
-				currencyLayer: "tp",
-
-		onPurchase() {player.tp.fireworksCost = player.tp.fireworksCost.minus(21);},
+		title: "Bare Bone Synergy",
+		description: "Planets is 2% cheaper. Points gain is multiplied by 8 and multiply Ravager exponent by 1.5.",
+		cost: new Decimal(3e7),
+	
 		unlocked() { return hasUpgrade("tp",15) },
-		effect() { 
-			let eff =  player.pt.points.plus(1).pow(0.08)
-		
-			return eff;
-							},
-					
-				effectDisplay() { return "/"+format(tmp.tp.upgrades[16].effect) },
-					
-					formula: "x+1",
 	
 	
 	},
 	17: {
-		title: "Exponentaned 65 Fireworks",
-		description: "Divide the Ideas cost requirement by 5,000",
-		cost: new Decimal(18),
-		currencyDisplayName: "fireworks",
-		currencyInternalName: "fireworks",
-				currencyLayer: "tp",
+		title: "Sylveon",
+		description: "<b>Ravagerers</b> and <b>Composting Ravagers</b> do not have backfires and make planets 10% cheaper.",
+		cost: new Decimal(1e16),
 
-		onPurchase() {player.tp.fireworksCost = player.tp.fireworksCost.minus(54);},
 		unlocked() { return hasUpgrade("tp",16) },
 	
 	
 	
 	},
 	18: {
-		title: "Tetrated 65 Fireworks",
-		description: "Quantum Energy divide its own cost requirement",
-		cost: new Decimal(18),
-		currencyDisplayName: "fireworks",
-		currencyInternalName: "fireworks",
-				currencyLayer: "tp",
+		title: "Enhanced Pokémons",
+		description: "Unlock Sylveon Enhancers.",
+		cost: new Decimal(2e16),
 
-		onPurchase() {player.tp.fireworksCost = player.tp.fireworksCost.minus(54);},
 		unlocked() { return hasUpgrade("tp",17) },
 	
-		effect() { 
-			let eff =  player.qe.points.plus(1).pow(50000)
-		
-			return eff;
-							},
-					
-				effectDisplay() { return "/"+format(tmp.tp.upgrades[18].effect) },
-					
-					formula: "x+1",
 	
 	},
 	19: {
-		title: "Pentrated 65 Fireworks",
-		description: "Postronic Charge's effect now affects Tachyon Particles gain but at reduced rate.",
-		cost: new Decimal(18),
-		currencyDisplayName: "fireworks",
-		currencyInternalName: "fireworks",
-				currencyLayer: "tp",
+		title: "Parallel Continuum",
+		description: "Mastery base requirement is decreased by 10.",
+		cost: new Decimal(1e35),
 
-		onPurchase() {player.tp.fireworksCost = player.tp.fireworksCost.minus(54);},
 		unlocked() { return hasUpgrade("tp",18) },
 	
-		effect() { 
-			let eff =  player.qe.positronicCharageMulti.plus(1).pow(0.25)
-		
-			return eff;
-							},
-					
-				effectDisplay() { return "^"+format(tmp.tp.upgrades[19].effect) },
-					
-					formula: "x+1",
+
 	
 	},
 	21: {
-		title: "65 Fire-65-works",
-		description: "The Launch Planets requirement starts at 115",
-		cost: new Decimal(18),
-		currencyDisplayName: "fireworks",
-		currencyInternalName: "fireworks",
-				currencyLayer: "tp",
+		title: "Bolstered",
+		description: "<b>Take-backing</b> is 3 times as efficient.",
+		cost: new Decimal(1e40),
 
-		onPurchase() {player.tp.fireworksCost = new Decimal(115);},
 		unlocked() { return hasUpgrade("tp",19) },
 	
 		
 	
 	},
 	22: {
-		title: "65 Devastated Fireworks",
-		description: "The Gear Rotation rootcap is now 50,000",
-		cost: new Decimal(27),
-		currencyDisplayName: "fireworks",
-		currencyInternalName: "fireworks",
-				currencyLayer: "tp",
-
-				onPurchase() {player.tp.fireworksCost = player.tp.fireworksCost.minus(81);player.tp.gearRotationDividcation = new Decimal(50000);},
+		title: "Type II Civilzations",
+		description: "Gain 10% more Rotations but make Gear Evolution 2x expensive.",
+		cost: new Decimal(1e65),
+	
 				
 		unlocked() { return hasUpgrade("tp",21) },
 	
@@ -10682,18 +10668,14 @@ upgrades: {
 	
 	},
 	23: {
-		title: "65 Quantum Fireworks",
-		description: "Quantum Energy boosts the Ravager gain and even boosts the Machine Parts gain",
-		cost: new Decimal(27),
-		currencyDisplayName: "fireworks",
-		currencyInternalName: "fireworks",
-				currencyLayer: "tp",
-
-				onPurchase() {player.tp.fireworksCost = player.tp.fireworksCost.minus(81)},
+		title: "Break your Heart",
+		description: "Quantum Energy multiplies Points gain.",
+		cost: new Decimal(1e103),
+	
 				
 		unlocked() { return hasUpgrade("tp",22) },
 		effect() { 
-			let eff =  player.qe.points.plus(1).pow(0.25)
+			let eff =  player.qe.points.plus(1).pow(0.2)
 		
 			return eff;
 							},
@@ -10705,14 +10687,16 @@ upgrades: {
 	
 	},
 	24: {
-		title: "Placebo Firework",
-		description: "Gear Rotation rootcap is now at 10,000.",
-		cost: new Decimal(35),
-		currencyDisplayName: "fireworks",
-		currencyInternalName: "fireworks",
-				currencyLayer: "tp",
-
-				onPurchase() {player.tp.fireworksCost = player.tp.fireworksCost.minus(105);player.tp.gearRotationDividcation = new Decimal(10000);},
+		title: "Quirky Generation",
+		description: "Quantum Energy base cost is rooted based on Ravagers.",
+		cost: new Decimal(2.5e103),
+		effect() { 
+			let eff =  player.ra.points.plus(1).pow(0.1)
+		 if (hasUpgrade("hn",64)) eff = eff.times(upgradeEffect("hn",64))
+			return eff;
+							},
+					
+				effectDisplay() { return "√"+format(tmp.tp.upgrades[24].effect) },
 				
 		unlocked() { return hasUpgrade("tp",23) },
 		
@@ -10720,21 +10704,56 @@ upgrades: {
 	
 	},
 	25: {
-		title: "Placebo Firework",
-		description: "The Gear Rotation hardcap starts at e310,000 instead of e300,000",
-		cost: new Decimal(37),
-		currencyDisplayName: "fireworks",
-		currencyInternalName: "fireworks",
-				currencyLayer: "tp",
+		title: "Generation κ",
+		description: "Cube the Subspace gain.",
+		cost: new Decimal(1e116),
 
-				onPurchase() {player.tp.fireworksCost = player.tp.fireworksCost.minus(111);player.tp.gearRotationHardcap = new Decimal("e310000");},
 				
 		unlocked() { return hasUpgrade("tp",24) },
 		
 		
 	
 	},
-}
+},
+buyables: {
+	
+	11: {
+		title: "Sylveon Enhancers", // Optional, displayed at the top in a larger font
+		
+		cost(x=player[this.layer].buyables[this.id]) {
+			if (x.gte(40)) x = x.pow(12);
+return Decimal.pow(1e5, Decimal.pow(2, x.plus().cbrt()).times(1.5))
+		},
+		effect() { return player[this.layer].buyables[this.id].times(1.01).plus(1).pow(.1) },
+		effect2() { return player[this.layer].buyables[this.id].times(1.001).plus(1).pow(.05) },
+		display() { // Everything else displayed in the buyable button after the title
+			let data = tmp[this.layer].buyables[this.id];
+			let cost = data.cost;
+			let amt = player[this.layer].buyables[this.id];
+			let display = "Cost: "+format(cost)+" Tachyon Particles"+".<br><br>Level: "+formatWhole(amt)+"<br><br>Effect: Multiply Ravager exponent and Tachyon Particle gain by x"+format(data.effect)+". Divide the cost of Planets by "+format(data.effect2);
+			return display;
+		},
+		unlocked() { return hasUpgrade("tp",18)}, 
+		canAfford() {
+			if (!tmp[this.layer].buyables[this.id].unlocked) return false;
+			let cost = tmp[this.layer].buyables[this.id].cost
+			return player[this.layer].unlocked && player.tp.points.gte(cost);
+		},
+		buy() { 
+			player.tp.points = player.tp.points.sub(tmp[this.layer].buyables[this.id].cost)
+			player.tp.buyables[this.id] = player.tp.buyables[this.id].plus(1);
+		},
+		buyMax() {
+			let c = player.tp.points.times(tmp[this.layer].buyables[this.id].costDiv);
+			
+			player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(n);
+			return c;
+		},
+		
+		style: {'height':'222px'},
+		
+	},
+},
 	
 
 })
@@ -10760,6 +10779,9 @@ positrons: new Decimal(0),
 positronicCharage: new Decimal(0),	
 positronicCharageMulti: new Decimal(1),
 positronCosts: new Decimal(5),
+auto2: false,
+autoTime: 0.5,
+auto3: false,
 	            // "points" is the internal name for the main resource of the layer.
     }},
   name: "quantum", // This is optional, only used in a few places, If absent it just uses the layer id.
@@ -10777,29 +10799,53 @@ positronCosts: new Decimal(5),
     baseResource: "gears",                 // The name of the resource your prestige gain is based on.
     baseAmount() { return player.ge.points },  // A function to return the current amount of baseResource.
 
-    requires: new Decimal("1e1900"),              // The amount of the base needed to  gain 1 of the prestige currency.
+    requires() { let req = new Decimal("1e1900");  
+	if (hasUpgrade("tp",24)) req = req.root(upgradeEffect("tp",24))
+
+	return req;}   ,        // The amount of the base needed to  gain 1 of the prestige currency.
                     // Also the amount required to unlock the layer.
 					
     type: "static",                         // Determines the formula used for calculating prestige currency.
     exponent: new Decimal(5),                          // "normal" prestige gain is (currency^exponent).
 	base: new Decimal("1"),
-	
-	
+	resetsNothing() { return hasMilestone("sy", 1)},
+	autoPrestige() { return hasMilestone("sy", 1) && player.qe.auto },
 	
 		gainMult() { 
 			let mult = new Decimal(1);
 			if (hasAchievement("a", 222)) mult = mult.div(1.6666667);
 			if (hasUpgrade("qe", 52)) mult = mult.div(upgradeEffect("qe",52));
 			if (hasUpgrade("qe", 53)) mult = mult.div(upgradeEffect("qe",53));
-			if (hasUpgrade("tp", 18)) mult = mult.div(upgradeEffect("tp",18));
+		
 			return mult;
 		},
 	
-	
-	
+		canBuyMax() { return hasMilestone("sy", 3) },
+		update(diff) {
+			
+			if (player.qe.auto2 && hasMilestone("sy", 1)) {
+				player.qe.autoTime = new Decimal(0);
+				if (layers.qe.clickables[11].canClick()) layers.qe.clickables[11].onClick();
+				if (layers.qe.clickables[12].canClick()) layers.qe.clickables[12].onClick();
+				if (layers.qe.clickables[13].canClick()) layers.qe.clickables[13].onClick();
+				
+			}
+
+			if (player.qe.auto3 && hasMilestone("sy", 5)) {
+				player.qe.autoTime = new Decimal(0);
+				if (layers.qe.clickables[24].canClick()) layers.qe.clickables[24].onClick();
+				
+			}
+		},
  branches: ["ai","ge"],
  layerShown(){return player.tp.unlocked},         // Returns a bool for if this layer's node should be visible in the tree.
+ doReset(resettingLayer){ 
+	let keep = [];
 
+	if (hasMilestone("sy", 6)) keep.push("upgrades")
+	
+	if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
+},
  
  tabFormat: {
 	"Quarks": {
@@ -10894,8 +10940,8 @@ clickables: {
 		unlocked() { return player.qe.unlocked },
 		canClick() { return player.qe.unlocked && player.qe.points.gt(0) },
 		onClick() { 
-			player.qe.redQuarks = player.qe.redQuarks.plus(1);
-			player.qe.points = player.qe.points.minus(1);
+			player.qe.redQuarks = player.qe.redQuarks.plus(1).plus(upgradeEffect("sy",15));
+			if (!hasMilestone("sy", 4)) player.qe.points = player.qe.points.minus(1);
 		},
 		style: {width: "80px", height: "50px",background:"red",},
 	},
@@ -10904,8 +10950,8 @@ clickables: {
 		unlocked() { return player.qe.unlocked },
 		canClick() { return player.qe.unlocked && player.qe.points.gt(0) },
 		onClick() { 
-			player.qe.greenQuarks = player.qe.greenQuarks.plus(1);
-			player.qe.points = player.qe.points.minus(1);
+			player.qe.greenQuarks = player.qe.greenQuarks.plus(1).plus(upgradeEffect("sy",15));
+			if (!hasMilestone("sy", 4)) player.qe.points = player.qe.points.minus(1);
 		},
 		style: {width: "80px", height: "50px",background:"green",},
 	},
@@ -10914,8 +10960,8 @@ clickables: {
 		unlocked() { return player.qe.unlocked },
 		canClick() { return player.qe.unlocked && player.qe.points.gt(0) },
 		onClick() { 
-			player.qe.blueQuarks = player.qe.blueQuarks.plus(1);
-			player.qe.points = player.qe.points.minus(1);
+			player.qe.blueQuarks = player.qe.blueQuarks.plus(1).plus(upgradeEffect("sy",15));
+			if (!hasMilestone("sy", 4)) player.qe.points = player.qe.points.minus(1);
 		},
 		style: {width: "80px", height: "50px",background:"blue",},
 	},
@@ -11149,12 +11195,15 @@ return eff;
 		*/
 		effect() { 
 
-					let eff = player.qe.redQuarks.plus(1).pow(0.25)
-					if (eff.gte(2.75)) eff = eff.div(10).log2().plus(3)
+					let eff = player.qe.redQuarks.plus(1).pow(0.25).min(tmp.qe.upgrades[this.id].cap);
+				
 					return eff;
 				},
+				cap() { let cap = new Decimal(8.5)
+					if (hasAchievement("a",225)) cap = cap.add(0.25)
+				return cap; },
 		
-	effectDisplay() { return "^"+format(tmp.qe.upgrades[21].effect) },
+	effectDisplay() { return "^"+format(tmp.qe.upgrades[21].effect)+(tmp.qe.upgrades[21].effect.gte(tmp.qe.upgrades[this.id].cap)?" (MAXED)":"") },
 		
 		formula: "x+1",
 		unlocked() { return player.qe.upgrades.length>=3 },
@@ -11468,6 +11517,367 @@ addLayer("repair", {
 			style: {width: "160px", height: "120px"},
 		},
 		
+	},
+})
+addLayer("co", {
+	startData() { return {                  // startData is a function that returns default data for a layer. 
+		unlocked: false,
+		points: new Decimal(0),
+		best: new Decimal(0),
+		total: new Decimal(0),
+		power: new Decimal(0),
+		secondPower: new Decimal(0),
+		thirdPower: new Decimal(0),
+	            // "points" is the internal name for the main resource of the layer.
+    }},
+  name: "compost", // This is optional, only used in a few places, If absent it just uses the layer id.
+        symbol: "CO", // This appears on the layer's node. Default is the id with the first letter capitalized
+        position: 3,
+		color: "#f7b202",
+		nodeStyle() { return {
+			"background-color": (((player.co.unlocked||canReset("co"))&&!(Array.isArray(tmp.ma.canBeMastered)&&player.ma.selectionActive&&tmp[this.layer].row<tmp.ma.rowLimit&&!tmp.ma.canBeMastered.includes(this.layer)))?"#523a00":"#f7b202"),
+			color: (player.oldStyle?"black":"rgba(255, 255, 255, 0.75)"),
+		}},
+		componentStyles() { return {
+			"prestige-button": {
+				color: (player.oldStyle?"black":"rgba(255, 255, 255, 0.75)"),
+			},
+		}},                       // The color for this layer, which affects many elements.
+    resource: "waste",            // The name of this layer's main prestige resource.
+   row: 7,                               // The row this layer is on (0 is the first row).
+	branches: ["mc",["c",3]],
+    baseResource: "ideas",                 // The name of the resource your prestige gain is based on.
+    baseAmount() { return player.i.points },  // A function to return the current amount of baseResource.
+	doReset(resettingLayer){ 
+		let keep = [];
+		if (player.co.unlocked) keep.push("buyables")
+		if (layers[resettingLayer].row > this.row) layerDataReset(this.layer, keep)
+	},
+    requires: new Decimal(605),         
+   layerShown() {return hasUpgrade("sy",21)}, 
+   type: "static",                         // Determines the formula used for calculating prestige currency.
+                      // "normal" prestige gain is (currency^exponent).
+   exponent: new Decimal(1.5),
+					  base: new Decimal(2),
+   effBase() {
+	let base = new Decimal(2);
+	
+	// ADD
+	if (hasUpgrade("sy", 22)) base = base.plus(upgradeEffect("sy", 22));
+	
+	// MULTIPLY
+	
+	
+	return base;
+},
+effect() {
+	let eff = Decimal.pow(this.effBase(), player.co.points.plus()).sub(1).max(0);
+	return eff;
+},
+effectDescription() {
+	return "which are generating "+format(tmp.co.effect)+" Manure/sec"
+},
+enGainMult() {
+	let mult = new Decimal(1);
+	return mult;
+},
+enGainExp() {
+	let exp = player.co.buyables[11].plus().sub(1);
+	return exp;
+},
+enEff() {
+	if (!unl(this.layer)) return new Decimal(1);
+	let eff = player.co.secondPower.plus(1).pow(0.2);
+	return eff;
+},
+enGainMult2() {
+	let mult = new Decimal(1);
+	return mult;
+},
+enGainExp2() {
+	let exp = player.co.buyables[11].plus().sub(1);
+	return exp;
+},
+enEff2() {
+	if (!unl(this.layer)) return new Decimal(1);
+	let eff = player.co.thirdPower.plus(1).pow(0.02);
+	return eff;
+},
+   tabFormat: ["main-display",
+   "prestige-button",
+   "resource-display",
+			"blank",
+			["display-text",
+			function() {return 'You have ' + format(player.co.power) + ' Manure, which divides requirement of Civilizatons and Ideas by '+format(tmp.co.powerEff)},
+				{}],
+			"blank",
+			["display-text",
+			function() {return 'You have ' + format(player.co.secondPower) + ' Beetles (generated by Beetle buyable), which divides requirement of Composts by '+format(tmp.co.enEff2)+', increases Angelic Remnant gain by '+format(tmp.co.enEff)+'.'},
+				{}],
+			"blank",
+		"blank",
+	"buyables",],
+   
+	   gainMult() { 
+		   let mult = new Decimal(1);
+		 if (hasAchievement("a",245)) mult = mult.times(0.4)
+		 
+		 if (player.co.buyables[11].gte(1)) mult = mult.div(tmp.co.enEff);
+		   return mult;
+	   },
+	   powerExp() {
+		let exp = new Decimal(1/3);
+		
+		return exp;
+	},
+	powerEff() {
+		if (!unl(this.layer)) return new Decimal(1);
+		return player.co.power.plus(1).pow(this.powerExp());
+	},
+	doReset(resettingLayer) {
+		let keep = [];
+		player.co.power = new Decimal(0);
+
+	},
+	update(diff) {
+		if (player.co.unlocked) player.co.power = player.co.power.plus(tmp.co.effect.times(diff));
+		if (tmp.co.enGainExp.gte(0)) player.co.secondPower = player.co.secondPower.plus((tmp.co.enGainMult).pow(tmp.co.enGainExp).times(diff));
+		if (tmp.co.enGainExp2.gte(0)) player.co.thirdPower = player.co.thirdPower.plus((tmp.co.enGainMult2).pow(tmp.co.enGainExp2).times(diff));
+	},
+	buyables: {
+		rows: 9,
+	cols: 9,
+		11: {
+			title: "Beetle", // Optional, displayed at the top in a larger font
+			
+			cost(x=player[this.layer].buyables[this.id]) {
+		
+	return Decimal.pow(17.1, Decimal.pow(1.15, x.plus().cbrt()).times(3))
+			},
+			effect() { return player[this.layer].buyables[this.id].times(1.09).plus(1).pow(.1) },
+
+			display() { // Everything else displayed in the buyable button after the title
+				let data = tmp[this.layer].buyables[this.id];
+				let cost = data.cost;
+				let amt = player[this.layer].buyables[this.id];
+				let display = "Cost: "+format(cost)+" Manure"+".<br><br>Level: "+formatWhole(amt);
+				return display;
+			},
+			unlocked() { return hasAchievement("a",245)}, 
+			canAfford() {
+				if (!tmp[this.layer].buyables[this.id].unlocked) return false;
+				let cost = tmp[this.layer].buyables[this.id].cost
+				return player[this.layer].unlocked && player.co.power.gte(cost);
+			},
+			buy() { 
+				player.co.power = player.co.power.sub(tmp[this.layer].buyables[this.id].cost)
+				player.co.buyables[this.id] = player.co.buyables[this.id].plus(1);
+			},
+			buyMax() {
+				let c = player.co.power.times(tmp[this.layer].buyables[this.id].costDiv);
+				
+				player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(n);
+				return c;
+			},
+			
+			style: {'height':'222px'},
+			
+		},
+	},
+})
+addLayer("sy", {
+	startData() { return {                  // startData is a function that returns default data for a layer. 
+		unlocked: false,
+		points: new Decimal(0),
+		best: new Decimal(0),
+		total: new Decimal(0),
+	 repaired: new Decimal(0),
+	            // "points" is the internal name for the main resource of the layer.
+    }},
+  name: "angelic remnants", // This is optional, only used in a few places, If absent it just uses the layer id.
+        symbol: "<img src='js/Hundredicon.png' style='width:calc(128% - 2px);height:calc(168% - 2px);margin:10%'></img>", // This appears on the layer's node. Default is the id with the first letter capitalized
+        position: 2,
+    color: "white",                       // The color for this layer, which affects many elements.
+    resource: "angelic remnants",            // The name of this layer's main prestige resource.
+   row: 9,                               // The row this layer is on (0 is the first row).
+	
+    baseResource: "tachyon particles",                 // The name of the resource your prestige gain is based on.
+    baseAmount() { return player.tp.points },  // A function to return the current amount of baseResource.
+
+    requires: new Decimal("1.8e308"),         
+   layerShown() {return player.qe.unlocked}, 
+   type: "normal",                         // Determines the formula used for calculating prestige currency.
+   exponent: new Decimal(0.03),                          // "normal" prestige gain is (currency^exponent).
+   branches: ["qe","ra","pt","tp","co",["ge",3],["mc",3]],
+   tabFormat: ["main-display",
+   "prestige-button",
+   "resource-display",
+   "blank",
+   "blank",
+   "milestones",
+   "blank",
+   "upgrades",
+],
+onPrestige() { player.ra.points = new Decimal(0),
+	player.tp.points = new Decimal(0),
+	player.ge.points = new Decimal(0),
+	player.ge.rotations = new Decimal(0) },
+	   gainMult() { 
+		   let mult = new Decimal(1);
+		  if (hasMilestone("sy",6)) mult = mult.add(1).pow(2)
+		  if (player.co.buyables[11].gte(1)) mult = mult.times(tmp.co.enEff2);
+		   return mult;
+	   },
+	  
+	   milestones: {
+		0: {
+			requirementDescription: "1 Angelic Remnant",
+			done() { return player.sy.best.gte(1)},
+			effectDescription: "Keep Planet Milestones and gain 100% of Tachyon Particles.",
+		
+	},
+	1: {
+		requirementDescription: "2 Angelic Remnants",
+		done() { return player.sy.best.gte(2)},
+		effectDescription: "Quantum Energy resets nothing, automatically gain Quantum Energy and automate Quark assortation.",
+		toggles: [["qe", "auto"], ["qe", "auto2"]],
+},
+2: {
+	requirementDescription: "4 Angelic Remnants",
+	done() { return player.sy.best.gte(4)},
+	effectDescription: "Keep Planets and Tachyon Particles upgrades on Row 9 Reset.",
+},
+3: {
+	requirementDescription: "6 Angelic Remnants",
+	done() { return player.sy.best.gte(6)},
+	effectDescription: "You can buy max Quantum Energy.",
+},
+4: {
+	requirementDescription: "10 Angelic Remnants",
+	done() { return player.sy.best.gte(10)},
+	effectDescription: "Assorting Quarks does not use up 1 Quantum Energy.",
+},
+5: {
+	requirementDescription: "15 Angelic Remnants",
+	done() { return player.sy.best.gte(15)},
+	effectDescription: "Keep Sylveon Enhancers on Row 9 reset and Automate Positrons",
+	toggles: [["qe", "auto3"]],
+},
+6: {
+	requirementDescription: "35 Total Angelic Remnants",
+	done() { return player.sy.total.gte(35)},
+	effectDescription: "Keep Quantum Upgrades on reset. Square the Angelic Remnant gain.",
+	
+},
+
+	
+	 },
+	 upgrades: {
+		rows: 9,
+		cols: 9,
+		11: {
+			title: "Cosmic's beginner luck",
+			endpoint() { let end =  new Decimal("e1e18") 
+		if (hasUpgrade("sy",16)) end = end.pow(upgradeEffect("sy",16))
+		return end;},
+				description() { return "Prior to reaching "+format(tmp.sy.upgrades[11].endpoint)+" points, Point gain is raised to the power of 1.6, otherwise, no buffs." },
+		cost: new Decimal(1),
+	
+			
+			
+		},
+		12: {
+			title: "Antares Rigeler",
+			description: "<b>Rigel Avengers</b> is boosted by your Angelic Remnants.",
+		cost: new Decimal(2),
+	 unlocked() {return hasUpgrade("sy",11)},
+	 effect() { 
+
+		let eff = player.sy.points.plus(1).pow(0.2)
+		
+				return eff;
+	},
+
+effectDisplay() { return "^"+format(tmp.sy.upgrades[12].effect) },
+			
+		},
+		13: {
+			title: "Angelic Points",
+			description: "Angelic Remnants now boost Points gain.",
+		cost: new Decimal(10),
+	 unlocked() {return hasUpgrade("sy",12)},
+	 effect() { 
+
+		let eff = player.sy.points.plus(1).pow(0.06)
+		
+				return eff;
+	},
+
+effectDisplay() { return "^"+format(tmp.sy.upgrades[13].effect) },
+			
+		},
+		14: {
+			title: "Fate Evidence",
+			description: "<b>Transcendence</b> cap starts 0.75 later.",
+		cost: new Decimal(15),
+	 unlocked() {return hasUpgrade("sy",13)},
+	
+			
+		},
+		15: {
+			title: "Multicolored Quarks",
+			description: "Allows you to assort more Quarks based on Quantum Energy. (NOTE: After Angelic Milestone 5, the more assortation does not distribute more Quantum Energy.)",
+			effect() { 
+
+				let eff = player.qe.points.plus(1)
+				
+						return eff;
+			},
+		
+		effectDisplay() { return "+"+format(tmp.sy.upgrades[15].effect) },
+		cost: new Decimal(60),
+	 unlocked() {return hasUpgrade("sy",14)},
+	 style: {"font-size": "8.6px" },
+			
+		},
+		16: {
+			title: "Virtual Angel",
+			description: "Points push the priority buff of <b>Cosmic's beginner luck</b>.",
+		cost: new Decimal(120),
+	 unlocked() {return hasUpgrade("sy",15)},
+	 effect() { 
+
+		let eff = player.points.plus(1).pow(0.00000000000000000007)
+		
+				return eff;
+	},
+
+effectDisplay() { return "^"+format(tmp.sy.upgrades[16].effect) },
+			
+		},
+		21: {
+			title: "Ascended Angels",
+			description: "Unlock Composters",
+		cost: new Decimal(160),
+	 unlocked() {return hasUpgrade("sy",16)},
+
+			
+		},
+			22: {
+			title: "Angelic Remain",
+			description: "Manure gain is boosted by your Prestige Points (at a reduced rate)",
+		cost: new Decimal(900),
+	 unlocked() {return hasUpgrade("sy",21)&&player.co.unlocked},
+	 effect() { 
+
+		let eff = player.p.points.plus(1).pow(0.000000000000000064)
+		
+				return eff;
+	},
+
+effectDisplay() { return "+"+format(tmp.sy.upgrades[22].effect) },
+			
+		},
 	},
 })
 addLayer("a", {
@@ -11983,11 +12393,11 @@ addLayer("a", {
 				name: "Conquering everything.",
 		
 				done() { return player.pt.unlocked },
-				tooltip: "Perform a Row 8 reset. Reward: Keep AI Node Upgrades and the Mastery cost requirement is divided by 1.05",
+				tooltip: "Perform a Row 8 reset. Reward: Keep AI Node Upgrades and the Mastery cost requirement is divided by 1.05, however the Gear Evolution cost is multilplied by 0.01x.",
 				image: "images/achs/171.png",
 			},
 			172: {
-				name: "Ping is getting consumed by 1.6M OoMs",
+				name: "World is owned by robots",
 		
 				done() { return player.r.points.gte(1e30) },
 				tooltip: "Reach 1e30 robots",
@@ -12001,7 +12411,7 @@ addLayer("a", {
 				image: "images/achs/173.png",
 			},
 			174: {
-				name: "Can't get quintillion?",
+				name: "My awakening form in 2022",
 				
 				done() { return player.points.gte("ee17") },
 				tooltip: "Reach e1e17 Points. Reward: The Planet cost requirement is decreased by 1.5x",
@@ -12029,7 +12439,7 @@ addLayer("a", {
 				image: "images/achs/182.png",
 			},
 			183: {
-				name: "Jerking Squid",
+				name: "Energy Explosion",
 				
 				done() { return player.en.sw.gte(1e120) },
 				tooltip: "Reach 1e120 Super Watts",
@@ -12057,31 +12467,31 @@ addLayer("a", {
 				image: "images/achs/191.png",
 			},
 			192: {
-				name: "Peer of Happy Skull",
+				name: "This skull is happy!",
 			
 				done() { return player.pt.points.gte("5") },
-				tooltip: "Reach 5 Planets. Reward: Add 800% to Space Building Power",
+				tooltip: "Reach 5 Planets. Reward: x1.2 to Points gain.",
 				image: "images/achs/192.png",
 			},
 			193: {
-				name: "Shadow of AI",
+				name: "There's no point in doing that!",
 			
-				done() { return player.sg.power.gte("e3e8") },
-				tooltip: "Reach e3e8 Super Generator Power",
+				done() { return player.sg.points.gte(60) },
+				tooltip: "Reach 60 Super Generators.",
 				image: "images/achs/193.png",
 			},
 			194: {
 				name: "Destroyer of World",
 			
-				done() { return player.ps.points.gte("2000") },
-				tooltip: "Reach 2000 Phantom Souls. Reward: Imperium Bricks boost Planets Gain and Hex Gain is squared (unaffected by softcap)",
+				done() { return player.ne.thoughts.gte(3000) },
+				tooltip: "Reach 3,000 Thoughts. Reward: You get 1 more free Gear Evolution but the cost is increased by x1e15.",
 				image: "images/achs/194.png",
 			},
 			195: {
-				name: "Option G???",
+				name: "Eternity Time",
 				unlocked() { return hasAchievement("a", 111) },
-				done() { return player.h.challenges[32]>=1e9 },
-				tooltip: "Complete Option D at least 1,000,000,000 times.",
+				done() { return player.h.challenges[31]>=86400 },
+				tooltip: "Complete Timeless 86,400 times. Reward: Multiply Tachyon Particles gain by 3.",
 				image: "images/achs/195.png",
 			},
 			201: {
@@ -12095,14 +12505,14 @@ addLayer("a", {
 				name: "Boosterator Slowdown",
 			
 				done() { return player.g.power.gte("e1.2e14") },
-				tooltip: "Reach e1.2e14 Generator Power. Reward: Devastated Upgrade 2I is multipled by 2 and the Post-1,400 Booster & Generator cost scaling start at 2,000 instead.",
+				tooltip: "Reach e1.2e14 Generator Power. Reward: Post-1,400 Booster & Generator cost scaling start at 2,000 instead.",
 				image: "images/achs/202.png",
 			},
 			203: {
 				name: "Time speeds up over time.",
 			
-				done() { return player.tp.points.gte("1e20") },
-				tooltip: "Reach 1e20 Tachyon Particles. Reward: Unlock Softcap Compaction and Wraiths cost scaler 18% slower.",
+				done() { return player.tp.points.gte("100") },
+				tooltip: "Reach 100 Tachyon Particles. Reward: Unlock Softcap Compaction and Wraiths cost scaler 18% slower.",
 				image: "images/achs/203.png",
 			},
 			204: {
@@ -12113,10 +12523,10 @@ addLayer("a", {
 				image: "images/achs/204.png",
 			},
 			205: {
-				name: "Brickell is a boy -Some clown",
+				name: "",
 				unlocked() { return hasAchievement("a", 111) },
-				done() { return player.ge.rotations.gte("e100000") },
-				tooltip: "Reach e100,000 Rotations",
+				done() { return player.ge.rotations.gte("1e20000") },
+				tooltip: "Reach 1e20,000 Rotations",
 				image: "images/achs/205.png",
 			},
 			211: {
@@ -12136,11 +12546,11 @@ addLayer("a", {
 				image: "images/achs/212.png",
 			},
 			213: {
-				name: "Gwendolin Pact",
+				name: "Robot-224",
 			
-				done() { return inChallenge("h", 42) && player.ss.points.gte("3")&& player.points.gte("e1e14") },
+				done() { return inChallenge("h", 42) && player.b.best.eq(0) && player.g.best.eq(0) && player.points.gte("e5e14") },
 			
-				tooltip: "Get e1e14 points in Productionless with 3 Subspace Energy.",
+				tooltip: "Reach e5e14 Points without any Boosters and Generators while in Productionless hidrance.",
 				image: "images/achs/213.png",
 			},
 			214: {
@@ -12172,23 +12582,23 @@ addLayer("a", {
 			
 				done() { return player.qe.greenblueQuarks.gte("20")&&player.pt.points.eq("0") },
 			
-				tooltip: "Get 20 Blue-Green Quarks with no planets. Reward: The Quantum cost requirement is reduced by 0.002. (additive by base of 0.002, which is brought to 0.45th root)",
+				tooltip: "Get 20 Blue-Green Quarks with no planets. Reward: The Quantum cost requirement is reduced by 0.002.",
 				image: "images/achs/222.png",
 			},
 			223: {
 				name: "Obscure Island",
 			
-				done() { return player.ne.thoughts.gte(10000) },
+				done() { return player.ne.thoughts.gte(9000) },
 			
-				tooltip: "Reach 10,000 Thoughts.",
+				tooltip: "Reach 9,000 Thoughts.",
 				image: "images/achs/223.png",
 			},
 			224: {
-				name: "???",
+				name: "Milky Way is not that big",
 			
-				done() { return player.tp.points.gte("1e750") ||player.ra.points.gte("1e975")},
+				done() { return player.tp.points.gte("1e84")},
 			
-				tooltip: "Reach 1e750 Tachyon Particles or 1e975 Ravagers. Reward: Unlock Positrons and the Solarity Gain is multipled by 1e20000",
+				tooltip: "Reach 1e84 Tachyon Particles. Reward: Unlock Positrons.",
 				image: "images/achs/224.png",
 			},
 			225: {
@@ -12196,24 +12606,96 @@ addLayer("a", {
 				unlocked() { return hasAchievement("a", 111) },
 				done() { return player.qe.positronicCharage.gte(5)},
 			
-				tooltip: "Get at least 5 Positronic Charge. Reward: +1 to the Tachyon Particle's expontent",
+				tooltip: "Get at least 5 Positronic Charge. Reward: The upgrade cap of Red Charged Quark Update increases to 8.75.",
 				image: "images/achs/225.png",
 			},
 			231: {
 				name: "Lai'Tela's Star Shop",
 		
-				done() { return player.pt.total.gte(50000)},
+				done() { return player.pt.points.gte(215)},
 			
-				tooltip: "Reach 50,000 total Planets",
+				tooltip: "Reach 215 Planets",
 				image: "images/achs/231.png",
 			},
 			232: {
 				name: "Ravager Tesseracted",
 		
-				done() { return player.ra.points.gte("1e1450")},
+				done() { return player.ra.points.gte("1e725")},
 			
-				tooltip: "Reach 1e1,450 Ravagers. Reward: Ravagers expontent is added by 10.",
+				tooltip: "Reach 1e725 Ravagers. Reward: Neurons are 75% cheaper.",
 				image: "images/achs/232.png",
+			},
+			233: {
+				name: "This Wrinkler Caused Trouble",
+		
+				done() { return player.r.points.gte("1e58")},
+			
+				tooltip: "Reach 1e58 Robots. Reward: Multiply Tachyon Particle gain by 580,000.",
+				image: "images/achs/233.png",
+			},
+			234: {
+				name: "Is it a zipdisk or a monster floppy drive?",
+		
+				done() { return player.ge.points.gte("1e52000")},
+			
+				tooltip: "Reach 1e52,000 Gears. Reward: Tachyon particle gain is raised ^1.25.",
+				image: "images/achs/234.png",
+			},
+			235: {
+				name: "Reveal train name",
+				unlocked() { return hasAchievement("a", 111) },
+				done() { return player.mc.points.gte("1e34")},
+			
+				tooltip: "Reach 1e34 Machine Parts.",
+				image: "images/achs/235.png",
+			},
+			241: {
+				name: "You're not helping me, you're making it worser",
+		
+				done() { return player.tp.points.gte(1e245)},
+			
+				tooltip: "Reach 1e245 Tachyon Particles.",
+				image: "images/achs/241.png",
+			},
+			242: {
+				name: "?",
+		
+				done() { return player.sy.unlocked},
+			
+				tooltip: "Perform a Row 9 Reset. Reward: Rigel Avengers upgrade is thrice as strong.",
+				image: "images/achs/242.png",
+			},
+			243: {
+				name: "",
+		
+				done() { return player.sy.points.gte(20)},
+			
+				tooltip: "Reach 20 Angelic Remnants.",
+				image: "images/achs/243.png",
+			},
+			244: {
+				name: "Megaminded Planetaries",
+		
+				done() { return player.pt.points.gte(300)},
+			
+				tooltip: "Reach 300 Planets.",
+				image: "images/achs/244.png",
+			},
+			245: {
+				name: "No More Boasting!",
+				unlocked() { return hasAchievement("a", 111) },
+				done() { return player.points.gte("e3.5e14")&&inChallenge("ne",11)},
+			
+				tooltip: "Reach e3.5e14 Points while in Brain. Reward: Composters are 60% cheaper and unlock a buyable.",
+				image: "images/achs/245.png",
+			},
+			251: {
+				name: "STOP RIGHT THERE!",
+			
+				done() { return player.co.secondPower.gte(10000)},
+			
+				tooltip: "Reach 10,000 Beetles.",
+				image: "images/achs/251.png",
 			},
 		},
 		tabFormat: [
@@ -12259,7 +12741,7 @@ addLayer("ab", {
 	layerShown() { return player.t.unlocked || player.s.unlocked },
 	tooltip: "Autobuyers",
 	clickables: {
-		rows: 7,
+		rows: 9,
 		cols: 4,
 		11: {
 			title: "Boosters",
@@ -12508,6 +12990,30 @@ addLayer("ab", {
 			canClick() { return hasMilestone("pt", 6) },
 			onClick() { player.pt.auto = !player.pt.auto },
 			style: {"background-color"() { return player.c.auto?"#32a852":"#666666" }},
+		},
+		73: {
+			title: "Quantum Energy",
+			display() { return hasMilestone("sy", 1)?(player.qe.auto?"On":"Off"):"Locked" },
+			unlocked() { return player.sy.unlocked},
+			canClick() { return hasMilestone("sy", 1)},
+			onClick() { player.qe.auto = !player.qe.auto },
+			style: {"background-color"() { return player.qe.auto?"#32a852":"#666666" }},
+		},
+		74: {
+			title: "Quark Assortation",
+			display() { return hasMilestone("sy", 1)?(player.qe.auto2?"On":"Off"):"Locked" },
+			unlocked() { return player.sy.unlocked},
+			canClick() { return hasMilestone("sy", 1)},
+			onClick() { player.qe.auto2 = !player.qe.auto2 },
+			style: {"background-color"() { return player.qe.auto2?"#32a852":"#666666" }},
+		},
+		81: {
+			title: "Positronic Charges",
+			display() { return hasMilestone("sy", 5)?(player.qe.auto3?"On":"Off"):"Locked" },
+			unlocked() { return hasMilestone("sy",1)},
+			canClick() { return hasMilestone("sy", 5)},
+			onClick() { player.qe.auto3 = !player.qe.auto3 },
+			style: {"background-color"() { return player.qe.auto3?"#32a852":"#666666" }},
 		},
 	},
 	

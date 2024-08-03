@@ -632,6 +632,11 @@ function canAffordUpgrade(layer, id, skipAfford=false) {
 	}
 }
 
+function canBuyBuyable(layer, id) {
+	let b = temp[layer].buyables[id]
+	return (b.unlocked && run(b.canAfford, b) && player[layer].buyables[id].lt(b.purchaseLimit) && !tmp[layer].deactivated)
+}
+
 function hasUpgrade(layer, id){
 	return (player[layer].upgrades.includes(toNumber(id)) || player[layer].upgrades.includes(id.toString())) && unl(layer)
 }
@@ -682,6 +687,10 @@ function challengeEffect(layer, id){
 
 function buyableEffect(layer, id){
 	return (tmp[layer].buyables[id].effect)
+}
+
+function buyableEffect2(layer, id){
+	return (tmp[layer].buyables[id].effect2)
 }
 
 function clickableEffect(layer, id){

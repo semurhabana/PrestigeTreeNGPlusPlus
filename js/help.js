@@ -94,13 +94,13 @@ let help_data = {
 	plan: {
 		id: "plan",
 		title: "Planets",
-		text: "Once you unlock Planets, there is a penalty that you have to farm it back. You'll need to get Machine Parts and Gears milestone back again. But there are upgrades that pushes Time Capsuales a little bit, continue pushing until you can reach 14 total planets, which automatically unlocks Auto-Mastery. If you feel stuck, you might missing something that Planets got<br><br>If you have the Can't find the Rebcoana? achivement, then you don't have to farm for Gears and Machine milestones, but Cores and Gear Evolutions are still reset, Keep on pushing until you get Contiuum Flatten, which raises the Rotations gain to the power of amount of your Planets, you should get more than 1e10500 Rotations, Keep going until you unlock Ravagers and more Planet milestones.",
+		text: "Once you unlock Planets, there is a penalty that you have to farm it back. You'll need to get Machine Parts and Gears milestone back again. But there are upgrades that pushes Time Capsuales a little bit, continue pushing until you can reach 14 total planets, which automatically unlocks Auto-Mastery. If you feel stuck, you might missing something that Planets got<br><br>If you have the Can't find the Rebcoana? achivement, then you don't have to farm for Gears and Machine milestones, but Cores and Gear Evolutions are still reset, Keep on pushing until you get Contiuum Flatten, which raises the Rotations gain to the power of amount of your Planets, you should get more than 1e5500 Rotations, Keep going until you unlock Ravagers and more Planet milestones.",
 		unlocked() { return player.pt.unlocked },
 	},
 	rava: {
 		id: "rava",
 		title: "Ravagers",
-		text: "Once you unlock Ravagers, begin farming Rotations for more Ravagers and more Planets, You'll also be able to gain one of 3 devastated stuff, which allows you to purchase the Devastated Upgrades. I'll recommend getting the Devastated Upgrade 2I (green devasator) because it cheapens Mastery, Ideas and Subspaces, the first red devasator multiply Hyperspace gain, so be worthy to get it, the first blue devasator give a free level to Gear Evolutions based on Ideas. <br><br> You should push these 3 Devastated Upgrades, and keep on getting more of them, Just push Ravagers a little bit, until you eventually unlock the III Devasated upgrades. Keep in mind that reaching 1e30 ravagers makes some row 7 and 8 more tricker, Keep on pushing until you can unlock more Ravager milestones, which are making go past e1e17 points, Keep pushing progress and achievements until you unlock Tachyon Particles.",
+		text: "Once you unlock Ravagers, the next level of grindiness begins. You will see Ravagers (as the buyables, not the currency) which increases their own exponent while diving the cost of Super Generators.",
 		unlocked() { return player.ra.unlocked },
 	},
 	tachy: {
