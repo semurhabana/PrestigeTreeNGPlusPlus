@@ -3,7 +3,7 @@ addLayer("p", {
         symbol: "P", // This appears on the layer's node. Default is the id with the first letter capitalized
         position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
         color: "#31aeb0",
-        requires: new Decimal(10), // Can be a function that takes requirement increases into account
+        requires: new Decimal(1), // Can be a function that takes requirement increases into account
         resource: "prestige points", // Name of prestige currency
         baseResource: "points", // Name of resource prestige is based on
         baseAmount() {return player.points}, // Get the current amount of baseResource
@@ -327,7 +327,7 @@ addLayer("b", {
         symbol: "B", // This appears on the layer's node. Default is the id with the first letter capitalized
         position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
         color: "#6e64c4",
-        requires() { return new Decimal(200).times((player.b.unlockOrder&&!player.b.unlocked)?5000:1) }, // Can be a function that takes requirement increases into account
+        requires() { return new Decimal(1).times((player.b.unlockOrder&&!player.b.unlocked)?1:1) }, // Can be a function that takes requirement increases into account
         resource: "boosters", // Name of prestige currency
         baseResource: "points", // Name of resource prestige is based on
         baseAmount() {return player.points}, // Get the current amount of baseResource
@@ -600,7 +600,7 @@ addLayer("g", {
         symbol: "G", // This appears on the layer's node. Default is the id with the first letter capitalized
         position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
         color: "#a3d9a5",
-        requires() { return new Decimal(200).times((player.g.unlockOrder&&!player.g.unlocked)?5000:1) }, // Can be a function that takes requirement increases into account
+        requires() { return new Decimal(1).times((player.g.unlockOrder&&!player.g.unlocked)?1:1) }, // Can be a function that takes requirement increases into account
         resource: "generators", // Name of prestige currency
         baseResource: "points", // Name of resource prestige is based on
         baseAmount() {return player.points}, // Get the current amount of baseResource
@@ -957,7 +957,7 @@ addLayer("t", {
 			autoExt: false,
         }},
         color: "#006609",
-        requires() { return new Decimal(1e120).times(Decimal.pow("1e180", Decimal.pow(player[this.layer].unlockOrder, 1.415038))) }, // Can be a function that takes requirement increases into account
+        requires() { return new Decimal(1).times(Decimal.pow("1", Decimal.pow(player[this.layer].unlockOrder, 1))) }, // Can be a function that takes requirement increases into account
         resource: "time capsules", // Name of prestige currency
         baseResource: "points", // Name of resource prestige is based on
         baseAmount() {return player.points}, // Get the current amount of baseResource
@@ -1372,7 +1372,7 @@ addLayer("e", {
 			pseudoUpgs: [],
         }},
         color: "#b82fbd",
-        requires() { return new Decimal(1e120).times(Decimal.pow("1e180", Decimal.pow(player[this.layer].unlockOrder, 1.415038))) }, // Can be a function that takes requirement increases into account
+        requires() { return new Decimal(1).times(Decimal.pow("1", Decimal.pow(player[this.layer].unlockOrder, 1))) }, // Can be a function that takes requirement increases into account
         resource: "enhance points", // Name of prestige currency
         baseResource: "points", // Name of resource prestige is based on
         baseAmount() {return player.points}, // Get the current amount of baseResource
@@ -1650,7 +1650,7 @@ addLayer("s", {
 			pseudoUpgs: [],
         }},
         color: "#dfdfdf",
-        requires() { return new Decimal(1e120).times(Decimal.pow("1e180", Decimal.pow(player[this.layer].unlockOrder, 1.415038))) }, // Can be a function that takes requirement increases into account
+        requires() { return new Decimal(1).times(Decimal.pow("1", Decimal.pow(player[this.layer].unlockOrder, 1))) }, // Can be a function that takes requirement increases into account
         resource: "space energy", // Name of prestige currency
         baseResource: "points", // Name of resource prestige is based on
         baseAmount() {return player.points}, // Get the current amount of baseResource
@@ -2517,7 +2517,7 @@ addLayer("sb", {
         symbol: "SB", // This appears on the layer's node. Default is the id with the first letter capitalized
         position: 0, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
         color: "#504899",
-        requires: new Decimal(100), // Can be a function that takes requirement increases into account
+        requires: new Decimal(1), // Can be a function that takes requirement increases into account
         resource: "super boosters", // Name of prestige currency
         baseResource: "boosters", // Name of resource prestige is based on
         baseAmount() {return player.b.points}, // Get the current amount of baseResource
@@ -2592,7 +2592,7 @@ addLayer("sg", {
         symbol: "SG", // This appears on the layer's node. Default is the id with the first letter capitalized
         position: 4, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
         color: "#248239",
-        requires: new Decimal(200), // Can be a function that takes requirement increases into account
+        requires: new Decimal(1), // Can be a function that takes requirement increases into account
         resource: "super generators", // Name of prestige currency
         baseResource: "generators", // Name of resource prestige is based on
         baseAmount() {return player.g.points}, // Get the current amount of baseResource
@@ -2692,7 +2692,7 @@ addLayer("h", {
 			auto: false,
         }},
         color: "#a14040",
-        requires: new Decimal(1e30), // Can be a function that takes requirement increases into account
+        requires: new Decimal(1), // Can be a function that takes requirement increases into account
         resource: "hindrance spirit", // Name of prestige currency
         baseResource: "time energy", // Name of resource prestige is based on
         baseAmount() {return player.t.energy}, // Get the current amount of baseResource
@@ -3004,7 +3004,7 @@ addLayer("q", {
 			pseudoUpgs: [],
         }},
         color: "#c20282",
-        requires: new Decimal("1e512"), // Can be a function that takes requirement increases into account
+        requires: new Decimal("1"), // Can be a function that takes requirement increases into account
         resource: "quirks", // Name of prestige currency
         baseResource: "generator power", // Name of resource prestige is based on
         baseAmount() {return player.g.power}, // Get the current amount of baseResource
@@ -3619,7 +3619,7 @@ addLayer("o", {
 			"prestige-button"() {return { "background": (canReset("o"))?((player.grad&&!player.oldStyle)?"radial-gradient(#ffcd00, #ff4300)":"#ff8200"):"#bf8f8f" }},
 		},
         requires() { 
-			let req = new Decimal((player[this.layer].unlockOrder>0&&!hasAchievement("a", 62))?16:14).sub(tmp.o.solEnEff);
+			let req = new Decimal((player[this.layer].unlockOrder>0&&!hasAchievement("a", 62))?1:1).sub(tmp.o.solEnEff);
 			if (hasUpgrade("ba", 23)) req = req.div(tmp.ba.posBuff.max(1));
 			return req;
 		},
@@ -3984,7 +3984,7 @@ addLayer("ss", {
 			first: 0,
         }},
         color: "#e8ffff",
-        requires() { return new Decimal((player[this.layer].unlockOrder>0&&!hasAchievement("a", 62))?30:28) }, // Can be a function that takes requirement increases into account
+        requires() { return new Decimal((player[this.layer].unlockOrder>0&&!hasAchievement("a", 62))?1:1) }, // Can be a function that takes requirement increases into account
 		roundUpCost: true,
         resource: "subspace energy", // Name of prestige currency
         baseResource: "space energy", // Name of resource prestige is based on
@@ -4277,7 +4277,7 @@ addLayer("m", {
 			first: 0,
         }},
         color: "#eb34c0",
-        requires: new Decimal(1e285), // Can be a function that takes requirement increases into account
+        requires: new Decimal(1), // Can be a function that takes requirement increases into account
         resource: "magic", // Name of prestige currency
         baseResource: "hindrance spirit", // Name of resource prestige is based on
         baseAmount() {return player.h.points}, // Get the current amount of baseResource
@@ -4647,7 +4647,7 @@ addLayer("ba", {
 			first: 0,
         }},
         color: "#fced9f",
-        requires: new Decimal("1e365"), // Can be a function that takes requirement increases into account
+        requires: new Decimal("1"), // Can be a function that takes requirement increases into account
         resource: "balance energy", // Name of prestige currency
         baseResource: "quirks", // Name of resource prestige is based on
         baseAmount() {return player.q.points}, // Get the current amount of baseResource
@@ -4963,7 +4963,7 @@ addLayer("ps", {
 			first: 0,
         }},
         color: "#b38fbf",
-        requires() { return new Decimal("1e16000") }, // Can be a function that takes requirement increases into account
+        requires() { return new Decimal("1") }, // Can be a function that takes requirement increases into account
         resource: "phantom souls", // Name of prestige currency
         baseResource: "quirk energy", // Name of resource prestige is based on
         baseAmount() {return player.q.energy}, // Get the current amount of baseResource
@@ -5289,7 +5289,7 @@ addLayer("hn", {
         type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
 		baseResource: "magic and balance energy",
 		baseAmount() { return new Decimal(0) },
-		req: {m: new Decimal(1e150), ba: new Decimal(1e179)},
+		req: {m: new Decimal(1), ba: new Decimal(1)},
 		requires() { return this.req },
 		exp() { return {m: new Decimal(0.025), ba: new Decimal(((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?0.05:0.02)} },
 		exponent() { return tmp[this.layer].exp },
@@ -6064,7 +6064,7 @@ addLayer("n", {
 				color: (player.oldStyle?"white":"rgba(255, 255, 255, 0.75)"),
 			},
 		}},
-        requires() { return new Decimal((player[this.layer].unlockOrder>0&&!hasAchievement("a", 92))?"1e288":"1e280") }, // Can be a function that takes requirement increases into account
+        requires() { return new Decimal((player[this.layer].unlockOrder>0&&!hasAchievement("a", 92))?"1":"1") }, // Can be a function that takes requirement increases into account
 		increaseUnlockOrder: ["hs"],
         resource: "nebula energy", // Name of prestige currency
         baseResource: "solarity", // Name of resource prestige is based on
@@ -6287,7 +6287,7 @@ addLayer("hs", {
         }},
 		roundUpCost: true,
         color: "#dfdfff",
-        requires() { return new Decimal((player[this.layer].unlockOrder>0&&!hasAchievement("a", 92))?420:360) }, // Can be a function that takes requirement increases into account
+        requires() { return new Decimal((player[this.layer].unlockOrder>0&&!hasAchievement("a", 92))?1:1) }, // Can be a function that takes requirement increases into account
 		increaseUnlockOrder: ["n"],
         resource: "hyperspace energy", // Name of prestige currency 
         baseResource: "space energy", // Name of resource prestige is based on
@@ -6729,7 +6729,7 @@ addLayer("i", {
 			first: 0,
         }},
         color: "#e5dab7",
-        requires() { return new Decimal("1e11750") }, // Can be a function that takes requirement increases into account
+        requires() { return new Decimal("1") }, // Can be a function that takes requirement increases into account
         resource: "imperium bricks", // Name of prestige currency
         baseResource: "subspace", // Name of resource prestige is based on
         baseAmount() {return player.ss.subspace}, // Get the current amount of baseResource
@@ -6987,7 +6987,7 @@ addLayer("ma", {
 			current: null,
         }},
         color: "#ff9f7f",
-        requires() { let req = new Decimal(100)
+        requires() { let req = new Decimal(1)
 			if (hasUpgrade("tp",19)) req = req.minus(10)
 		return req; }, // Can be a function that takes requirement increases into account
         resource: "mastery", // Name of prestige currency
@@ -7251,7 +7251,7 @@ addLayer("ge", {
 		componentStyles: {
 			background() { return (player.ge.unlocked||canReset("ge"))?((player.grad&&!player.oldStyle)?"radial-gradient(circle, #bfbfbf 0%, #838586 100%)":"#bfbfbf"):"#bf8f8f" },
 		},
-        requires: new Decimal(1e256), // Can be a function that takes requirement increases into account
+        requires: new Decimal(1), // Can be a function that takes requirement increases into account
         resource: "gears", // Name of prestige currency 
         baseResource: "dust product", // Name of resource prestige is based on
         baseAmount() {return tmp.n.dustProduct}, // Get the current amount of baseResource
@@ -7610,7 +7610,7 @@ addLayer("mc", {
 				background() { return (canReset("mc"))?((player.grad&&!player.oldStyle)?"radial-gradient(circle, #c99a6b 0%, #706d6d 100%)":"#c99a6b"):"#bf8f8f" },
 			},
 		},
-        requires: new Decimal(128000), // Can be a function that takes requirement increases into account
+        requires: new Decimal(1), // Can be a function that takes requirement increases into account
         resource: "machine parts", // Name of prestige currency 
         baseResource: "hyperspatial bricks", // Name of resource prestige is based on
         baseAmount() {return player.i.hb}, // Get the current amount of baseResource
@@ -7928,7 +7928,7 @@ addLayer("en", {
         type: "custom", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
 		baseResource: "solarity",
 		baseAmount() { return player.o.points },
-		req() { return (player[this.layer].unlockOrder>0&&!player.en.unlocked)?new Decimal("1e15825"):new Decimal("1e15000") },
+		req() { return (player[this.layer].unlockOrder>0&&!player.en.unlocked)?new Decimal("1"):new Decimal("1") },
 		requires() { return this.req() },
 		increaseUnlockOrder: ["ne"],
 		exp() { return Decimal.add(.8, tmp.en.clickables[11].eff) },
@@ -8126,7 +8126,7 @@ addLayer("ne", {
 			autoNN: false,
         }},
         color: "#ded9ff",
-        requires() { return (player[this.layer].unlockOrder>0&&!player.ne.unlocked)?new Decimal("1e1160000"):new Decimal("1e1000000") }, // Can be a function that takes requirement increases into account
+        requires() { return (player[this.layer].unlockOrder>0&&!player.ne.unlocked)?new Decimal("1"):new Decimal("1") }, // Can be a function that takes requirement increases into account
 		increaseUnlockOrder: ["en"],
         resource: "neurons", // Name of prestige currency
         baseResource: "subspace", // Name of resource prestige is based on
@@ -8375,7 +8375,7 @@ addLayer("id", {
         }},
         color: "#fad682",
         requires() { 
-			let req = new Decimal(44);
+			let req = new Decimal(1);
 			if (player.ai.unlocked && tmp.ai) req = req.div(tmp.ai.conscEff2);
 			return req.max(2);
 		}, // Can be a function that takes requirement increases into account
@@ -8509,7 +8509,7 @@ addLayer("r", {
 			if (player.ai.unlocked && tmp.ai) req = req.div(tmp.ai.conscEff2);
 			return req.max(2);
 		},
-		requires() { return this.req() },
+		requires() { return new Decimal(1) },
 		exp: new Decimal(0.4),
 		exponent() { return tmp[this.layer].exp },
 		gainMult() {
@@ -8852,7 +8852,7 @@ addLayer("ai", {
 				background() { return (canReset("ai"))?((player.grad&&!player.oldStyle)?"radial-gradient(circle, #e6ffcc 0%, #566b65 100%)":"#e6ffcc"):"#bf8f8f" },
 			},
 		},
-        requires: new Decimal(408), // Can be a function that takes requirement increases into account
+        requires: new Decimal(1), // Can be a function that takes requirement increases into account
         resource: "superintelligence", // Name of prestige currency 
         baseResource: "revelations", // Name of resource prestige is based on
         baseAmount() {return tmp.id.rev}, // Get the current amount of baseResource
@@ -9353,7 +9353,7 @@ addLayer("c", {
 			autoTime: 0.5,
         }},
         color: "#edb3ff",
-        requires() { return Decimal.sub(108, hasAchievement("a", 164)?player.c.buyables[11].times(2):0).max(8) }, // Can be a function that takes requirement increases into account
+        requires() { return Decimal.sub(1, hasAchievement("a", 164)?player.c.buyables[11].times(1):0).max(8) }, // Can be a function that takes requirement increases into account
         resource: "civilization power", // Name of prestige currency
         baseResource: "imperium bricks", // Name of resource prestige is based on
         baseAmount() {return player.i.points}, // Get the current amount of baseResource
