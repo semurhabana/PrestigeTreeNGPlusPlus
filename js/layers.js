@@ -4005,7 +4005,7 @@ addLayer("ss", {
         },
 		canBuyMax() { return hasMilestone("hn", 3) },
 		effBase() {
-			let base = new Decimal(2);
+			let base = new Decimal(5);
 			if (hasUpgrade("ss", 32)) base = base.plus(upgradeEffect("ss", 32));
 			if (hasUpgrade("ss", 41)) base = base.plus(buyableEffect("o", 21));
 			if (hasUpgrade("e", 31) && player.i.buyables[12].gte(3)) base = base.plus(buyableEffect("e", 11).second);
