@@ -7155,7 +7155,7 @@ addLayer("ma", {
 			let m = Object.keys(layers).filter(x => (tmp[x].row<=furthestRow&&tmp.ma.masteryGoal[x]!==undefined&&(tmp.ma.specialReqs[x]?tmp.ma.specialReqs[x].every(y => player.ma.mastered.includes(y)):true))||player.ma.mastered.includes(x));
 			if (player.ma.current !== null) m.push(player.ma.current);
 			
-			return true;
+			return ["p","b","g","t","e","s","sb","sg","h","q","ss","o","m","ba","ps","hn","hs","n","i","en","ne"];
 		},
 		startMastery(layer) {
 			if (!confirm("Are you sure you want to start Mastering "+tmp[layer].name+"? This will force a Row 7 reset and put you in a run where only Mastered Layers & this layer will be active!")) return;
