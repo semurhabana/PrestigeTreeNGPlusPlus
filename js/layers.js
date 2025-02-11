@@ -50,7 +50,7 @@ addLayer("p", {
 			if (layers[resettingLayer].row > this.row) layerDataReset("p", keep)
 		},
 		startData() { return {
-			unlocked: false,
+			unlocked: true,
 			points: new Decimal(0),
 			best: new Decimal(0),
 			total: new Decimal(0),
@@ -334,7 +334,7 @@ addLayer("b", {
         type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
 		branches: ["p"],
         exponent() { return ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?0.75:1.25 }, // Prestige currency exponent
-		base() { return ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?1.5:5 },
+		base() { return ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?1.5:3 },
 		gainMult() { 
 			let mult = new Decimal(1);
 			if (hasUpgrade("b", 23)) mult = mult.div(upgradeEffect("b", 23));
@@ -363,7 +363,7 @@ addLayer("b", {
 			return base;
 		},
 		effectBase() {
-			let base = new Decimal(2);
+			let base = new Decimal(3);
 			
 			// ADD
 			base = base.plus(tmp.b.addToBase);
@@ -406,7 +406,7 @@ addLayer("b", {
 			return "<h3 style='color: #8882ba; text-shadow: #7f78c4 0px 0px 10px;'> + "+formatWhole(tmp.sb.spectralTotal)+"</h3>"
 		},
 		startData() { return {
-			unlocked: false,
+			unlocked: true,
 			points: new Decimal(0),
 			best: new Decimal(0),
 			total: new Decimal(0),
@@ -607,7 +607,7 @@ addLayer("g", {
         type: "static", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
 		branches: ["p"],
         exponent() { return ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?1.1:1.25 }, // Prestige currency exponent
-		base() { return ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?2.5:5 },
+		base() { return ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?1.5:3 },
 		gainMult() {
 			let mult = new Decimal(1);
 			if (hasUpgrade("g", 22)) mult = mult.div(upgradeEffect("g", 22));
@@ -624,7 +624,7 @@ addLayer("g", {
 		automate() {},
 		resetsNothing() { return hasMilestone("s", 4)&&player.ma.current!="g" },
 		effBase() {
-			let base = new Decimal(2);
+			let base = new Decimal(3);
 			
 			// ADD
 			if (hasUpgrade("g", 12)) base = base.plus(upgradeEffect("g", 12));
