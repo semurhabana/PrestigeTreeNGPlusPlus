@@ -8,9 +8,9 @@ addLayer("p", {
         baseResource: "points", // Name of resource prestige is based on
         baseAmount() {return player.points}, // Get the current amount of baseResource
         type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-        exponent() { return ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?0.75:0.5 }, // Prestige currency exponent
+        exponent() { return ((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?0.85:0.6 }, // Prestige currency exponent
         gainMult() { // Calculate the multiplier for main currency from bonuses
-            mult = new Decimal(1)
+            mult = new Decimal(1.5)
 			if (hasAchievement("a", 13)) mult = mult.times(1.1);
 			if (hasAchievement("a", 32)) mult = mult.times(2);
 			if (hasUpgrade("p", 21)) mult = mult.times(((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?1e50:1.8);
@@ -72,7 +72,7 @@ addLayer("p", {
 				effect() {
 					if (inChallenge("ne", 11)) return new Decimal(1);
 					
-					let eff = player.p.points.plus(2).pow(0.5);
+					let eff = player.p.points.plus(2).pow(0.75);
 					if (hasUpgrade("g", 14)) eff = eff.pow(1.5);
 					if (hasUpgrade("g", 24)) eff = eff.pow(1.4666667);
 					if (hasUpgrade("g", 34) && player.i.buyables[12].gte(2)) eff = eff.pow(1.4333333)
@@ -111,7 +111,7 @@ addLayer("p", {
 				description: "Points boost their own generation.",
 				cost() { return tmp.h.costMult11.times(((Array.isArray(tmp.ma.mastered))?tmp.ma.mastered.includes(this.layer):false)?50:5).pow(tmp.h.costExp11) },
 				effect() { 
-					let eff = player.points.plus(1).log10().pow(0.75).plus(1);
+					let eff = player.points.plus(1).log(7).pow(0.75).plus(1);
 					if (hasUpgrade("p", 33)) eff = eff.pow(upgradeEffect("p", 33));
 					if (hasUpgrade("g", 15)) eff = eff.pow(upgradeEffect("g", 15));
 					if (hasUpgrade("hn", 13)) eff = eff.pow(upgradeEffect("hn", 13));
