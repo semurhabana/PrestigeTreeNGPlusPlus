@@ -7154,8 +7154,14 @@ addLayer("ma", {
 			let furthestRow = Math.max(...realRows)+((player.ma.current !== null)?0:1);
 			let m = Object.keys(layers).filter(x => (tmp[x].row<=furthestRow&&tmp.ma.masteryGoal[x]!==undefined&&(tmp.ma.specialReqs[x]?tmp.ma.specialReqs[x].every(y => player.ma.mastered.includes(y)):true))||player.ma.mastered.includes(x));
 			if (player.ma.current !== null) m.push(player.ma.current);
+			var a = ["p","b","g","t","e","s","sb","sg","h","q","ss","o","m","ba","ps","hn","hs","n","i","en","ne"]
+			for (let i=0;i<30;i++;) {
+				if (a.includes[tmp[a[i]].symbol]) {
+					a.splice[0]
+				}
+			}
 			
-			return ["p","b","g","t","e","s","sb","sg","h","q","ss","o","m","ba","ps","hn","hs","n","i","en","ne"];
+			return a;
 		},
 		startMastery(layer) {
 			if (!confirm("Are you sure you want to start Mastering "+tmp[layer].name+"? This will force a Row 7 reset and put you in a run where only Mastered Layers & this layer will be active!")) return;
